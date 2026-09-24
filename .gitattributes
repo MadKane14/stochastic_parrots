@@ -1,0 +1,4 @@
+# Same line endings on Windows and Linux (keeps eval hashes identical across machines)
+* text=auto eol=lf
+*.parquet binary
+*.zip binary

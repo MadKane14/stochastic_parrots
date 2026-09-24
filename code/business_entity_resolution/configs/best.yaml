@@ -1,0 +1,4 @@
+# CURRENT TEAM BEST PIPELINE — owned by the lead, updated only on main after a planning round.
+# Worker experiment configs should `inherit: ../../best.yaml` and override only what they test.
+# Evidence (run_ids) for this config lives in planning/STATE.md.
+inherit: base.yaml

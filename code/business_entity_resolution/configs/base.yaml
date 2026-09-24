@@ -1,0 +1,37 @@
+# Baseline pipeline. Experiments inherit from best.yaml (current team best) and override pieces.
+# Machine-specific paths come from environment variables (see README):
+#   BER_DATA_DIR  -> folder containing train/ and test/  (default: <repo>/data/dataset)
+#   BER_ARTIFACTS -> big files: caches, scored pairs, submissions, embeddings, checkpoints (default: <repo>/artifacts)
+paths:
+  data_dir: ${BER_DATA_DIR}
+  artifacts_dir: ${BER_ARTIFACTS}
+
+eval:
+  split: val_v1            # default split for `run`; also try xc_India / xc_US (country hold-out)
+
+cache: true                # cache normalized records / candidates under $BER_ARTIFACTS/cache
+
+normalize:
+  name: basic
+  params:
+    legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp]
+
+blocking:
+  max_candidates: null     # optional cap per S1 entity after the union of blockers
+  blockers:
+    - name: tfidf_knn
+      params: {field: name_norm, k: 20, ngram: [2, 4], min_sim: 0.05}
+    - name: tfidf_knn
+      params: {field: addr_norm, k: 10, ngram: [2, 4], min_sim: 0.05}
+
+features:
+  - name: string_sims
+    params: {fields: [name_norm, name_core, addr_norm]}
+
+scorer:
+  name: hgb
+  params: {max_iter: 300, learning_rate: 0.08}
+
+decider:
+  name: threshold
+  params: {threshold: 0.5, exclusive_right: true}

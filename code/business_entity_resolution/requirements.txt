@@ -1,0 +1,13 @@
+# Pinned environment shared by every machine. Python 3.11 (3.10 also works).
+#   conda create -n ber python=3.11 -y && conda activate ber
+#   pip install -r requirements.txt
+# Neural work (GPU machines) additionally: pip install -r requirements-gpu.txt
+# Adding a package: ask the lead; it is added here on main so every machine stays identical.
+numpy==2.2.6
+pandas==2.3.3
+scipy==1.15.3
+scikit-learn==1.7.2
+rapidfuzz==3.14.1
+lightgbm==4.6.0
+pyarrow==21.0.0
+PyYAML==6.0.3
