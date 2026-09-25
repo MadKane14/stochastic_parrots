@@ -1,0 +1,66 @@
+{
+ "eval_code_sha256": "57af2f140244d7b2",
+ "locked_at": "2026-09-25T17:44:57",
+ "data_files_sha256": {
+  "train_ground_truth.tsv": "70bc1d8a16c667e0",
+  "train_source1.tsv": "591af0e1dfeb65ca",
+  "train_source2.tsv": "6336c1a055eec79c",
+  "train_source3.tsv": "67da22f5151898ff"
+ },
+ "splits": {
+  "val_v1": {
+   "fingerprint": "7c6fdaad258dd038",
+   "n_s1_train": 1765457,
+   "n_s1_val": 441364,
+   "n_right_train": 8255710,
+   "n_right_val": 2064509,
+   "val_singleton_rate": 0.0558,
+   "conflicting_right_records": 0
+  },
+  "val_v1@0.1": {
+   "fingerprint": "113f95b9afa25a9c",
+   "n_s1_train": 176870,
+   "n_s1_val": 43948,
+   "n_right_train": 825372,
+   "n_right_val": 205327,
+   "val_singleton_rate": 0.054,
+   "conflicting_right_records": 0
+  },
+  "xc_India": {
+   "fingerprint": "bf88cd7a23a2c90b",
+   "n_s1_train": 1323633,
+   "n_s1_val": 883188,
+   "n_right_train": 6186873,
+   "n_right_val": 4133346,
+   "val_singleton_rate": 0.0559,
+   "conflicting_right_records": 0
+  },
+  "xc_India@0.1": {
+   "fingerprint": "70135e119b82ca4a",
+   "n_s1_train": 132186,
+   "n_s1_val": 88632,
+   "n_right_train": 617137,
+   "n_right_val": 413562,
+   "val_singleton_rate": 0.056,
+   "conflicting_right_records": 0
+  },
+  "xc_US": {
+   "fingerprint": "3657d4be66ca0be9",
+   "n_s1_train": 883188,
+   "n_s1_val": 1323633,
+   "n_right_train": 4133346,
+   "n_right_val": 6186873,
+   "val_singleton_rate": 0.0558,
+   "conflicting_right_records": 0
+  },
+  "xc_US@0.1": {
+   "fingerprint": "60c24a3914f42f61",
+   "n_s1_train": 88632,
+   "n_s1_val": 132186,
+   "n_right_train": 413562,
+   "n_right_val": 617137,
+   "val_singleton_rate": 0.0566,
+   "conflicting_right_records": 0
+  }
+ }
+}
