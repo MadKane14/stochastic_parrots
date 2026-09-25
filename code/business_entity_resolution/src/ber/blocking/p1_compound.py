@@ -37,7 +37,7 @@ _TOK_CACHE: dict = {}
 
 def tokenize(values: pd.Series):
     """Whitespace tokens with digit/letter split + leading zeros stripped.
-    Returns (offsets[int64, n+1], token_ids[int64], is_number[bool per vocab id], vocab[list])."""
+    Returns (offsets[int64, n+1], token_ids[int64], is_number[bool per vocab id], number-variant ids, vocab)."""
     arr = pa.array(values.to_numpy(dtype=object), type=pa.large_string())
     arr = pc.replace_substring_regex(arr, r"(\d)(\pL)", r"\1 \2")
     arr = pc.replace_substring_regex(arr, r"(\pL)(\d)", r"\1 \2")
@@ -55,7 +55,7 @@ def tokenize(values: pd.Series):
         row = np.repeat(np.arange(len(offsets) - 1), np.diff(offsets))[keep]
         ids = ids[keep]
         offsets = np.r_[0, np.cumsum(np.bincount(row, minlength=len(offsets) - 1))].astype(np.int64)
-    return offsets, ids, is_num, _variant_ids(vocab, is_num)
+    return offsets, ids, is_num, _variant_ids(vocab, is_num), vocab
 
 
 def _variant_ids(vocab, is_num):
