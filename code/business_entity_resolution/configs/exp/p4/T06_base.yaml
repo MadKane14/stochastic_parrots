@@ -1,0 +1,2 @@
+# T06 baseline: identical to best.yaml, run on the same commit as T06_e5 (same-commit comparison).
+inherit: ../../best.yaml
