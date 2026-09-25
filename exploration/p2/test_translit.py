@@ -54,6 +54,20 @@ def test_transform():
     assert out["S2-5"] == "cequeelement" or out["S2-5"] == "cequee1ement", out["S2-5"]
 
 
+def test_subset_consistency():
+    # a record must normalize the same whether the target set is all records or a subset (train vs val vs test)
+    recs = pd.DataFrame({"entity_id": [f"S2-{i}" for i in range(60)], "source": [2] * 60,
+                         "business_name": ["healthline.com", "Healthline Care LLC", "supremepackaging"] * 20,
+                         "business_address": [""] * 60, "country": ["US"] * 60})
+    for i in range(25):
+        recs.loc[len(recs)] = [f"S3-{i}", 3, "health line care supreme packaging", "", "US"]
+    n = TranslitNormalizer(legal_tokens=["llc"])
+    n.fit(Dataset("t", recs, None))
+    full = n.transform(recs)["name_norm"].iloc[:30].tolist()
+    part = n.transform(recs.iloc[:30].copy())["name_norm"].tolist()
+    assert full == part, (full[:3], part[:3])
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

@@ -15,10 +15,12 @@ Adds the same columns as `basic` (name_norm, addr_norm, name_core, addr_digits) 
    Unicode decimal digits of any script become ASCII digits (unicodedata.digit).
 3. Web-style names: a trailing web suffix (`delhiconsulting.com`, `Dr dreammarketing.Com`, `x.co.in`; at least 4
    word characters before the dot, suffix not a legal form, so `Pvt.Ltd` is untouched) and a leading `www.` are
-   removed; every long token of such a row, and long rare Latin name tokens elsewhere, are split into known words by unigram Viterbi segmentation
-   (`supremepackaging` -> `supreme packaging`) with a vocabulary of name tokens counted on the train records and
-   (transductively, no labels) on the records being normalized. A token with 1/0 inside letters (`cequee1ement`,
-   `agr0`) is replaced by its 1->l / 0->o variant only if that variant is a known word or segments into known words.
+   removed; every long token of such a row (up to 4 words of >= 3 chars), and long rare Latin tokens elsewhere
+   (only a clean 2-word split, >= 4 chars each, so typos are left alone), are split into known words by unigram
+   Viterbi segmentation (`supremepackaging` -> `supreme packaging`). Word counts = per-token max of the train
+   counts and (transductively, no labels) the counts on the records being normalized. A token with 1/0 inside
+   letters (`cequee1ement`, `agr0`) becomes its 1->l / 0->o variant only if that is a known word or segments into
+   known words.
 4. Runs of >= 2 single Latin letters in names are joined (`p l l c` -> `pllc`, `m s` -> `ms`).
 """
 from __future__ import annotations
@@ -96,45 +98,75 @@ def _digits_to_ascii(s: str) -> str:
                    for c in s)
 
 
+def _group_max(keys: np.ndarray, vals: np.ndarray) -> np.ndarray:
+    """Max of `vals` within each group of equal `keys`, broadcast back to every element."""
+    order = np.lexsort((-vals, keys))
+    ks = keys[order]
+    first = np.r_[True, ks[1:] != ks[:-1]]
+    out = np.empty_like(vals)
+    out[order] = vals[order][first][np.cumsum(first) - 1]
+    return out
+
+
 def learn_token_map(native_side: list[list[str]], latin_side: list[list[str]], min_support: int,
                     min_precision: float, rounds: int = 3) -> dict[str, str]:
     """Token translation map native -> Latin from aligned bags of tokens (one pair per list element).
 
     Dice association over pair co-occurrence, then competitive linking inside each pair (vectorised as `rounds`
-    of mutual-best linking: a (n, l) edge is linked when it is the best remaining edge for both n and l)."""
-    rows_n, rows_l, pid_n, pid_l = [], [], [], []
+    of mutual-best linking: an (n, l) edge is linked when it is the best remaining edge for both n and l; ties are
+    broken by first occurrence). Integer token codes + numpy throughout (memory ~ 40 bytes per within-pair edge)."""
+    pid_n, tok_n, pid_l, tok_l = [], [], [], []
     for i, (ns, ls) in enumerate(zip(native_side, latin_side)):
-        ns, ls = set(ns), set(ls)
+        ns, ls = dict.fromkeys(ns), dict.fromkeys(ls)          # dedupe, keep order (deterministic codes)
         if ns and ls:
-            rows_n.extend(ns); pid_n.extend([i] * len(ns))
-            rows_l.extend(ls); pid_l.extend([i] * len(ls))
-    if not rows_n:
+            tok_n.extend(ns); pid_n.extend([i] * len(ns))
+            tok_l.extend(ls); pid_l.extend([i] * len(ls))
+    if not tok_n:
         return {}
-    dn = pd.DataFrame({"p": pid_n, "n": rows_n})
-    dl = pd.DataFrame({"p": pid_l, "l": rows_l})
-    cn = dn["n"].value_counts()
-    cl = dl["l"].value_counts()
-    e = dn.merge(dl, on="p")                                   # all within-pair (n, l) edges
-    co = e.groupby(["n", "l"]).size().rename("co").reset_index()
-    co["dice"] = 2 * co["co"] / (co["n"].map(cn).to_numpy() + co["l"].map(cl).to_numpy())
-    e = e.merge(co[["n", "l", "dice"]], on=["n", "l"])
+    cn_codes, uniq_n = pd.factorize(pd.Series(tok_n, dtype=object))
+    cl_codes, uniq_l = pd.factorize(pd.Series(tok_l, dtype=object))
+    del tok_n, tok_l
+    pid_n, pid_l = np.asarray(pid_n, np.int64), np.asarray(pid_l, np.int64)
+    Vn, Vl = len(uniq_n), len(uniq_l)
+    cn = np.bincount(cn_codes, minlength=Vn)                   # pairs containing each native token
+    cl = np.bincount(cl_codes, minlength=Vl)
+    # all within-pair edges (cross product per pair; both sides are grouped by pair id in increasing order)
+    n_pairs = int(max(pid_n.max(), pid_l.max())) + 1
+    cnt_l = np.bincount(pid_l, minlength=n_pairs)
+    start_l = np.r_[0, np.cumsum(cnt_l)[:-1]]
+    rep = cnt_l[pid_n]
+    e_p = np.repeat(pid_n, rep)
+    e_n = np.repeat(cn_codes.astype(np.int64), rep)
+    off = np.arange(rep.sum()) - np.repeat(np.cumsum(rep) - rep, rep)
+    e_l = cl_codes.astype(np.int64)[np.repeat(start_l[pid_n], rep) + off]
+    del off, rep
+    key_nl = e_n * Vl + e_l
+    uk, inv, co = np.unique(key_nl, return_inverse=True, return_counts=True)
+    dice = (2.0 * co / (cn[uk // Vl] + cl[uk % Vl]))[inv]
+    del inv
+    kpn, kpl = e_p * Vn + e_n, e_p * Vl + e_l
+    del e_p, e_n, e_l
+    alive = np.ones(len(dice), bool)
     linked = []
     for _ in range(rounds):
-        if e.empty:
+        idx = np.flatnonzero(alive)
+        if not len(idx):
             break
-        best_n = e.groupby(["p", "n"])["dice"].transform("max") == e["dice"]
-        best_l = e.groupby(["p", "l"])["dice"].transform("max") == e["dice"]
-        lk = e[best_n & best_l].drop_duplicates(["p", "n"]).drop_duplicates(["p", "l"])
-        linked.append(lk[["p", "n", "l"]])
-        done_n = set(zip(lk["p"], lk["n"]))
-        done_l = set(zip(lk["p"], lk["l"]))
-        keep = [(p, n) not in done_n and (p, l) not in done_l for p, n, l in zip(e["p"], e["n"], e["l"])]
-        e = e[keep]
-    links = pd.concat(linked, ignore_index=True).groupby(["n", "l"]).size().rename("links").reset_index()
-    links = links.sort_values(["n", "links"], ascending=[True, False]).drop_duplicates("n")
-    links["prec"] = links["links"] / links["n"].map(cn).to_numpy()
-    ok = (links["links"] >= min_support) & (links["prec"] >= min_precision)
-    return dict(zip(links.loc[ok, "n"], links.loc[ok, "l"]))
+        d, a_pn, a_pl = dice[idx], kpn[idx], kpl[idx]
+        cand = np.flatnonzero((d == _group_max(a_pn, d)) & (d == _group_max(a_pl, d)))
+        cand = cand[np.unique(a_pn[cand], return_index=True)[1]]
+        cand = cand[np.unique(a_pl[cand], return_index=True)[1]]
+        linked.append(key_nl[idx[cand]])
+        kill = np.isin(a_pn, a_pn[cand]) | np.isin(a_pl, a_pl[cand])
+        alive[idx[kill]] = False
+    lk, links = np.unique(np.concatenate(linked), return_counts=True)
+    ln, ll = lk // Vl, lk % Vl
+    order = np.lexsort((-links, ln))                            # per native token: most-linked Latin token first
+    ln, ll, links = ln[order], ll[order], links[order]
+    first = np.r_[True, ln[1:] != ln[:-1]]
+    ln, ll, links = ln[first], ll[first], links[first]
+    ok = (links >= min_support) & (links / cn[ln] >= min_precision)
+    return dict(zip(np.asarray(uniq_n)[ln[ok]].tolist(), np.asarray(uniq_l)[ll[ok]].tolist()))
 
 
 class Segmenter:
@@ -317,8 +349,11 @@ class TranslitNormalizer(Normalizer):
             n_changed["addr_native_rows"] = int(nz.sum())
         if self.web_names:                              # segmentation + 1/0 variants on long / mixed tokens
             counts = Counter(self.fit_counts)
-            if self.seg_target_vocab:
-                counts.update(t for s in name for t in s.split())
+            if self.seg_target_vocab:   # per-token max, not sum: same records as in fit() are not double-counted,
+                target = Counter(t for s in name for t in s.split())   # and train / val / test see ~equal counts
+                for tok, c in target.items():
+                    if c > counts.get(tok, 0):
+                        counts[tok] = c
             seg = Segmenter(counts, self.seg_word_freq)
             cand = name.str.contains(r"[a-z]{%d,}|[a-z][01]|[01][a-z]" % self.seg_min_len, regex=True) | web
             before = name[cand]
