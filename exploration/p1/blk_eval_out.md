@@ -89,3 +89,65 @@
 | cmp@30 | 0.9696 | 0.9894 | 29.9999 | 30.0 | 30.0 | 0.957 | 0.978 |
 | cmp@40 | 0.9731 | 0.9906 | 39.9997 | 40.0 | 40.0 | 0.9613 | 0.981 |
 | cmp@50 | 0.9754 | 0.9915 | 49.9996 | 50.0 | 50.0 | 0.9641 | 0.983 |
+
+## Run 2026-09-25 20:32 — channels=cmp frac=1.0 qfrac=0.1 kmax=50 krev=3 max_df=1000 num_variants=False max_df_unigram=0 BER_THREADS=4
+
+- records 10,540,382 (S1 220,163, right 10,320,219); GT pairs 762,339
+- blocking time per channel at k=50 (s): cmp=124; total 124s; peak RSS 26.3 GB
+- test projection (1.73M S1 x 9.97M right, same scale): ~977s for blocking the test set (the harness's test mode also blocks full train for fitting)
+
+| channels(k) | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US |
+|---|---|---|---|---|---|---|---|
+| cmp@5 | 0.8601 | 0.96 | 5.0 | 5.0 | 5.0 | 0.8392 | 0.8741 |
+| cmp@10 | 0.9376 | 0.9781 | 10.0 | 10.0 | 10.0 | 0.923 | 0.9474 |
+| cmp@15 | 0.9507 | 0.9825 | 14.9999 | 15.0 | 15.0 | 0.9376 | 0.9594 |
+| cmp@20 | 0.9574 | 0.9848 | 19.9997 | 20.0 | 20.0 | 0.9452 | 0.9656 |
+| cmp@30 | 0.9645 | 0.9873 | 29.9992 | 30.0 | 30.0 | 0.9531 | 0.9721 |
+| cmp@40 | 0.9683 | 0.9887 | 39.9984 | 40.0 | 40.0 | 0.9575 | 0.9755 |
+| cmp@50 | 0.9707 | 0.9896 | 49.997 | 50.0 | 50.0 | 0.9605 | 0.9776 |
+
+## Run 2026-09-25 20:36 — channels=cmp frac=1.0 qfrac=0.1 kmax=50 krev=3 max_df=1000 num_variants=True max_df_unigram=0 BER_THREADS=4
+
+- records 10,540,382 (S1 220,163, right 10,320,219); GT pairs 762,339
+- blocking time per channel at k=50 (s): cmp=227; total 227s; peak RSS 37.2 GB
+- test projection (1.73M S1 x 9.97M right, same scale): ~1781s for blocking the test set (the harness's test mode also blocks full train for fitting)
+
+| channels(k) | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US |
+|---|---|---|---|---|---|---|---|
+| cmp@5 | 0.8543 | 0.9569 | 5.0 | 5.0 | 5.0 | 0.8328 | 0.8687 |
+| cmp@10 | 0.9313 | 0.9756 | 10.0 | 10.0 | 10.0 | 0.9164 | 0.9413 |
+| cmp@15 | 0.9456 | 0.9805 | 15.0 | 15.0 | 15.0 | 0.9324 | 0.9544 |
+| cmp@20 | 0.9531 | 0.9832 | 19.9999 | 20.0 | 20.0 | 0.9405 | 0.9615 |
+| cmp@30 | 0.9613 | 0.9862 | 29.9996 | 30.0 | 30.0 | 0.9491 | 0.9695 |
+| cmp@40 | 0.9659 | 0.9879 | 39.9993 | 40.0 | 40.0 | 0.954 | 0.9739 |
+| cmp@50 | 0.969 | 0.989 | 49.9987 | 50.0 | 50.0 | 0.9573 | 0.9768 |
+
+## Run 2026-09-25 20:51 — channels=cmp,cmprev frac=1.0 qfrac=1.0 kmax=50 krev=3 max_df=1000 num_variants=False max_df_unigram=0 BER_THREADS=4
+
+- records 12,527,040 (S1 2,206,821, right 10,320,219); GT pairs 7,638,365
+- blocking time per channel at k=50 (s): cmp=397, cmprev=343; total 740s; peak RSS 36.7 GB
+- test projection (1.73M S1 x 9.97M right, same scale): ~580s for blocking the test set (the harness's test mode also blocks full train for fitting)
+
+| channels(k) | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US |
+|---|---|---|---|---|---|---|---|
+| cmp@5 | 0.8595 | 0.9597 | 5.0 | 5.0 | 5.0 | 0.8382 | 0.8737 |
+| cmp@5 + cmprev@5 | 0.9589 | 0.9854 | 14.5707 | 30.0 | 377.0 | 0.9491 | 0.9654 |
+| cmp@10 | 0.9367 | 0.9777 | 10.0 | 10.0 | 10.0 | 0.9215 | 0.9468 |
+| cmp@10 + cmprev@10 | 0.9628 | 0.9867 | 17.1321 | 32.0 | 377.0 | 0.953 | 0.9694 |
+| cmp@15 | 0.9498 | 0.9821 | 14.9998 | 15.0 | 15.0 | 0.9364 | 0.9588 |
+| cmp@15 + cmprev@15 | 0.9653 | 0.9876 | 20.652 | 34.0 | 377.0 | 0.9556 | 0.9718 |
+| cmp@20 | 0.9565 | 0.9845 | 19.9996 | 20.0 | 20.0 | 0.944 | 0.9649 |
+| cmp@20 + cmprev@20 | 0.9672 | 0.9883 | 24.6476 | 36.0 | 377.0 | 0.9576 | 0.9737 |
+| cmp@30 | 0.9636 | 0.987 | 29.9989 | 30.0 | 30.0 | 0.952 | 0.9713 |
+| cmp@30 + cmprev@30 | 0.9699 | 0.9892 | 33.3675 | 43.0 | 377.0 | 0.9604 | 0.9762 |
+| cmp@40 | 0.9675 | 0.9884 | 39.9976 | 40.0 | 40.0 | 0.9565 | 0.9749 |
+| cmp@40 + cmprev@40 | 0.9718 | 0.9899 | 42.5839 | 50.0 | 381.0 | 0.9625 | 0.9781 |
+| cmp@50 | 0.97 | 0.9893 | 49.9953 | 50.0 | 50.0 | 0.9594 | 0.9772 |
+| cmp@50 + cmprev@50 | 0.9733 | 0.9905 | 52.0567 | 58.0 | 385.0 | 0.964 | 0.9795 |
+| cmp@5 + cmprev@1 | 0.9589 | 0.9854 | 14.5707 | 30.0 | 377.0 | 0.9491 | 0.9654 |
+| cmp@10 + cmprev@1 | 0.9628 | 0.9867 | 17.1321 | 32.0 | 377.0 | 0.953 | 0.9694 |
+| cmp@15 + cmprev@1 | 0.9653 | 0.9876 | 20.652 | 34.0 | 377.0 | 0.9556 | 0.9718 |
+| cmp@20 + cmprev@1 | 0.9672 | 0.9883 | 24.6476 | 36.0 | 377.0 | 0.9576 | 0.9737 |
+| cmp@30 + cmprev@1 | 0.9699 | 0.9892 | 33.3675 | 43.0 | 377.0 | 0.9604 | 0.9762 |
+| cmp@40 + cmprev@1 | 0.9718 | 0.9899 | 42.5839 | 50.0 | 381.0 | 0.9625 | 0.9781 |
+| cmp@50 + cmprev@1 | 0.9733 | 0.9905 | 52.0567 | 58.0 | 385.0 | 0.964 | 0.9795 |

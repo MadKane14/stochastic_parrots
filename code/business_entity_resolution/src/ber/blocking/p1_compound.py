@@ -170,11 +170,12 @@ class CompoundKeyBlocker(Blocker):
     def __init__(self, k: int = 30, k_rev: int = 0, max_df: int = 5000, min_score: float = 0.0,
                  hit_budget: float = 1e7, name_field: str = "name_norm", addr_field: str = "addr_norm",
                  group_by: str | None = "country", name_cap: int = 8, addr_cap: int = 20, num_cap: int = 4,
-                 num_variants: bool = False, max_df_unigram: int | None = None):
+                 num_variants: bool = False, max_df_unigram: int | None = None, workers: int = 4):
         self.k, self.k_rev, self.max_df, self.min_score = int(k), int(k_rev), int(max_df), float(min_score)
         self.hit_budget, self.name_field, self.addr_field, self.group_by = float(hit_budget), name_field, addr_field, group_by
         self.caps = (int(name_cap), int(addr_cap), int(num_cap), bool(num_variants))
         self.max_df_unigram = int(max_df_unigram) if max_df_unigram else None   # lower cap for single tokens
+        self.workers = int(workers)   # the sparse products are memory-bound: > 4 processes gave no speed-up
 
     def _tokens(self, recs: pd.DataFrame, field: str):
         key = (id(recs), len(recs), field)
@@ -192,7 +193,7 @@ class CompoundKeyBlocker(Blocker):
         is_s1 = (recs["source"] == 1).to_numpy()
         groups = recs[self.group_by].to_numpy() if self.group_by else np.zeros(len(recs), dtype=np.int8)
         codes, _ = pd.factorize(groups)
-        workers = max(1, int(os.environ.get("BER_THREADS", "8")))
+        workers = max(1, min(self.workers, int(os.environ.get("BER_THREADS", "8"))))
         R, C, V = [], [], []
         for g in np.unique(codes):
             in_g = codes == g
