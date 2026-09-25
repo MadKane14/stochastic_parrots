@@ -100,7 +100,7 @@ def main():
             f.append("SPLIT_MISMATCH")
         if r.get("git", {}).get("dirty"):
             f.append("DIRTY")
-        if r.get("sample_frac", 1) < 1:
+        if r.get("smoke"):
             f.append("SAMPLE")
         if r.get("transductive_components"):
             f.append("TRANSDUCTIVE")

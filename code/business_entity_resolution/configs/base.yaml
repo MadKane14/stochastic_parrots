@@ -7,7 +7,8 @@ paths:
   artifacts_dir: ${BER_ARTIFACTS}
 
 eval:
-  split: val_v1            # default split for `run`; also try xc_India / xc_US (country hold-out)
+  split: val_v1@0.1        # default = locked 10% dev sample of val_v1 (fast iteration);
+                           # confirm winners on full `val_v1` and on `xc_India@0.1` / `xc_US@0.1` (country hold-out)
 
 cache: true                # cache normalized records / candidates under $BER_ARTIFACTS/cache
 
@@ -17,6 +18,8 @@ normalize:
     legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp]
 
 blocking:
+  # NOTE: tfidf_knn is O(n_s1 x n_right) and only works on small samples (smoke). The real data
+  # (~2M S1 x ~10M S2/S3) needs a scalable blocker — first job of the lead's session (T02).
   max_candidates: null     # optional cap per S1 entity after the union of blockers
   blockers:
     - name: tfidf_knn

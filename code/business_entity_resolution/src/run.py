@@ -4,9 +4,9 @@
 Run from code/business_entity_resolution/:
 
   python src/run.py check                                   # environment + data sanity
-  python src/run.py run   -c configs/base.yaml --smoke      # 5% sample, ~1 min: ALWAYS first
-  python src/run.py run   -c configs/base.yaml --task T03   # full run on the default split (val_v1)
-  python src/run.py run   -c configs/base.yaml --split val_v1,xc_India
+  python src/run.py run   -c configs/base.yaml --smoke      # 1% sample, plumbing only: ALWAYS first
+  python src/run.py run   -c configs/base.yaml --task T03   # dev run on the default split (val_v1@0.1 = 10% sample)
+  python src/run.py run   -c configs/base.yaml --split val_v1,xc_India@0.1   # full val / country hold-out
   python src/run.py test  -c configs/best.yaml              # train on all labels, write submission TSVs
   python src/run.py sweep -c configs/exp/p3/x.yaml --grid "blocking.blockers.0.params.k=10|20|40" --task T03
   python src/run.py lock                                    # LEAD ONLY: freeze eval (planning/eval_lock.json)
@@ -80,7 +80,7 @@ def cmd_sweep(a):
         key, _, vals = g.partition("=")
         grid.append([f"{key}={v}" for v in vals.split("|")])
     combos = [list(c) for c in itertools.product(*grid)] or [[]]
-    splits = (a.split or "val_v1").split(",")
+    splits = (a.split or load_config(a.config).get("eval", {}).get("split", "val_v1@0.1")).split(",")
     print(f"[sweep] {len(combos)} configs x {len(splits)} splits")
     if not a.skip_smoke:
         rec = run_experiment(load_config(a.config, a.set + combos[0]), splits[0], smoke=True, task=a.task,
@@ -101,7 +101,7 @@ def cmd_sweep(a):
 def cmd_lock(a):
     from ber.eval.lock import write_lock
     cfg = load_config(a.config)
-    lock = write_lock(cfg["paths"]["data_dir"])
+    lock = write_lock(cfg["paths"]["data_dir"], cache_dir=Path(cfg["paths"]["artifacts_dir"]) / "cache")
     print(json.dumps(lock, indent=1))
     print("\nWrote planning/eval_lock.json — commit it to main.")
 
@@ -147,8 +147,8 @@ def main():
         p.add_argument("--set", action="append", default=[], help="override, e.g. --set scorer.params.max_iter=500")
         p.add_argument("--task", default="adhoc", help="task id from planning/TASKS.md, e.g. T03")
         p.add_argument("--note", default="")
-        p.add_argument("--split", default=None, help="comma-separated: val_v1, xc_India, xc_US ...")
-        p.add_argument("--smoke", action="store_true", help=f"5%% sample of every split (results go to results/<you>/smoke/)")
+        p.add_argument("--split", default=None, help="comma-separated: val_v1@0.1 (dev, default), val_v1 (full), xc_India@0.1, xc_US ...")
+        p.add_argument("--smoke", action="store_true", help="1%% sample of every split, plumbing check only (results go to results/<you>/smoke/)")
         p.add_argument("--no-cache", action="store_true")
         if name == "sweep":
             p.add_argument("--grid", action="append", default=[], help='"dotted.key=v1|v2|v3" (repeatable)')

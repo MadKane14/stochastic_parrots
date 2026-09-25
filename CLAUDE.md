@@ -15,6 +15,18 @@ blocks your task, say so in your report instead of working around it.
 - Train covers US + India. **Test adds France (unseen)**. Every test S1 entity (France included) must get a row.
 - Outputs: `matching_results.tsv` (scored) and `candidate_pairs.tsv` (blocking set; matches ⊆ candidates).
 
+## 1b. Data facts (verified line counts; everything else → EDA)
+- Location on every machine: `<repo>/data/` = contents of the organizers' `student_resource/` zip folder
+  (`data/dataset/{train,test}/*.tsv`, `data/utils/validate_submission.py`). Git-ignored. Default `BER_DATA_DIR`
+  already points at `data/dataset`. Organizer README: `docs/organizers_README.md`.
+- Size: train ≈ 2.21M S1, 5.03M S2, 5.29M S3 (GT has one row per S1); test ≈ 1.73M S1, 4.89M S2, 5.08M S3. ~2.4 GB.
+  → **Anything O(n_S1 × n_right) is impossible.** Blocking must be ~linear (inverted index / ANN / sorted keys).
+  → Vectorize; avoid Python loops over 10M rows where possible; cache heavy intermediates under `$BER_ARTIFACTS`.
+- Names can be in Devanagari (Hindi) as well as Latin script; names have junk like leading `--`; addresses can be
+  empty; France test rows look like `63 R. DE DIEPPE, LILLE, Hauts-de-France`.
+- Iterate on the locked dev split **`val_v1@0.1`** (10% sample, default); confirm winners on full `val_v1`.
+  Country hold-outs: `xc_India@0.1`, `xc_US@0.1`.
+
 ## 2. Competition rules (breaking one can disqualify the team)
 1. **No external data or lookups**: no APIs, geocoding, business registries, web scraping, external datasets,
    or any internet augmentation. Only the provided train/test files.
@@ -65,12 +77,12 @@ file `src/ber/blocking/p3_addr_tfidf.py`. Discovery is automatic. `run.py` check
 ## 5. How to run (from `code/business_entity_resolution/`)
 ```bash
 export BER_MEMBER=p2                       # your handle (PowerShell: $env:BER_MEMBER="p2")
-export BER_DATA_DIR=/path/to/dataset       # folder with train/ and test/
+# BER_DATA_DIR defaults to <repo>/data/dataset — set it only if your data lives elsewhere
 export BER_ARTIFACTS=/big/disk/ber_artifacts
 python src/run.py check                                        # env + data sanity
-python src/run.py run -c configs/exp/p2/T05_x.yaml --smoke     # 5% sample — ALWAYS first
-python src/run.py run -c configs/exp/p2/T05_x.yaml --task T05  # full run, split val_v1
-python src/run.py run -c ... --task T05 --split val_v1,xc_India   # + unseen-country proxy
+python src/run.py run -c configs/exp/p2/T05_x.yaml --smoke     # 1% sample, plumbing only — ALWAYS first
+python src/run.py run -c configs/exp/p2/T05_x.yaml --task T05  # dev run: split val_v1@0.1 (default)
+python src/run.py run -c ... --task T05 --split val_v1,xc_India@0.1   # full val + unseen-country proxy
 python src/run.py sweep -c ... --task T05 --grid "decider.params.threshold=0.4|0.5|0.6" --autocommit --push
 python tests/test_metrics.py
 ```

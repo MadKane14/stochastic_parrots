@@ -26,8 +26,9 @@ from ber.eval.splits import make_split, split_fingerprint, subsample
 
 EVAL_DIR = Path(__file__).resolve().parent
 LOCK_PATH = REPO_ROOT / "planning" / "eval_lock.json"
-SMOKE_FRAC = 0.05
-HARNESS_VERSION = "1"
+SMOKE_FRAC = 0.01        # smoke = 1% of entities (~22k S1 on the real train set): plumbing check only
+HARNESS_VERSION = "2"
+DEV_SEED = 11             # seed of the @frac dev subsamples (different from the smoke seed)
 
 
 def eval_code_hash() -> str:
@@ -83,10 +84,18 @@ def _write(record: dict, member: str, smoke: bool) -> Path:
     return out
 
 
+def parse_split(spec: str) -> tuple[str, float]:
+    """'val_v1' -> ('val_v1', 1.0); 'val_v1@0.1' -> ('val_v1', 0.1): a fixed, deterministic dev subsample
+    (same fraction of S1 entities + their matches + unmatched records on BOTH sides of the split)."""
+    name, _, frac = spec.partition("@")
+    return name, float(frac) if frac else 1.0
+
+
 def run_experiment(cfg: dict, split: str, mode: str = "val", smoke: bool = False, task: str = "adhoc",
                    note: str = "", raise_errors: bool = True, use_cache: bool | None = None) -> dict:
     """mode='val': fit on split train side, evaluate on split val side.
-    mode='test': fit on all labelled data, predict the test set, write submission files."""
+    mode='test': fit on all labelled data, predict the test set, write submission files.
+    split may carry a dev-sample suffix: 'val_v1@0.1' (evidence-grade, locked fingerprint)."""
     from ber.pipeline import Pipeline
     from ber import submission
 
@@ -96,6 +105,7 @@ def run_experiment(cfg: dict, split: str, mode: str = "val", smoke: bool = False
     artifacts = Path(cfg["paths"]["artifacts_dir"])
     cfg_name = Path(cfg["_meta"]["config_path"]).stem
     split_name = "test" if mode == "test" else split
+    base_split, frac = ("test", 1.0) if mode == "test" else parse_split(split)
     stamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
     run_id = f"{stamp}_{member}_{task}_{cfg_name}_{split_name}_{config_hash(cfg)[:6]}" + ("_smoke" if smoke else "")
     git = git_info()
@@ -103,7 +113,7 @@ def run_experiment(cfg: dict, split: str, mode: str = "val", smoke: bool = False
     ehash = eval_code_hash()
     record = {
         "run_id": run_id, "harness_version": HARNESS_VERSION, "status": "running", "member": member, "task": task,
-        "note": note, "mode": mode, "split": split_name, "smoke": smoke, "sample_frac": SMOKE_FRAC if smoke else 1.0,
+        "note": note, "mode": mode, "split": split_name, "smoke": smoke, "sample_frac": SMOKE_FRAC if smoke else frac,
         "created": dt.datetime.now().isoformat(timespec="seconds"),
         "config_path": cfg["_meta"]["config_path"], "overrides": cfg["_meta"]["overrides"], "config_hash": config_hash(cfg),
         "config": {k: v for k, v in cfg.items() if k != "_meta"},
@@ -113,14 +123,18 @@ def run_experiment(cfg: dict, split: str, mode: str = "val", smoke: bool = False
         "machine": machine_info(),
     }
     try:
-        full = load_part(data_dir, "train")
+        full = load_part(data_dir, "train", cache_dir=artifacts / "cache")
         if mode == "test":
-            train, target = full, load_part(data_dir, "test")
+            train, target = full, load_part(data_dir, "test", cache_dir=artifacts / "cache")
         else:
-            train, target = make_split(full, split)
+            train, target = make_split(full, base_split)
+            if frac < 1 and not smoke:   # smoke replaces the dev fraction with SMOKE_FRAC
+                train, target = subsample(train, frac, seed=DEV_SEED), subsample(target, frac, seed=DEV_SEED)
             fp = split_fingerprint(train, target)
             locked_fp = ((lock or {}).get("splits") or {}).get(split, {}).get("fingerprint")
             record["eval"].update({"split_fingerprint": fp, "split_fingerprint_ok": locked_fp == fp if locked_fp else None})
+        record["sizes"] = {"train_s1": len(train.s1), "train_right": len(train.right),
+                           "target_s1": len(target.s1), "target_right": len(target.right)}
         if smoke:
             train, target = subsample(train, SMOKE_FRAC), subsample(target, SMOKE_FRAC)
 

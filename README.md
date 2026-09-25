@@ -6,7 +6,9 @@ Team workspace. **Agents: read `CLAUDE.md`. Planner/lead: read `planning/PLANNER
 repo root  ==  root of the final <team>_submission.zip
 ├── output/                          final TSVs (committed only at the end, `git add -f`)
 ├── code/business_entity_resolution/ the runnable package: src/, configs/, README.md, requirements.txt
-├── Documentation_template.md        methodology doc (copy the official template here when released)
+├── Documentation_template.md        methodology doc (official template — fill in at the end)
+├── data/                            organizers' student_resource/ contents (git-ignored, ~2.4 GB)
+├── docs/                            problem statement PDF + organizers' README
 ├── CLAUDE.md                        worker-agent rules
 ├── planning/                        STATE, TASKS, INSIGHTS, QUESTIONS, eval_lock.json, PLANNER.md  (lead only)
 ├── reports/<handle>/                worker reports
@@ -28,8 +30,9 @@ repo root  ==  root of the final <team>_submission.zip
 git checkout -b w/<handle>
 conda create -n ber python=3.11 -y && conda activate ber
 pip install -r code/business_entity_resolution/requirements.txt
-python scripts/make_fake_data.py --out data/fake_dataset      # until the real data lands
-export BER_MEMBER=<handle> BER_DATA_DIR=$PWD/data/fake_dataset BER_ARTIFACTS=/big/disk/ber_artifacts
+# data: extract the organizers' zip and put the CONTENTS of student_resource/ into <repo>/data/
+#   -> data/dataset/train/*.tsv, data/dataset/test/*.tsv, data/utils/validate_submission.py
+export BER_MEMBER=<handle> BER_ARTIFACTS=/big/disk/ber_artifacts     # BER_DATA_DIR defaults to data/dataset
 cd code/business_entity_resolution
 python src/run.py check && python src/run.py run --smoke
 ```

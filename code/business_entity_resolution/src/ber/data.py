@@ -80,9 +80,32 @@ def _read_tsv(path: Path) -> pd.DataFrame:
     return df
 
 
-def load_part(data_dir: str | Path, part: str) -> Dataset:
-    """Load `train` or `test` into one Dataset (all three sources concatenated)."""
+def load_part(data_dir: str | Path, part: str, cache_dir: str | Path | None = None) -> Dataset:
+    """Load `train` or `test` into one Dataset (all three sources concatenated).
+
+    The raw TSVs are ~2.4 GB; with `cache_dir` the parsed tables are cached as parquet
+    (keyed by file names/sizes/mtimes), which makes repeated runs load in seconds.
+    """
     d = Path(data_dir) / part
+    if cache_dir is not None:
+        files = sorted(d.glob("*.tsv"))
+        sig = hashlib.sha256("|".join(f"{p.name}:{p.stat().st_size}:{int(p.stat().st_mtime)}" for p in files).encode()).hexdigest()[:16]
+        rec_p, gt_p = Path(cache_dir) / f"raw_{part}_{sig}.parquet", Path(cache_dir) / f"raw_{part}_{sig}_gt.parquet"
+        if rec_p.exists():
+            records = pd.read_parquet(rec_p)
+            gt = None
+            if gt_p.exists():
+                g = pd.read_parquet(gt_p)
+                gt = {s: frozenset(x.split(",")) if x else frozenset() for s, x in zip(g["s1"], g["m"])}
+            return Dataset(name=part, records=records, gt=gt, meta={"data_dir": str(data_dir)})
+        ds = load_part(data_dir, part)
+        rec_p.parent.mkdir(parents=True, exist_ok=True)
+        if ds.gt is not None:  # gt first: records file existing == cache complete
+            pd.DataFrame({"s1": list(ds.gt), "m": [",".join(sorted(v)) for v in ds.gt.values()]}).to_parquet(gt_p)
+        tmp = rec_p.with_suffix(".tmp")
+        ds.records.to_parquet(tmp)
+        tmp.replace(rec_p)
+        return ds
     frames = []
     for src in (1, 2, 3):
         df = _read_tsv(d / f"{part}_source{src}.tsv")

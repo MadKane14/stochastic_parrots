@@ -35,10 +35,12 @@ class TfidfKnnBlocker(Blocker):
     transductive = True  # vocabulary/IDF fitted on the target dataset's own records
 
     def __init__(self, field: str = "name_norm", k: int = 20, ngram: tuple = (2, 4), analyzer: str = "char_wb",
-                 min_sim: float = 0.05, fit_on: str = "target", max_df: float = 1.0):
+                 min_sim: float = 0.05, fit_on: str = "target", max_df: float = 1.0,
+                 max_pairs: float = 5e10):
         self.field, self.k, self.ngram, self.analyzer, self.min_sim, self.fit_on = field, k, tuple(ngram), analyzer, min_sim, fit_on
         self.max_df = max_df  # drop n-grams present in > max_df of records (speed; very common n-grams carry little signal)
         self.vec = None
+        self.max_pairs = max_pairs
         self.transductive = fit_on == "target"
 
     def _vectorizer(self):
@@ -52,6 +54,9 @@ class TfidfKnnBlocker(Blocker):
 
     def candidates(self, ds: Dataset) -> pd.DataFrame:
         s1, right = ds.s1, ds.right
+        if len(s1) * len(right) > self.max_pairs:
+            raise RuntimeError(f"tfidf_knn is brute force: {len(s1)} x {len(right)} comparisons is too many. "
+                               "Use a scalable blocker (see TASKS.md T02) or a --smoke run.")
         vec = self.vec if self.fit_on == "train" else self._vectorizer().fit(ds.records[self.field])
         A, B = vec.transform(s1[self.field]), vec.transform(right[self.field])
         r, c, s = topk_cosine(A, B, self.k, self.min_sim)

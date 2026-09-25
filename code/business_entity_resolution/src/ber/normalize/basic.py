@@ -12,15 +12,23 @@ import pandas as pd
 from ber.interfaces import Normalizer
 from ber.registry import register
 
-_NON_ALNUM = re.compile(r"[^0-9a-z]+")
+_SPACES = re.compile(r"\s+")
 _DIGITS = re.compile(r"\d+")
 
 
 def clean(text: str) -> str:
+    """Lowercase, strip Latin accents (é->e) but keep non-Latin scripts intact, & -> and, punctuation -> space."""
     text = unicodedata.normalize("NFKD", str(text))
-    text = "".join(ch for ch in text if not unicodedata.combining(ch)).lower()
-    text = text.replace("&", " and ").replace("'", "")
-    return _NON_ALNUM.sub(" ", text).strip()
+    out, prev_ascii = [], False
+    for ch in text:
+        if unicodedata.combining(ch) and prev_ascii:
+            continue                       # accent on a Latin letter: drop it
+        out.append(ch)
+        prev_ascii = ch.isascii()
+    text = unicodedata.normalize("NFC", "".join(out)).lower().replace("&", " and ").replace("'", "")
+    # keep letters/digits of ANY script + combining marks (Devanagari vowel signs); everything else -> space
+    text = "".join(ch if (ch.isalnum() or unicodedata.category(ch)[0] == "M") else " " for ch in text)
+    return _SPACES.sub(" ", text).strip()
 
 
 @register("normalizer", "basic")

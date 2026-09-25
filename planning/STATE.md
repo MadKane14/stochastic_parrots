@@ -1,6 +1,6 @@
 # STATE — single source of truth for "where are we" (planner drafts, lead commits)
 
-_Last updated: Fri 25 Sep 03:45 IST (round 0 — scaffold, no data yet)_
+_Last updated: Fri 25 Sep 15:30 IST (round 1 — data released; lead running T02)_
 
 ## Team
 | handle | person | machine / GPU | branch | current focus |
@@ -16,8 +16,11 @@ _Last updated: Fri 25 Sep 03:45 IST (round 0 — scaffold, no data yet)_
 - Portal: max **5 submissions/day** (Fri/Sat/Sun). Keep ≥ 1 spare each day.
 
 ## Eval
-- Lock: `planning/eval_lock.json` — **not yet written** (lead runs `python src/run.py lock` when data lands).
-- Main split `val_v1` (20% of S1 entities, grouped + stratified). Unseen-country proxies: `xc_India`, `xc_US`.
+- Lock: `planning/eval_lock.json` — **not yet written** (lead runs `python src/run.py lock` in T02).
+- Main split `val_v1` (20% of S1 entities, grouped + stratified); dev iteration on the locked 10% sample `val_v1@0.1`.
+  Unseen-country proxies: `xc_India(@0.1)`, `xc_US(@0.1)`.
+- Data (line counts): train ≈ 2.21M S1 / 5.03M S2 / 5.29M S3; test ≈ 1.73M S1 / 4.89M S2 / 5.08M S3 (~2.4 GB).
+- Public LB context (Fri ~15:00): top 0.984, 5th ≈ 0.980 → the race is in the last 1–2 points.
 
 ## Current best pipeline
 - Config: `configs/best.yaml` (= base.yaml: basic normalize → name+address char-TF-IDF kNN → string sims → HGB → threshold 0.5 + exclusive right)
@@ -36,5 +39,6 @@ _Last updated: Fri 25 Sep 03:45 IST (round 0 — scaffold, no data yet)_
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
 - D2: Numbers in planning come only from results JSONs (see PLANNER.md §1).
 - Open organizer questions: see QUESTIONS.md (answers change what is allowed — update here when answered).
-- video-slides.pdf in the claude.ai project is image-only; the planner could not read it. Drop a copy in
-  the repo folder (not committed) if its content matters.
+- video-slides.pdf in the claude.ai project is image-only; the planner could not read it.
+- D3: data lives at `<repo>/data/` (organizers' student_resource contents, git-ignored); organizer docs in `docs/`;
+  official validator copied to `scripts/official/`; `Documentation_template.md` at repo root.

@@ -11,25 +11,34 @@ import json
 from pathlib import Path
 
 from ber.data import load_part
-from ber.eval.harness import LOCK_PATH, eval_code_hash
-from ber.eval.splits import make_split, split_fingerprint
+from ber.eval.harness import DEV_SEED, LOCK_PATH, eval_code_hash
+from ber.eval.splits import make_split, split_fingerprint, subsample
+
+DEV_FRACS = (0.1,)   # locked dev subsamples, used as e.g. --split val_v1@0.1
 
 
 def _file_sha(p: Path) -> str:
-    return hashlib.sha256(p.read_bytes()).hexdigest()[:16]
+    h = hashlib.sha256()
+    with open(p, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 24), b""):
+            h.update(chunk)
+    return h.hexdigest()[:16]
 
 
-def write_lock(data_dir: str | Path) -> dict:
+def write_lock(data_dir: str | Path, cache_dir: str | Path | None = None) -> dict:
     data_dir = Path(data_dir)
-    full = load_part(data_dir, "train")
+    full = load_part(data_dir, "train", cache_dir=cache_dir)
     split_names = ["val_v1"] + [f"xc_{c}" for c in sorted(full.s1["country"].unique())]
     splits = {}
     for name in split_names:
-        tr, va = make_split(full, name)
-        splits[name] = {"fingerprint": split_fingerprint(tr, va), "n_s1_train": len(tr.s1), "n_s1_val": len(va.s1),
-                        "n_right_train": len(tr.right), "n_right_val": len(va.right),
-                        "val_singleton_rate": round(sum(1 for v in va.gt.values() if not v) / max(1, len(va.gt)), 4),
-                        "conflicting_right_records": tr.meta["conflicting_right_records"]}
+        tr0, va0 = make_split(full, name)
+        for frac in (1.0, *DEV_FRACS):
+            tr, va = (tr0, va0) if frac == 1.0 else (subsample(tr0, frac, seed=DEV_SEED), subsample(va0, frac, seed=DEV_SEED))
+            key = name if frac == 1.0 else f"{name}@{frac}"
+            splits[key] = {"fingerprint": split_fingerprint(tr, va), "n_s1_train": len(tr.s1), "n_s1_val": len(va.s1),
+                           "n_right_train": len(tr.right), "n_right_val": len(va.right),
+                           "val_singleton_rate": round(sum(1 for v in va.gt.values() if not v) / max(1, len(va.gt)), 4),
+                           "conflicting_right_records": tr0.meta["conflicting_right_records"]}
     lock = {
         "eval_code_sha256": eval_code_hash(),
         "locked_at": dt.datetime.now().isoformat(timespec="seconds"),

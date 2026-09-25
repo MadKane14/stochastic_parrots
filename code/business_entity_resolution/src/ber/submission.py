@@ -74,8 +74,9 @@ def validate(out_dir: Path, s1_ids: list[str], right_ids: set[str]) -> list[str]
 
 def run_official_validator(out_dir: Path, data_dir: Path) -> str | None:
     """Run the organizers' utils/validate_submission.py if it ships next to the dataset."""
+    repo_copy = Path(__file__).resolve().parents[4] / "scripts" / "official" / "validate_submission.py"
     for cand in (Path(data_dir).parent / "utils" / "validate_submission.py",
-                 Path(data_dir) / "utils" / "validate_submission.py"):
+                 Path(data_dir) / "utils" / "validate_submission.py", repo_copy):
         if cand.exists():
             r = subprocess.run(
                 [sys.executable, str(cand), "--matching", str(Path(out_dir) / "matching_results.tsv"),
