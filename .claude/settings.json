@@ -1,13 +1,5 @@
 {
   "permissions": {
-    "deny": [
-      "Edit(/planning/**)",
-      "Edit(/CLAUDE.md)",
-      "Edit(/.claude/**)",
-      "Edit(/code/business_entity_resolution/src/ber/eval/**)",
-      "Edit(/code/business_entity_resolution/configs/best.yaml)",
-      "Edit(/code/business_entity_resolution/requirements.txt)",
-      "Edit(/code/business_entity_resolution/requirements-gpu.txt)"
-    ]
+    
   }
 }
