@@ -1,11 +1,16 @@
 # Pinned environment shared by every machine. Python 3.11 (3.10 also works).
+# Every pin below is available both on conda-forge and as a cp311 wheel on PyPI (same versions either way).
 #   conda create -n ber python=3.11 -y && conda activate ber
-#   pip install -r requirements.txt
+#   Option A (preferred on shared servers): conda install -c conda-forge numpy=2.2.6 pandas=2.3.3 scipy=1.15.2 \
+#       scikit-learn=1.7.2 rapidfuzz=3.14.1 "lightgbm=4.6.0=cpu*" pyarrow=21.0.0 pyyaml=6.0.3
+#   Option B: pip install -r requirements.txt
+# Run pip only with the env's own Python 3.11 active (check `which pip`): a newer base Python (e.g. 3.14)
+# has no wheels for these pins, so pip there fails to resolve or tries to compile scipy from source.
 # Neural work (GPU machines) additionally: pip install -r requirements-gpu.txt
 # Adding a package: ask the lead; it is added here on main so every machine stays identical.
 numpy==2.2.6
 pandas==2.3.3
-scipy==1.15.3
+scipy==1.15.2  # 1.15.3 is not on conda-forge
 scikit-learn==1.7.2
 rapidfuzz==3.14.1
 lightgbm==4.6.0
