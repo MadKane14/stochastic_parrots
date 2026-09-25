@@ -1,4 +1,4 @@
-"""T02 (p1): recall / size / runtime of the p1_idf_overlap blocker on the FULL labelled train set.
+"""T02 (p1): recall / size / runtime of blockers on the FULL labelled train set (test-like density).
 
 Why full train: the dev split val_v1@0.1 keeps only 10% of the distractors, so top-k competition there is
 ~10x easier than in test. Full train (2.2M S1 x 10.3M S2/S3) has the same density as test (1.7M x 10M), so its
@@ -6,8 +6,14 @@ recall and runtime are the projection for test. No model is fitted, no labels ar
 labels are only used here to score the candidate sets.
 
 Usage (from repo root, env as in CLAUDE.md):
-    nice -n 10 python exploration/p1/blk_eval.py --kmax 40 --max_df 20000 [--frac 1.0]
-Writes exploration/p1/blk_eval_out.md (appends a section per invocation).
+    # any normalizer + blockers from an experiment config (what p2/p3 should use):
+    nice -n 10 python exploration/p1/blk_eval.py --config code/business_entity_resolution/configs/exp/p3/T11.yaml \
+        --qfrac 0.1 --out exploration/p3/blk_eval_out.md [--misses all=1000000]
+    # p1's channel experiments:
+    nice -n 10 python exploration/p1/blk_eval.py --channels cmp,cmprev --kmax 50 --max_df 1000
+--qfrac q keeps ALL S2/S3 records but only a fraction q of S1 queries: forward top-k recall is unbiased and ~1/q
+faster; reverse (per-right-record) retrieval is OPTIMISTIC under qfrac (fewer S1 competitors) -> confirm with qfrac=1.
+Needs ~25-40 GB RAM on full train. Appends a section per invocation to --out.
 """
 from __future__ import annotations
 
@@ -31,7 +37,9 @@ for v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
 from ber.blocking.p1_compound import CompoundKeyBlocker  # noqa: E402
 from ber.blocking.p1_idf_overlap import IdfOverlapBlocker  # noqa: E402
 from ber.config import env  # noqa: E402
-from ber.data import load_part, unit_hash  # noqa: E402
+from ber.config import load_config  # noqa: E402
+from ber.data import Dataset, load_part, unit_hash  # noqa: E402
+from ber.registry import build  # noqa: E402
 from ber.normalize.basic import BasicNormalizer  # noqa: E402
 
 CHANNELS = {"name": ["name_norm"], "addr": ["addr_norm"], "both": ["name_norm", "addr_norm"]}
@@ -42,15 +50,30 @@ def peak_gb() -> float:
     return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6
 
 
-def load_normalized(frac: float) -> tuple[pd.DataFrame, dict]:
+def fit_gt(gt: dict, qfrac: float) -> dict | None:
+    """Labels a component may be fitted on: only S1 entities that are NOT queries (disjoint from the evaluation)."""
+    return {s: v for s, v in gt.items() if unit_hash(s, 5) >= qfrac} if qfrac < 1 else None
+
+
+def load_normalized(frac: float, normalizer=None, qfrac: float = 1.0) -> tuple[pd.DataFrame, dict]:
+    """Full train records normalized (cached under $BER_ARTIFACTS/cache) + ground truth.
+    A configured normalizer is fitted on the labels of non-query S1 entities only (see fit_gt)."""
     art = Path(env("BER_ARTIFACTS"))
     ds = load_part(env("BER_DATA_DIR"), "train", cache_dir=art / "cache")
-    cache = art / "cache" / "p1_norm_train_full.parquet"
+    if normalizer is None:
+        cache = art / "cache" / "p1_norm_train_full.parquet"
+    else:
+        from ber.pipeline import _component_fp
+        cache = art / "cache" / f"blkeval_norm_train_full_{_component_fp(normalizer)}_q{qfrac}.parquet"
     if cache.exists():
         recs = pd.read_parquet(cache)
     else:
         t = time.time()
-        recs = BasicNormalizer(LEGAL).transform(ds.records)[["entity_id", "source", "country", "name_norm", "addr_norm"]]
+        if normalizer is None:
+            recs = BasicNormalizer(LEGAL).transform(ds.records)[["entity_id", "source", "country", "name_norm", "addr_norm"]]
+        else:
+            normalizer.fit(Dataset("train", ds.records, fit_gt(ds.gt, qfrac)))
+            recs = normalizer.transform(ds.records)
         recs.to_parquet(cache)
         print(f"normalized {len(recs):,} records in {time.time() - t:.0f}s", flush=True)
     gt = ds.gt
@@ -111,12 +134,16 @@ def main():
     ap.add_argument("--krev", type=int, default=3)
     ap.add_argument("--num_variants", action="store_true")
     ap.add_argument("--max_df_unigram", type=int, default=0)
+    ap.add_argument("--config", default="", help="experiment YAML: evaluate its normalizer + blockers (union = pipeline)")
+    ap.add_argument("--out", default=str(REPO / "exploration/p1/blk_eval_out.md"))
     ap.add_argument("--save", default="", help="save per-channel (key, rank) to $BER_ARTIFACTS/p1_blk/<save>.npz")
     ap.add_argument("--load", default="", help="skip blocking; load a --save file")
     ap.add_argument("--misses", default="", help="combo like name=20,addr=20,both=20: print miss analysis")
     a = ap.parse_args()
     t0 = time.time()
-    recs, gt = load_normalized(a.frac)
+    cfg = load_config(a.config) if a.config else None
+    recs, gt = load_normalized(a.frac, build("normalizer", cfg["normalize"]) if cfg else None, a.qfrac)
+    train_gt = fit_gt(gt, a.qfrac) if cfg else None   # labels blockers may be fitted on (non-query S1 only)
     if a.qfrac < 1:
         is_s1 = recs["source"] == 1
         keep_s1 = recs["entity_id"].map(lambda e: unit_hash(e, 5) < a.qfrac) & is_s1
@@ -143,9 +170,20 @@ def main():
         z = np.load(store / f"{a.load}.npz")
         chan = {k[4:]: (z[k], z["rank" + k[3:]]) for k in z.files if k.startswith("key_")}
         timings = {k: float(v) for k, v in zip(z["t_names"], z["t_vals"])}
-    for name in ([] if a.load else a.channels.split(",")):
+    specs = cfg["blocking"]["blockers"] if cfg else []
+    names = [f"b{i}_{sp['name']}" for i, sp in enumerate(specs)] if cfg else a.channels.split(",")
+    for i, name in enumerate([] if a.load else names):
         t = time.time()
-        if name == "cmp":
+        if cfg:
+            b = build("blocker", specs[i])
+            b.fit(Dataset("train", recs, train_gt))
+            if hasattr(b, "candidate_rows"):
+                r, c, v = b.candidate_rows(recs)
+            else:
+                cand = b.candidates(Dataset("train", recs))
+                r, c, v = (row_of[cand["s1_id"]].to_numpy(), row_of[cand["cand_id"]].to_numpy(),
+                           cand["score"].to_numpy(np.float32))
+        elif name == "cmp":
             b = CompoundKeyBlocker(k=a.kmax, k_rev=0, max_df=a.max_df, num_variants=a.num_variants,
                                    max_df_unigram=a.max_df_unigram or None)
         elif name == "cmprev":
@@ -153,7 +191,8 @@ def main():
                                    max_df_unigram=a.max_df_unigram or None)
         else:
             b = IdfOverlapBlocker(fields=CHANNELS[name], k=a.kmax, max_df=a.max_df)
-        r, c, v = b.candidate_rows(recs)
+        if not cfg:
+            r, c, v = b.candidate_rows(recs)
         order = np.lexsort((-v, r))
         r, c = r[order], c[order]
         start = np.r_[0, np.flatnonzero(np.diff(r)) + 1]
@@ -170,7 +209,10 @@ def main():
                  **{f"rank_{c}": v[1] for c, v in chan.items()},
                  t_names=np.array(list(timings)), t_vals=np.array(list(timings.values())))
     if a.misses:
-        miss_analysis(recs, gt_keys, chan, dict((kv.split("=")[0], int(kv.split("=")[1])) for kv in a.misses.split(",")), n)
+        ks = dict((kv.split("=")[0], int(kv.split("=")[1])) for kv in a.misses.split(","))
+        if "all" in ks:   # every channel/blocker at the given k
+            ks = {ch: ks["all"] for ch in chan}
+        miss_analysis(recs, gt_keys, chan, ks, n)
         return
 
     def metrics(ks: dict) -> dict:
@@ -190,7 +232,9 @@ def main():
         return out
 
     combos = []
-    for k in (5, 10, 15, 20, 30, 40, 50):
+    if cfg:   # each blocker as configured, then their union (what the pipeline feeds the matcher)
+        combos = [{ch: 10**6} for ch in chan] + ([{ch: 10**6 for ch in chan}] if len(chan) > 1 else [])
+    for k in ((5, 10, 15, 20, 30, 40, 50) if not cfg else ()):
         if k > a.kmax:
             continue
         for ch in chan:
@@ -212,7 +256,8 @@ def main():
 
     s1_n = len(s1_rows)
     right_n = n - s1_n
-    lines = [f"\n## Run {dt.datetime.now():%Y-%m-%d %H:%M} — channels={a.channels} frac={a.frac} qfrac={a.qfrac} "
+    lines = [f"\n## Run {dt.datetime.now():%Y-%m-%d %H:%M} — {('config=' + a.config) if cfg else 'channels=' + a.channels} "
+             f"frac={a.frac} qfrac={a.qfrac} "
              f"kmax={a.kmax} krev={a.krev} max_df={a.max_df} num_variants={a.num_variants} max_df_unigram={a.max_df_unigram} "
              f"BER_THREADS={os.environ['BER_THREADS']}\n",
              f"- records {n:,} (S1 {s1_n:,}, right {right_n:,}); GT pairs {len(gt_keys):,}",
@@ -221,9 +266,10 @@ def main():
              f"- test projection (1.73M S1 x 9.97M right, same scale): ~{sum(timings.values()) * 1.73e6 / max(1, s1_n):.0f}s "
              "for blocking the test set (the harness's test mode also blocks full train for fitting)\n",
              md_table(rows)]
-    out = REPO / "exploration/p1/blk_eval_out.md"
+    out = Path(a.out)
     if not out.exists():
-        out.write_text("# Blocker evaluation on full train (p1, T02) — generated by exploration/p1/blk_eval.py\n")
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text("# Blocker evaluation on full train (test-like density) — generated by exploration/p1/blk_eval.py\n")
     with open(out, "a") as f:
         f.write("\n".join(lines) + "\n")
     print("\n".join(lines))
