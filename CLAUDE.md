@@ -105,6 +105,7 @@ Big files (embeddings, checkpoints, caches) go under `$BER_ARTIFACTS`, never in 
 - Never edit, delete, or re-generate someone else's results; never edit a results JSON by hand.
 
 ## 7. Session protocol
+**Once per machine (workers):** `cp docs/worker_settings.local.json .claude/settings.local.json` (edit guardrails for lead-only files).
 **Start:** `git checkout w/<handle> && git fetch origin && git merge origin/main` → read `planning/STATE.md`,
 your tasks in `planning/TASKS.md` (current round only), and `planning/INSIGHTS.md`.
 **Work:** one task at a time, inside its time-box. Stick to the task's hypothesis; note side ideas in the report.

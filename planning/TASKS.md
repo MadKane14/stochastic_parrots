@@ -3,6 +3,9 @@
 ## Round 2 — Fri 25 Sep 21:30 (lead p1 + planner). Reports due **Sat 09:30 sync**; checkpoint at Sat 18:30.
 
 ### READ FIRST (everyone)
+0. **Guardrails (workers p2–p4, once per machine, before starting your agent):**
+   `cp docs/worker_settings.local.json .claude/settings.local.json` — blocks agent edits to lead-only files
+   (planning/, CLAUDE.md, eval/, best.yaml, requirements). The file is git-ignored; restart your agent session after copying.
 1. **Setup (if T01 is not done yet, do it now — 45 min max):** `git fetch origin && git checkout -B w/<h> origin/main`
    (or `git checkout w/<h> && git merge origin/main`), then install the env. **Pins changed** (`scipy==1.15.2`); on shared
    servers prefer conda-forge (see the header of `code/business_entity_resolution/requirements.txt`); run pip only with the
