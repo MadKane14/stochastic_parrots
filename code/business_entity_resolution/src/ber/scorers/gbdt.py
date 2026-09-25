@@ -1,6 +1,8 @@
 """Gradient-boosted tree scorers over the pair feature columns (f_*, blk_*)."""
 from __future__ import annotations
 
+import os
+
 import numpy as np
 import pandas as pd
 
@@ -43,7 +45,7 @@ class HGBScorer(_TabularScorer):
 class LGBMScorer(_TabularScorer):
     def __init__(self, **params):
         self.params = {"n_estimators": 500, "learning_rate": 0.05, "num_leaves": 63, "random_state": 0,
-                       "verbose": -1, **params}
+                       "verbose": -1, "n_jobs": int(os.environ.get("BER_THREADS", "8")), **params}
 
     def _make(self):
         import lightgbm as lgb

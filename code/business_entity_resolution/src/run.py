@@ -24,6 +24,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+# Shared servers: cap CPU threads BEFORE numpy/sklearn/lightgbm are imported (they read these at import time).
+# BER_THREADS (default 8) is the per-process thread budget; see docs/servers/ for per-machine etiquette.
+import os  # noqa: E402
+
+_THREADS = os.environ.setdefault("BER_THREADS", "8")
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS",
+           "VECLIB_MAXIMUM_THREADS", "RAYON_NUM_THREADS", "TOKENIZERS_PARALLELISM"):
+    os.environ.setdefault(_v, "false" if _v == "TOKENIZERS_PARALLELISM" else _THREADS)
+
 from ber.config import REPO_ROOT, env, load_config  # noqa: E402
 
 

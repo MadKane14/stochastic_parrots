@@ -2,6 +2,8 @@
 token Jaccard, digit-token agreement, length ratios, same-country flag, candidate source."""
 from __future__ import annotations
 
+import os
+
 import numpy as np
 import pandas as pd
 from rapidfuzz import fuzz, process
@@ -10,6 +12,12 @@ from rapidfuzz.distance import JaroWinkler
 from ber.data import Dataset
 from ber.interfaces import FeatureSet
 from ber.registry import register
+
+
+def _threads() -> int:
+    """Per-process thread budget (BER_THREADS, default 8) — never grab every core on a shared server."""
+    return max(1, int(os.environ.get("BER_THREADS", "8")))
+
 
 _SCORERS = {
     "ratio": fuzz.ratio,
@@ -42,7 +50,7 @@ class StringSims(FeatureSet):
         for fld in self.fields:
             a, b = L[fld].tolist(), R[fld].tolist()
             for sname, scorer in _SCORERS.items():
-                f[f"f_str_{fld}_{sname}"] = process.cpdist(a, b, scorer=scorer, workers=-1).astype(np.float32)
+                f[f"f_str_{fld}_{sname}"] = process.cpdist(a, b, scorer=scorer, workers=_threads()).astype(np.float32)
             f[f"f_str_{fld}_jacc"] = _jaccard(L[fld], R[fld])
             la, lb = L[fld].str.len().to_numpy(), R[fld].str.len().to_numpy()
             f[f"f_str_{fld}_lenratio"] = (np.minimum(la, lb) / np.maximum(1, np.maximum(la, lb))).astype(np.float32)

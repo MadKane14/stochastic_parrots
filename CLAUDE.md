@@ -27,13 +27,18 @@ blocks your task, say so in your report instead of working around it.
 - Iterate on the locked dev split **`val_v1@0.1`** (10% sample, default); confirm winners on full `val_v1`.
   Country hold-outs: `xc_India@0.1`, `xc_US@0.1`.
 
+Background reading: `docs/research_playbook.md` (external research on similar Kaggle competitions — unverified;
+where it conflicts with our EDA in `exploration/p1/eda_out.md`, the EDA wins).
+
 ## 2. Competition rules (breaking one can disqualify the team)
 1. **No external data or lookups**: no APIs, geocoding, business registries, web scraping, external datasets,
    or any internet augmentation. Only the provided train/test files.
-2. **Models**: any model in the final pipeline must be **MIT or Apache-2.0** licensed and **≤ 8B parameters**.
-   Check the model card licence before using a model and record it in your config (`# licence: ...`).
-   Not allowed: Llama, Gemma, Qwen2.5-3B/72B (Qwen licence), any CC-BY-NC / research-only licence.
-   Parameter counts near the limit (e.g. Qwen3-8B = 8.2B) are **not** allowed until the lead confirms.
+2. **Models** (organizers' clarification, Fri 25 Sep): **every** model used anywhere — embedder, reranker, matcher,
+   preprocessing model — must *independently* be **MIT or Apache-2.0** licensed and **≤ 8B parameters**, run **offline**,
+   and be fine-tuned **only on the provided data**. Hosted LLM APIs (Claude/Gemini/ChatGPT/…) are **not allowed** in the
+   pipeline. Check the model card licence + parameter count and record both in your config (`# model: …, licence: …, params: …`).
+   Not allowed: Llama, Gemma, Qwen2.5-3B/72B (Qwen licence), CC-BY-NC / research-only models, Qwen3-8B (8.2B > 8B).
+   Libraries: prefer permissive ones; avoid GPL code in `src/` (e.g. use `anyascii` (ISC) instead of `unidecode` (GPL)).
 3. **Country is an open set.** Never hard-code, filter, one-hot, or branch on specific country values
    (`if country == "India"`), and never drop rows by country. Learn from data; features like
    "same country string" are fine.
@@ -106,6 +111,12 @@ Smoke-test → full run → (optional) sweep. Commit small and often on `w/<hand
 **Finish (or at each sync, even if unfinished):** write `reports/<handle>/<TASK_ID>.md` from
 `planning/templates/REPORT.md`, commit code + configs + results + report, `git push origin w/<handle>`.
 Never push to `main`; never merge other workers' branches.
+
+## 7b. Shared machines
+Lab servers are shared and have strike policies. If `docs/servers/<hostname>.md` exists for your machine, it is
+mandatory (install it as `~/.claude/CLAUDE.md`). Always: data/artifacts on the machine's scratch disk (never a small
+NFS home), `BER_THREADS` ≤ 12 (run.py applies it to every library), `nice -n 10` for long jobs, one GPU at a time
+via `CUDA_VISIBLE_DEVICES`, never `n_jobs=-1` / `workers=-1`.
 
 ## 8. Conventions
 Python 3.11, pinned `requirements.txt`. Read TSVs with `dtype=str, keep_default_na=False` (names like "NA").
