@@ -1,0 +1,183 @@
+{
+ "run_id": "20260925-210108_p1_T02_T02_cmp_val_v1@0.1_7e3121",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "p1",
+ "task": "T02",
+ "note": "blocking.blockers.0.params.k=50",
+ "mode": "val",
+ "split": "val_v1@0.1",
+ "smoke": false,
+ "sample_frac": 0.1,
+ "created": "2026-09-25T21:01:08",
+ "config_path": "configs/exp/p1/T02_cmp.yaml",
+ "overrides": [
+  "blocking.blockers.0.params.k=50"
+ ],
+ "config_hash": "7e3121575a16",
+ "config": {
+  "paths": {
+   "data_dir": "/scratch2/madhur.kankane/ber_data/dataset",
+   "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "basic",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ]
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 50,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "string_sims",
+    "params": {
+     "fields": [
+      "name_norm",
+      "name_core",
+      "addr_norm"
+     ]
+    }
+   }
+  ],
+  "scorer": {
+   "name": "hgb",
+   "params": {
+    "max_iter": 300,
+    "learning_rate": 0.08
+   }
+  },
+  "decider": {
+   "name": "threshold",
+   "params": {
+    "threshold": 0.5,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "51222ebc184c",
+  "branch": "main",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true,
+  "split_fingerprint": "113f95b9afa25a9c",
+  "split_fingerprint_ok": true
+ },
+ "machine": {
+  "host": "phoenix.rrcx.tk",
+  "python": "3.11.16",
+  "platform": "Linux-6.8.0-76060800daily20240311-generic-x86_64-with-glibc2.35",
+  "gpu": "NVIDIA RTX A4000; NVIDIA RTX A4000; NVIDIA RTX A4000"
+ },
+ "sizes": {
+  "train_s1": 176870,
+  "train_right": 825372,
+  "target_s1": 43948,
+  "target_right": 205327
+ },
+ "train_pairs": {
+  "n_pairs": 9243010,
+  "pos_rate": 0.06559118728639264,
+  "n_features": 30
+ },
+ "transductive_components": [
+  "p1_compound"
+ ],
+ "timings_s": {
+  "normalize": 1.87,
+  "block": 81.51,
+  "features:string_sims": 79.62,
+  "scorer_fit": 36.14,
+  "score": 1.27
+ },
+ "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts/runs/20260925-210108_p1_T02_T02_cmp_val_v1@0.1_7e3121",
+ "metrics": {
+  "f05": 0.98402,
+  "f05_ci95": [
+   0.98334,
+   0.98472
+  ],
+  "n_s1": 43948,
+  "singleton_rate": 0.054,
+  "singleton_acc": 0.9739,
+  "f05_nonsingleton": 0.9846,
+  "pred_empty_rate": 0.0548,
+  "pair_precision": 0.99333,
+  "pair_recall": 0.96742,
+  "n_pred_pairs": 147769,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.97757
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.98834
+   }
+  },
+  "blocking": {
+   "pair_recall": 0.99646,
+   "pair_recall_by_source": {
+    "S2": 0.99653,
+    "S3": 0.9964
+   },
+   "entity_full_recall": 0.98872,
+   "oracle_f05": 0.99881,
+   "cands_per_s1_mean": 52.09,
+   "cands_per_s1_median": 51.0,
+   "cands_per_s1_p95": 58.0,
+   "cands_per_s1_max": 177,
+   "n_pairs": 2289384,
+   "reduction_ratio": 0.999746,
+   "s1_without_candidates": 0
+  },
+  "scorer": {
+   "roc_auc": 0.99972,
+   "avg_precision": 0.99608
+  },
+  "diag_plain_threshold_curve": {
+   "0.3": 0.97299,
+   "0.4": 0.97611,
+   "0.5": 0.97792,
+   "0.6": 0.97902,
+   "0.7": 0.97813,
+   "0.8": 0.97508,
+   "0.9": 0.96578
+  }
+ },
+ "runtime_s": 259.4
+}
