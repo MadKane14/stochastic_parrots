@@ -1,0 +1,13 @@
+# T02 (p1) — scalable blocker. Hypothesis: IDF-weighted rare-token overlap within equal-country-string groups,
+# three channels (name / address incl. number tokens / name+address) unioned, reaches pair recall >= 0.98 at
+# <= 50 cands/S1 and runs on the full test set in < 1 h. Features/scorer/decider unchanged from best.yaml.
+inherit: ../../best.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p1_idf_overlap
+      params: {fields: [name_norm], k: 15, max_df: 20000}
+    - name: p1_idf_overlap
+      params: {fields: [addr_norm], k: 15, max_df: 20000}
+    - name: p1_idf_overlap
+      params: {fields: [name_norm, addr_norm], k: 15, max_df: 20000}

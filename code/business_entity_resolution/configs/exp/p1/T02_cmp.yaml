@@ -1,0 +1,9 @@
+# T02 (p1) — compound-key blocker. Hypothesis: IDF cosine over unigrams + token-pair features (name pairs,
+# address bigrams, number x word, number x name) within equal-country-string groups, forward top-k plus reverse
+# top-k_rev per S2/S3 record, reaches pair recall >= 0.98 at <= 50 cands/S1 at full (test-like) density.
+inherit: ../../best.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p1_compound
+      params: {k: 30, k_rev: 3, max_df: 5000}
