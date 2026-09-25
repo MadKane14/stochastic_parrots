@@ -27,7 +27,7 @@ import pyarrow.compute as pc
 import scipy.sparse as sp
 
 from ber.blocking.p1_idf_overlap import _group_topk
-from ber.data import Dataset
+from ber.data import Dataset, unit_hash
 from ber.interfaces import Blocker
 from ber.registry import register
 
@@ -170,12 +170,21 @@ class CompoundKeyBlocker(Blocker):
     def __init__(self, k: int = 30, k_rev: int = 0, max_df: int = 5000, min_score: float = 0.0,
                  hit_budget: float = 1e7, name_field: str = "name_norm", addr_field: str = "addr_norm",
                  group_by: str | None = "country", name_cap: int = 8, addr_cap: int = 20, num_cap: int = 4,
-                 num_variants: bool = False, max_df_unigram: int | None = None, workers: int = 4):
+                 num_variants: bool = False, max_df_unigram: int | None = None, workers: int = 4,
+                 fit_s1_frac: float = 1.0):
         self.k, self.k_rev, self.max_df, self.min_score = int(k), int(k_rev), int(max_df), float(min_score)
         self.hit_budget, self.name_field, self.addr_field, self.group_by = float(hit_budget), name_field, addr_field, group_by
         self.caps = (int(name_cap), int(addr_cap), int(num_cap), bool(num_variants))
         self.max_df_unigram = int(max_df_unigram) if max_df_unigram else None   # lower cap for single tokens
         self.workers = int(workers)   # the sparse products are memory-bound: > 4 processes gave no speed-up
+        # training-set subsampling: when blocking the dataset this blocker was fitted on, keep the candidates of a
+        # hash-sample of S1 entities only (retrieval still runs over all records, so density stays test-like).
+        self.fit_s1_frac = float(fit_s1_frac)
+        self._fit_key = None
+
+    def fit(self, train: Dataset):
+        self._fit_key = (id(train.records), len(train.records))
+        return self
 
     def _tokens(self, recs: pd.DataFrame, field: str):
         key = (id(recs), len(recs), field)
@@ -233,4 +242,10 @@ class CompoundKeyBlocker(Blocker):
     def candidates(self, ds: Dataset) -> pd.DataFrame:
         r, c, v = self.candidate_rows(ds.records)
         ids = ds.records["entity_id"].to_numpy()
+        if self.fit_s1_frac < 1 and self._fit_key == (id(ds.records), len(ds.records)):
+            u, inv = np.unique(r, return_inverse=True)
+            keep_u = np.fromiter((unit_hash(e, 2026) < self.fit_s1_frac for e in ids[u]), bool, len(u))
+            keep = keep_u[inv]
+            r, c, v = r[keep], c[keep], v[keep]
+            log.info("training candidates restricted to %.0f%% of S1 entities: %d pairs", 100 * self.fit_s1_frac, len(r))
         return pd.DataFrame({"s1_id": ids[r], "cand_id": ids[c], "score": v.astype(float)})

@@ -120,8 +120,9 @@ class MatchFeatures(FeatureSet):
 
     transductive = True   # IDF from the processed dataset's own records (no labels)
 
-    def __init__(self, chunk: int = 2_000_000, group_features: bool = True):
+    def __init__(self, chunk: int = 2_000_000, group_features: bool = True, dtype: str = "float16"):
         self.chunk, self.group_features = int(chunk), bool(group_features)
+        self.dtype = np.dtype(dtype)   # float16 storage halves memory at ~75M pairs; scorers read chunks as float32
         self._tables_key, self._tables = None, None
 
     def _tables_for(self, ds: Dataset) -> _Tables:
@@ -182,45 +183,61 @@ class MatchFeatures(FeatureSet):
         T = self._tables_for(ds)
         li_all = T.index.get_indexer(pairs["s1_id"])
         ri_all = T.index.get_indexer(pairs["cand_id"])
-        parts = []
-        for s in range(0, len(pairs), self.chunk):
-            parts.append(self._chunk_features(T, li_all[s:s + self.chunk], ri_all[s:s + self.chunk]))
-        cols = {k: np.concatenate([p[k] for p in parts]) if parts else np.zeros(0, np.float32) for k in
-                (parts[0].keys() if parts else [])}
-        out = pd.DataFrame({f"f_p1_{k}": v for k, v in cols.items()}, index=pairs.index)
-        if self.group_features and len(pairs):
-            out = pd.concat([out, self._group(out, li_all, ri_all)], axis=1)
-        return out
+        n = len(pairs)
+        arr, names = None, None
+        for s in range(0, n, self.chunk):   # one preallocated float32 matrix, filled chunk by chunk
+            f = self._chunk_features(T, li_all[s:s + self.chunk], ri_all[s:s + self.chunk])
+            if arr is None:
+                names = [f"f_p1_{k}" for k in f]
+                n_grp = len(GROUP_COLS) if self.group_features else 0
+                arr = np.empty((n, len(names) + n_grp), dtype=self.dtype)
+            for j, v in enumerate(f.values()):
+                arr[s:s + len(v), j] = v
+        if arr is None:
+            return pd.DataFrame(index=pairs.index)
+        if self.group_features:
+            col = {c: arr[:, j].astype(np.float32) for j, c in enumerate(names)
+                   if c in ("f_p1_name_tset", "f_p1_addr_tset", "f_p1_idf_n_jacc", "f_p1_idf_w_jacc", "f_p1_num_shared")}
+            grp = self._group(col, li_all, ri_all)
+            for j, c in enumerate(GROUP_COLS):
+                arr[:, len(names) + j] = grp[c]
+            del grp
+            names = names + GROUP_COLS
+        return pd.DataFrame(arr, index=pairs.index, columns=names, copy=False)
 
     @staticmethod
-    def _group(f: pd.DataFrame, li: np.ndarray, ri: np.ndarray) -> pd.DataFrame:
-        """Rank / gap-to-best of key signals within each S1 entity and within each S2/S3 record."""
-        key = f["f_p1_name_tset"].to_numpy() / 100 + f["f_p1_addr_tset"].to_numpy() / 100 \
-            + f["f_p1_idf_n_jacc"].to_numpy() + f["f_p1_idf_w_jacc"].to_numpy() + np.minimum(f["f_p1_num_shared"].to_numpy(), 2)
-        g = pd.DataFrame({"l": li, "r": ri, "key": key,
-                          "name": f["f_p1_name_tset"].to_numpy(), "addr": f["f_p1_addr_tset"].to_numpy()})
+    def _group(f: dict, li: np.ndarray, ri: np.ndarray) -> dict:
+        """Rank / gap-to-best / margin of key signals within each S1 entity and within each S2/S3 record."""
+        key = (f["f_p1_name_tset"] / 100 + f["f_p1_addr_tset"] / 100 + f["f_p1_idf_n_jacc"] + f["f_p1_idf_w_jacc"]
+               + np.minimum(f["f_p1_num_shared"], 2)).astype(np.float32)
+        sig = {"key": key, "name": f["f_p1_name_tset"], "addr": f["f_p1_addr_tset"]}
         out = {}
-        for side, col in (("s1", "l"), ("rec", "r")):
-            grp = g.groupby(col, sort=False)
-            for sig in ("key", "name", "addr"):
-                mx = grp[sig].transform("max").to_numpy()
-                out[f"f_p1_grp_{side}_{sig}_gap"] = (mx - g[sig].to_numpy()).astype(np.float32)
-                out[f"f_p1_grp_{side}_{sig}_rank"] = grp[sig].rank(ascending=False, method="min").to_numpy(np.float32)
-            out[f"f_p1_grp_{side}_size"] = grp["key"].transform("size").to_numpy(np.float32)
-        # margin of this pair's key over the best OTHER candidate in its S1 group (second-best if it is the best)
-        for side, col in (("s1", "l"), ("rec", "r")):
-            k = g["key"].to_numpy()
-            order = np.lexsort((-k, g[col].to_numpy()))
-            gc = g[col].to_numpy()[order]
-            ks = k[order]
-            first = np.r_[True, gc[1:] != gc[:-1]]
-            start = np.maximum.accumulate(np.where(first, np.arange(len(gc)), 0))
-            best = ks[start]
-            nxt_idx = np.minimum(start + 1, len(ks) - 1)
-            has2 = (nxt_idx < len(ks)) & (gc[nxt_idx] == gc) & (nxt_idx != start)
-            second = np.where(has2, ks[nxt_idx], np.nan)
-            other_best = np.where(np.arange(len(ks)) == start, second, best)
-            margin = np.empty(len(k), np.float32)
-            margin[order] = ks - other_best
-            out[f"f_p1_grp_{side}_key_margin"] = margin
-        return pd.DataFrame(out, index=f.index)
+        for side, gid in (("s1", li), ("rec", ri)):
+            codes, uniq = pd.factorize(gid)
+            size = np.bincount(codes).astype(np.float32)
+            out[f"f_p1_grp_{side}_size"] = size[codes]
+            for name, v in sig.items():
+                order = np.lexsort((-v, codes))   # by group, value descending
+                gc, vs = codes[order], v[order]
+                first = np.r_[True, gc[1:] != gc[:-1]]
+                start = np.maximum.accumulate(np.where(first, np.arange(len(gc)), 0))
+                best = vs[start]
+                # rank "min" method: 1 + number of strictly larger values in the group
+                new_val = np.r_[True, (gc[1:] != gc[:-1]) | (vs[1:] != vs[:-1])]
+                run_start = np.maximum.accumulate(np.where(new_val, np.arange(len(gc)), 0))
+                rank = np.empty(len(v), np.float32); rank[order] = run_start - start + 1
+                gap = np.empty(len(v), np.float32); gap[order] = best - vs
+                out[f"f_p1_grp_{side}_{name}_rank"] = rank
+                out[f"f_p1_grp_{side}_{name}_gap"] = gap
+                if name == "key":   # margin over the best OTHER candidate of the group
+                    nxt = np.minimum(start + 1, len(vs) - 1)
+                    has2 = (gc[nxt] == gc) & (nxt != start)
+                    second = np.where(has2, vs[nxt], np.nan)
+                    other_best = np.where(np.arange(len(vs)) == start, second, best)
+                    m = np.empty(len(v), np.float32); m[order] = vs - other_best
+                    out[f"f_p1_grp_{side}_key_margin"] = m
+        return out
+
+
+GROUP_COLS = [f"f_p1_grp_{side}_{c}" for side in ("s1", "rec")
+              for c in ("size", "key_rank", "key_gap", "key_margin", "name_rank", "name_gap", "addr_rank", "addr_gap")]

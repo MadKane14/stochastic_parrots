@@ -1,0 +1,8 @@
+# T03 (p1) — matcher v1, memory-lean for test mode. Same model as T03_m1; features stored as float16 and the
+# training candidates restricted to a 40% hash-sample of S1 entities (blocking still over all records).
+# Hypothesis: F0.5 stays within the CI of T03_m1 (val_v1@0.1 0.9916, run 20260925-224025_..._92d363).
+inherit: T03_m1.yaml
+blocking:
+  blockers:
+    - name: p1_compound
+      params: {k: 30, k_rev: 3, max_df: 1000, fit_s1_frac: 0.4}
