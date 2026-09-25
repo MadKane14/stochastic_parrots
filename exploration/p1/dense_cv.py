@@ -106,11 +106,17 @@ def build_pairs(cfg: dict, art: Path):
     return df, meta
 
 
-def oof_scores(df: pd.DataFrame, cfg: dict, folds: int = 2) -> tuple[np.ndarray, np.ndarray]:
-    """Out-of-fold probabilities; folds by hash of the S1 row code."""
-    u = np.unique(df["s1_id"].to_numpy())
-    fold_of_u = np.array([int(unit_hash(str(x), FOLD_SEED) * folds) for x in u], dtype=np.int8)
-    fold = fold_of_u[np.searchsorted(u, df["s1_id"].to_numpy())]
+def oof_scores(df: pd.DataFrame, cfg: dict, folds: int = 2, s1_country: np.ndarray | None = None
+               ) -> tuple[np.ndarray, np.ndarray]:
+    """Out-of-fold probabilities; folds by hash of the S1 row code, or (s1_country given) leave-one-country-out:
+    each country is predicted by a model trained on the other countries only (unseen-country proxy at density)."""
+    if s1_country is not None:
+        codes, uniq = pd.factorize(s1_country[df["s1_id"].to_numpy()])
+        fold, folds = codes.astype(np.int8), len(uniq)
+    else:
+        u = np.unique(df["s1_id"].to_numpy())
+        fold_of_u = np.array([int(unit_hash(str(x), FOLD_SEED) * folds) for x in u], dtype=np.int8)
+        fold = fold_of_u[np.searchsorted(u, df["s1_id"].to_numpy())]
     oof = np.zeros(len(df), np.float64)
     for k in range(folds):
         t = time.time()
@@ -147,13 +153,14 @@ def main():
     ap.add_argument("-c", "--config", required=True)
     ap.add_argument("--set", nargs="*", default=[])
     ap.add_argument("--tag", default="")
+    ap.add_argument("--loco", action="store_true", help="leave-one-country-out folds instead of S1-hash folds")
     a = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s", stream=sys.stdout)
     cfg = load_config(a.config, a.set)
     art = Path(cfg["paths"]["artifacts_dir"])
     t0 = time.time()
     df, meta = build_pairs(cfg, art)
-    oof, fold = oof_scores(df, cfg)
+    oof, fold = oof_scores(df, cfg, s1_country=meta["records"]["country"].to_numpy() if a.loco else None)
     li, ri = df["s1_id"].to_numpy().astype(np.int64), df["ri"].to_numpy().astype(np.int64)
     label = df["label"].to_numpy()
     dp = cfg["decider"]["params"]
@@ -166,7 +173,8 @@ def main():
     s1_fold = np.full(meta["n"], -1, np.int8); s1_fold[li] = fold
     res = {"f05": round(float(f.mean()), 5), "by_country": {c: round(float(f[country == c].mean()), 5)
                                                             for c in sorted(set(country))},
-           "by_fold": {int(k): round(float(f[s1_fold[rows] == k].mean()), 5) for k in (0, 1)},
+           "by_fold": {int(k): round(float(f[s1_fold[rows] == k].mean()), 5) for k in np.unique(fold)},
+           "folds": "leave-one-country-out" if a.loco else f"2 x S1 hash (seed {FOLD_SEED})",
            "singleton_acc": round(float(f[single].mean()), 4), "f05_nonsingleton": round(float(f[~single].mean()), 5),
            "n_s1": int(len(rows)), "n_pairs": int(len(df)),
            "pair_precision": round(float(label[keep].mean()), 5),

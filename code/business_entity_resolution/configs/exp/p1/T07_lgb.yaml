@@ -1,0 +1,7 @@
+# T07 (p1) — fix: p1_lgbm inherited base.yaml's HGB params (max_iter=300 = LightGBM num_iterations alias, lr 0.08),
+# capping boosting at 300 rounds. Hypothesis: letting early stopping choose (lr 0.05, up to 3000 rounds) raises
+# dense-CV F0.5 above 0.96961 (exploration/p1/dense_cv/20260926-022106_densecv_T03_sub_d4f44c.json).
+inherit: T03_sub.yaml
+scorer:
+  name: p1_lgbm
+  params: {max_rows: 15000000, max_iter: 3000, learning_rate: 0.05}

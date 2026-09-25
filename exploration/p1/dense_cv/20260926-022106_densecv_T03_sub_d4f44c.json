@@ -1,0 +1,105 @@
+{
+ "run": "20260926-022106_densecv_T03_sub_d4f44c",
+ "config_path": "code/business_entity_resolution/configs/exp/p1/T03_sub.yaml",
+ "overrides": [],
+ "config": {
+  "paths": {
+   "data_dir": "/scratch2/madhur.kankane/ber_data/dataset",
+   "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "basic",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ]
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {}
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 300,
+    "learning_rate": 0.08,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.5,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "277d831",
+  "dirty": false
+ },
+ "fold_seed": 777,
+ "feature_cache": "pairs_ffdf6c125352479d.parquet",
+ "metrics": {
+  "f05": 0.96961,
+  "by_country": {
+   "India": 0.95749,
+   "US": 0.97769
+  },
+  "by_fold": {
+   "0": 0.96964,
+   "1": 0.96958
+  },
+  "singleton_acc": 0.9514,
+  "f05_nonsingleton": 0.97069,
+  "n_s1": 2206821,
+  "n_pairs": 73636138,
+  "pair_precision": 0.98832,
+  "pair_recall": 0.94294,
+  "blocking_pair_recall": 0.96991,
+  "oracle_f05": 0.98922,
+  "f05_frozen_metric": 0.96961,
+  "threshold_curve": {
+   "0.3": 0.96367,
+   "0.4": 0.96746,
+   "0.5": 0.96961,
+   "0.6": 0.97058,
+   "0.7": 0.97067,
+   "0.8": 0.96947,
+   "0.9": 0.96491
+  }
+ },
+ "runtime_s": 1327,
+ "peak_rss_gb": 51.5
+}
