@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 
 import numpy as np
 import pandas as pd
@@ -19,8 +20,10 @@ log = logging.getLogger(__name__)
 @register("scorer", "p1_lgbm")
 class P1LGBMScorer(Scorer):
     def __init__(self, max_rows: int = 20_000_000, valid_frac: float = 0.05, seed: int = 0,
-                 num_boost_round: int = 2000, early_stopping: int = 50, **params):
+                 num_boost_round: int = 2000, early_stopping: int = 50, drop_features: list[str] | None = None,
+                 **params):
         self.max_rows, self.valid_frac, self.seed = int(max_rows), float(valid_frac), int(seed)
+        self.drop_features = list(drop_features or [])   # regexes of feature columns to leave out (ablations)
         self.num_boost_round, self.early_stopping = int(num_boost_round), int(early_stopping)
         self.params = {"objective": "binary", "learning_rate": 0.05, "num_leaves": 127, "min_data_in_leaf": 100,
                        "feature_fraction": 0.8, "bagging_fraction": 0.8, "bagging_freq": 1, "lambda_l2": 1.0,
@@ -28,7 +31,7 @@ class P1LGBMScorer(Scorer):
 
     def fit(self, train: Dataset, pairs: pd.DataFrame):
         import lightgbm as lgb
-        self.cols = feature_columns(pairs)
+        self.cols = [c for c in feature_columns(pairs) if not any(re.search(r, c) for r in self.drop_features)]
         s1 = pairs["s1_id"].to_numpy()
         u = pd.Series(pd.unique(s1))
         h = u.map(lambda s: unit_hash(s, 1000 + self.seed)).to_numpy()

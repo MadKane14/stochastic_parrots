@@ -42,6 +42,27 @@ def _csr(tok, n):
     return m
 
 
+def group_idf(B: sp.csr_matrix, codes: np.ndarray, common_frac: float = 0.01):
+    """IDF computed WITHIN each group (e.g. equal country string) → (W, core_B).
+    W[i, t] = B[i, t] * idf_{group(i)}[t];  core_B = B without tokens whose in-group document frequency exceeds
+    `common_frac` of the group's records (boilerplate such as legal forms / street types, learned from the data)."""
+    n, V = B.shape
+    row = np.repeat(np.arange(n), np.diff(B.indptr))
+    g_of = codes[row]
+    n_groups = int(codes.max()) + 1 if n else 0
+    size = np.bincount(codes, minlength=n_groups).astype(np.float64)
+    df = np.zeros((n_groups, V), np.float32)
+    np.add.at(df, (g_of, B.indices), 1.0)
+    idf = (np.log((size[:, None] + 1) / (df + 1)) + 1.0).astype(np.float32)
+    # own copies of indices/indptr: eliminate_zeros() below compacts them in place
+    W = sp.csr_matrix((idf[g_of, B.indices] * B.data, B.indices.copy(), B.indptr.copy()), shape=B.shape)
+    common = df[g_of, B.indices] > common_frac * size[g_of]
+    core = sp.csr_matrix((np.where(common, 0, B.data).astype(np.float32), B.indices.copy(), B.indptr.copy()),
+                         shape=B.shape)
+    core.eliminate_zeros()
+    return W, core
+
+
 def _split_numbers(B: sp.csr_matrix, is_num: np.ndarray):
     """Split a binary token matrix into (words, numbers) by token id."""
     num_cols = np.zeros(B.shape[1], bool)
@@ -72,19 +93,27 @@ def _digits_len(x):
 class _Tables:
     """Per-dataset token matrices / IDF, built once per Dataset."""
 
-    def __init__(self, recs: pd.DataFrame):
+    def __init__(self, recs: pd.DataFrame, idf_group: str | None = None):
         n = len(recs)
         self.index = pd.Index(recs["entity_id"].to_numpy())
+        self.idf_group = idf_group
         ntok = tokenize(recs["name_norm"])
         atok = tokenize(recs["addr_norm"])
         Bn = _csr(ntok, n)
         Ba = _csr(atok, n)
         Aw, An = _split_numbers(Ba, atok[2])
         self.Bn, self.Bw, self.Bnum = Bn, Aw, An
-        self.idf_n = self._idf(Bn)
-        self.idf_w = self._idf(Aw)
-        self.Wn = Bn.multiply(self.idf_n).tocsr().astype(np.float32)
-        self.Ww = Aw.multiply(self.idf_w).tocsr().astype(np.float32)
+        if idf_group:   # IDF within each group of equal `idf_group` value (generic, no value is special-cased)
+            codes = pd.factorize(recs[idf_group].to_numpy())[0]
+            self.Wn, self.core_n = group_idf(Bn, codes)
+            self.Ww, self.core_w = group_idf(Aw, codes)
+            self.cnt_core_n = np.asarray(self.core_n.sum(1)).ravel()
+            self.cnt_core_w = np.asarray(self.core_w.sum(1)).ravel()
+        else:
+            self.idf_n = self._idf(Bn)
+            self.idf_w = self._idf(Aw)
+            self.Wn = Bn.multiply(self.idf_n).tocsr().astype(np.float32)
+            self.Ww = Aw.multiply(self.idf_w).tocsr().astype(np.float32)
         self.mass_n = np.asarray(self.Wn.sum(1)).ravel()
         self.mass_w = np.asarray(self.Ww.sum(1)).ravel()
         self.cnt_num = np.asarray(An.sum(1)).ravel()
@@ -120,15 +149,17 @@ class MatchFeatures(FeatureSet):
 
     transductive = True   # IDF from the processed dataset's own records (no labels)
 
-    def __init__(self, chunk: int = 2_000_000, group_features: bool = True, dtype: str = "float16"):
+    def __init__(self, chunk: int = 2_000_000, group_features: bool = True, dtype: str = "float16",
+                 idf_group: str | None = None):
         self.chunk, self.group_features = int(chunk), bool(group_features)
+        self.idf_group = idf_group   # e.g. "country": IDF within equal-country-string groups (+ core features)
         self.dtype = np.dtype(dtype)   # float16 storage halves memory at ~75M pairs; scorers read chunks as float32
         self._tables_key, self._tables = None, None
 
     def _tables_for(self, ds: Dataset) -> _Tables:
         key = (id(ds.records), len(ds.records))
         if self._tables_key != key:
-            self._tables, self._tables_key = _Tables(ds.records), key
+            self._tables, self._tables_key = _Tables(ds.records, self.idf_group), key
         return self._tables
 
     def _chunk_features(self, T: _Tables, li: np.ndarray, ri: np.ndarray) -> dict:
@@ -157,6 +188,13 @@ class MatchFeatures(FeatureSet):
             f[f"idf_{tag}_right_only"] = mr - shared
             f[f"idf_{tag}_max_shared"] = _rowdot(W, B, li, ri, how="max")
             f[f"idf_{tag}_cnt_shared"] = _rowdot(B, B, li, ri)
+        if T.idf_group:   # boilerplate-free ("core") name / address-word token overlap
+            for tag, C, cnt in (("n", T.core_n, T.cnt_core_n), ("w", T.core_w, T.cnt_core_w)):
+                sh = _rowdot(C, C, li, ri)
+                cl, cr = cnt[li], cnt[ri]
+                f[f"core_{tag}_jacc"] = np.where(cl + cr > sh, sh / np.maximum(cl + cr - sh, 1), np.nan)
+                f[f"core_{tag}_left_only"] = cl - sh
+                f[f"core_{tag}_right_only"] = cr - sh
         # numbers
         cs = _rowdot(T.Bnum, T.Bnum, li, ri)
         nl, nr = T.cnt_num[li], T.cnt_num[ri]

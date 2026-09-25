@@ -33,3 +33,73 @@
  }
 }
 ```
+
+## 20260926-030301_densecv_T07_lgb_e2e7f4 (commit 3437bbc)
+
+```
+{
+ "f05": 0.97152,
+ "by_country": {
+  "India": 0.96054,
+  "US": 0.97885
+ },
+ "by_fold": {
+  "0": 0.97158,
+  "1": 0.97146
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9587,
+ "f05_nonsingleton": 0.97228,
+ "n_s1": 2206821,
+ "n_pairs": 73636138,
+ "pair_precision": 0.98974,
+ "pair_recall": 0.94479,
+ "blocking_pair_recall": 0.96991,
+ "oracle_f05": 0.98922,
+ "f05_frozen_metric": 0.97152,
+ "threshold_curve": {
+  "0.3": 0.96663,
+  "0.4": 0.96965,
+  "0.5": 0.97152,
+  "0.6": 0.97239,
+  "0.7": 0.97248,
+  "0.8": 0.97161,
+  "0.9": 0.96824
+ }
+}
+```
+
+## 20260926-031622_densecv_T03_sub_d4f44c_loco (commit 3437bbc)
+
+```
+{
+ "f05": 0.90504,
+ "by_country": {
+  "India": 0.87891,
+  "US": 0.92248
+ },
+ "by_fold": {
+  "0": 0.92248,
+  "1": 0.87891
+ },
+ "folds": "leave-one-country-out",
+ "singleton_acc": 0.6774,
+ "f05_nonsingleton": 0.91851,
+ "n_s1": 2206821,
+ "n_pairs": 73636138,
+ "pair_precision": 0.93125,
+ "pair_recall": 0.91357,
+ "blocking_pair_recall": 0.96991,
+ "oracle_f05": 0.98922,
+ "f05_frozen_metric": 0.90504,
+ "threshold_curve": {
+  "0.3": 0.89391,
+  "0.4": 0.90051,
+  "0.5": 0.90504,
+  "0.6": 0.9084,
+  "0.7": 0.91101,
+  "0.8": 0.9126,
+  "0.9": 0.91054
+ }
+}
+```

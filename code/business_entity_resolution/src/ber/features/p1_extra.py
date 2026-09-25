@@ -21,7 +21,7 @@ from rapidfuzz.distance import Levenshtein
 
 from ber.blocking.p1_compound import tokenize
 from ber.data import Dataset
-from ber.features.p1_match import _csr, _rowdot
+from ber.features.p1_match import _csr, _rowdot, group_idf
 from ber.features.p1_romanize import name_skeleton
 from ber.interfaces import FeatureSet
 from ber.registry import register
@@ -39,8 +39,9 @@ def _idf(B):
 
 
 class _ExtraTables:
-    def __init__(self, recs: pd.DataFrame):
+    def __init__(self, recs: pd.DataFrame, idf_group: str | None = None):
         n = len(recs)
+        codes = pd.factorize(recs[idf_group].to_numpy())[0] if idf_group else None
         self.index = pd.Index(recs["entity_id"].to_numpy())
         # skeletons (romanize only non-ASCII values; cache per distinct string)
         self.skel_n = recs["name_norm"].map(name_skeleton).to_numpy(dtype=object)
@@ -48,8 +49,10 @@ class _ExtraTables:
         self.tables = {}
         for tag, vals in (("n", self.skel_n), ("a", self.skel_a)):
             B = _csr(tokenize(pd.Series(vals)), n)
-            idf = _idf(B)
-            W = B.multiply(idf).tocsr().astype(np.float32)
+            if codes is not None:
+                W = group_idf(B, codes)[0]
+            else:
+                W = B.multiply(_idf(B)).tocsr().astype(np.float32)
             self.tables[tag] = (B, W, np.asarray(W.sum(1)).ravel())
         # plain name tokens for replacement counts
         Bn = _csr(tokenize(recs["name_norm"]), n)
@@ -79,14 +82,14 @@ class ExtraFeatures(FeatureSet):
 
     transductive = True
 
-    def __init__(self, chunk: int = 2_000_000, dtype: str = "float16"):
-        self.chunk, self.dtype = int(chunk), np.dtype(dtype)
+    def __init__(self, chunk: int = 2_000_000, dtype: str = "float16", idf_group: str | None = None):
+        self.chunk, self.dtype, self.idf_group = int(chunk), np.dtype(dtype), idf_group
         self._key, self._t = None, None
 
     def _tables(self, ds: Dataset) -> _ExtraTables:
         key = (id(ds.records), len(ds.records))
         if self._key != key:
-            self._t, self._key = _ExtraTables(ds.records), key
+            self._t, self._key = _ExtraTables(ds.records, self.idf_group), key
         return self._t
 
     def _chunk(self, T: _ExtraTables, li, ri) -> dict:
