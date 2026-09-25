@@ -1,0 +1,6 @@
+# T04 (p2) ablation D — as A but without Brahmic script folding (maps learned per script): measures the pooling gain.
+inherit: ../../best.yaml
+normalize:
+  name: p2_translit
+  params: {legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp], mode: replace, min_support: 3, min_precision: 0.5, fold_scripts: false,
+           map_address: true, web_names: true, join_initials: true}

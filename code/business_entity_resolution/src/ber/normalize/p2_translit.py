@@ -1,0 +1,340 @@
+"""p2 (T04): cross-script + noisy-name normalizer, learned from the training pairs.
+
+Adds the same columns as `basic` (name_norm, addr_norm, name_core, addr_digits) after four extra steps:
+
+1. Native-script tokens -> Latin, with a token map LEARNED from true pairs in fit() (no dictionary, no country logic).
+   For every true (S1, S2/S3) pair whose S2/S3 name (address) has non-Latin tokens, the Latin tokens of the S1 name
+   (address) are candidate translations. Association = Dice over pair co-occurrence; tokens are then linked
+   one-to-one inside each pair by competitive linking (Melamed 2000, "Models of translational equivalence among
+   words"), so that `प्राइवेट` links to `private` and not to `limited` (both co-occur with it every time).
+   A native token is mapped to its most-linked Latin token if support >= min_support and precision
+   (links / occurrences) >= min_precision. Generic: "non-Latin" = a letter whose Unicode name is not LATIN.
+2. Script folding (optional): the Brahmic scripts share one code layout (Unicode ch. 12, ISCII), so a letter of any
+   of them is folded to the Devanagari letter with the same Unicode name ("BENGALI LETTER KA" -> "DEVANAGARI LETTER
+   KA") before counting. Evidence for the same word in different scripts is pooled; no hand-written table.
+   Unicode decimal digits of any script become ASCII digits (unicodedata.digit).
+3. Web-style names: a trailing web suffix (`delhiconsulting.com`, `Dr dreammarketing.Com`, `x.co.in`; at least 4
+   word characters before the dot, suffix not a legal form, so `Pvt.Ltd` is untouched) and a leading `www.` are
+   removed; every long token of such a row, and long rare Latin name tokens elsewhere, are split into known words by unigram Viterbi segmentation
+   (`supremepackaging` -> `supreme packaging`) with a vocabulary of name tokens counted on the train records and
+   (transductively, no labels) on the records being normalized. A token with 1/0 inside letters (`cequee1ement`,
+   `agr0`) is replaced by its 1->l / 0->o variant only if that variant is a known word or segments into known words.
+4. Runs of >= 2 single Latin letters in names are joined (`p l l c` -> `pllc`, `m s` -> `ms`).
+"""
+from __future__ import annotations
+
+import math
+import re
+import unicodedata
+from collections import Counter
+
+import numpy as np
+import pandas as pd
+
+from ber.data import Dataset
+from ber.interfaces import Normalizer
+from ber.normalize.basic import clean
+from ber.registry import register
+
+_DIGITS = re.compile(r"\d+")
+_WEB_SUFFIX = re.compile(r"(?<=[^\W_]{4})\.([a-z]{2,6})(?:\.[a-z]{2})?\s*$", re.IGNORECASE)   # "...name.com(.in)"
+_WWW = re.compile(r"^\s*www\.", re.IGNORECASE)
+_HAS_NUM_IN_WORD = re.compile(r"^(?=.*[a-z])(?=.*[01])[a-z01]+$")
+_SINGLE_RUN = re.compile(r"(?<!\S)((?:[a-z] ){1,}[a-z])(?!\S)")
+_SINGLE_RUN_ANY = re.compile(r"(?<!\S)(?:[a-z] )+[a-z](?!\S)")
+
+_FOLD_CACHE: dict[str, str] = {}
+_LATIN_CACHE: dict[str, bool] = {}
+_PREP_CACHE: dict = {}
+
+
+def _fold_char(ch: str) -> str:
+    """Script-agnostic canonical form of one character (see module docstring, step 2)."""
+    out = _FOLD_CACHE.get(ch)
+    if out is not None:
+        return out
+    out = ch
+    d = unicodedata.digit(ch, None)
+    if d is not None and not ch.isascii():
+        out = str(d)
+    else:
+        name = unicodedata.name(ch, "")
+        script, _, rest = name.partition(" ")
+        if rest and script not in ("LATIN", "DEVANAGARI"):
+            try:
+                out = unicodedata.lookup("DEVANAGARI " + rest)
+            except KeyError:
+                out = ch
+    _FOLD_CACHE[ch] = out
+    return out
+
+
+def fold(token: str) -> str:
+    return "".join(_fold_char(c) for c in token) if not token.isascii() else token
+
+
+def _is_native(token: str) -> bool:
+    """True if the token contains a letter outside the Latin script."""
+    if token.isascii():
+        return False
+    for ch in token:
+        if ch.isascii():
+            continue
+        v = _LATIN_CACHE.get(ch)
+        if v is None:
+            v = (not ch.isalpha()) or unicodedata.name(ch, "").startswith("LATIN")
+            _LATIN_CACHE[ch] = v
+        if not v:
+            return True
+    return False
+
+
+def _digits_to_ascii(s: str) -> str:
+    if s.isascii():
+        return s
+    return "".join(str(unicodedata.digit(c)) if (not c.isascii() and unicodedata.digit(c, None) is not None) else c
+                   for c in s)
+
+
+def learn_token_map(native_side: list[list[str]], latin_side: list[list[str]], min_support: int,
+                    min_precision: float, rounds: int = 3) -> dict[str, str]:
+    """Token translation map native -> Latin from aligned bags of tokens (one pair per list element).
+
+    Dice association over pair co-occurrence, then competitive linking inside each pair (vectorised as `rounds`
+    of mutual-best linking: a (n, l) edge is linked when it is the best remaining edge for both n and l)."""
+    rows_n, rows_l, pid_n, pid_l = [], [], [], []
+    for i, (ns, ls) in enumerate(zip(native_side, latin_side)):
+        ns, ls = set(ns), set(ls)
+        if ns and ls:
+            rows_n.extend(ns); pid_n.extend([i] * len(ns))
+            rows_l.extend(ls); pid_l.extend([i] * len(ls))
+    if not rows_n:
+        return {}
+    dn = pd.DataFrame({"p": pid_n, "n": rows_n})
+    dl = pd.DataFrame({"p": pid_l, "l": rows_l})
+    cn = dn["n"].value_counts()
+    cl = dl["l"].value_counts()
+    e = dn.merge(dl, on="p")                                   # all within-pair (n, l) edges
+    co = e.groupby(["n", "l"]).size().rename("co").reset_index()
+    co["dice"] = 2 * co["co"] / (co["n"].map(cn).to_numpy() + co["l"].map(cl).to_numpy())
+    e = e.merge(co[["n", "l", "dice"]], on=["n", "l"])
+    linked = []
+    for _ in range(rounds):
+        if e.empty:
+            break
+        best_n = e.groupby(["p", "n"])["dice"].transform("max") == e["dice"]
+        best_l = e.groupby(["p", "l"])["dice"].transform("max") == e["dice"]
+        lk = e[best_n & best_l].drop_duplicates(["p", "n"]).drop_duplicates(["p", "l"])
+        linked.append(lk[["p", "n", "l"]])
+        done_n = set(zip(lk["p"], lk["n"]))
+        done_l = set(zip(lk["p"], lk["l"]))
+        keep = [(p, n) not in done_n and (p, l) not in done_l for p, n, l in zip(e["p"], e["n"], e["l"])]
+        e = e[keep]
+    links = pd.concat(linked, ignore_index=True).groupby(["n", "l"]).size().rename("links").reset_index()
+    links = links.sort_values(["n", "links"], ascending=[True, False]).drop_duplicates("n")
+    links["prec"] = links["links"] / links["n"].map(cn).to_numpy()
+    ok = (links["links"] >= min_support) & (links["prec"] >= min_precision)
+    return dict(zip(links.loc[ok, "n"], links.loc[ok, "l"]))
+
+
+class Segmenter:
+    """Unigram Viterbi word segmentation of concatenated Latin tokens (e.g. `supremepackaging`)."""
+
+    def __init__(self, counts: Counter, min_word_freq: int, min_word_len: int = 3, max_word_len: int = 20):
+        words = {w: c for w, c in counts.items()
+                 if c >= min_word_freq and min_word_len <= len(w) <= max_word_len and w.isalpha() and w.isascii()}
+        total = float(sum(words.values())) or 1.0
+        self.cost = {w: -math.log(c / total) for w, c in words.items()}
+        self.maxlen = max((len(w) for w in words), default=0)
+        self.counts = counts
+        self._cache: dict[str, list[str] | None] = {}
+
+    def known(self, w: str) -> bool:
+        return w in self.cost
+
+    def split(self, tok: str, max_parts: int = 4, min_part_len: int = 3) -> list[str] | None:
+        """Best split into 2..max_parts known words of length >= min_part_len, or None."""
+        key = (tok, max_parts, min_part_len)
+        if key in self._cache:
+            return self._cache[key]
+        n = len(tok)
+        best = [0.0] + [math.inf] * n
+        back = [0] * (n + 1)
+        for j in range(1, n + 1):
+            for i in range(max(0, j - self.maxlen), j):
+                c = self.cost.get(tok[i:j])
+                if c is not None and best[i] + c < best[j]:
+                    best[j], back[j] = best[i] + c, i
+        out = None
+        if best[n] < math.inf:
+            parts, j = [], n
+            while j > 0:
+                parts.append(tok[back[j]:j])
+                j = back[j]
+            parts.reverse()
+            ok = 2 <= len(parts) <= max_parts and min(map(len, parts)) >= min_part_len
+            out = parts if ok else None
+        self._cache[key] = out
+        return out
+
+
+@register("normalizer", "p2_translit")
+class TranslitNormalizer(Normalizer):
+    """basic normalization + learned native->Latin token map + web-name / initials cleanup (see module doc)."""
+
+    transductive = True   # segmentation vocabulary also counts name tokens of the records being normalized
+
+    def __init__(self, legal_tokens: list[str] | None = None, mode: str = "replace", min_support: int = 3,
+                 min_precision: float = 0.5, fold_scripts: bool = True, map_address: bool = True,
+                 web_names: bool = True, seg_min_len: int = 8, seg_rare_max: int = 2, seg_word_freq: int = 20,
+                 seg_target_vocab: bool = True, join_initials: bool = True):
+        if mode not in ("replace", "append"):
+            raise ValueError("mode must be 'replace' or 'append'")
+        self.legal = set(legal_tokens or [])
+        self.mode, self.min_support, self.min_precision = mode, int(min_support), float(min_precision)
+        self.fold_scripts, self.map_address, self.web_names = bool(fold_scripts), bool(map_address), bool(web_names)
+        self.seg_min_len, self.seg_rare_max, self.seg_word_freq = int(seg_min_len), int(seg_rare_max), int(seg_word_freq)
+        self.seg_target_vocab, self.join_initials = bool(seg_target_vocab), bool(join_initials)
+        self.name_map: dict[str, str] = {}
+        self.addr_map: dict[str, str] = {}
+        self.fit_counts: Counter = Counter()
+        self.stats: dict = {}
+
+    # ---------------- fit ----------------
+    @staticmethod
+    def _prep(records: pd.DataFrame, col: str) -> pd.Series:
+        """basic `clean` + any-script digits -> ASCII of records[col]. Memoised per DataFrame (a reference is kept, so
+        the id cannot be reused) because fit() and transform() normally see the same records."""
+        key = (id(records), col, len(records))
+        hit = _PREP_CACHE.get(key)
+        if hit is None or hit[0] is not records:
+            if len(_PREP_CACHE) >= 4:
+                _PREP_CACHE.clear()
+            hit = (records, records[col].astype(str).map(clean).map(_digits_to_ascii))
+            _PREP_CACHE[key] = hit
+        return hit[1].copy()
+
+    def _native_tokens(self, s: str) -> list[str]:
+        return [fold(t) if self.fold_scripts else t for t in s.split() if _is_native(t)]
+
+    def _learn(self, raw: pd.Series, s_rows: np.ndarray, c_rows: np.ndarray, key: str) -> dict[str, str]:
+        """Token map from true pairs whose right-side `raw` text is non-ASCII (only those can hold native tokens)."""
+        vals = raw.to_numpy()
+        sel = np.fromiter((not s.isascii() for s in vals[c_rows]), bool, len(c_rows))
+        right = [_digits_to_ascii(clean(s)) for s in vals[c_rows[sel]]]
+        left = [_digits_to_ascii(clean(s)) for s in vals[s_rows[sel]]]
+        nat = [self._native_tokens(s) for s in right]
+        lat = [[t for t in s.split() if t.isascii()] for s in left]
+        self.stats[f"{key}_pairs_with_native"] = int(sum(1 for x in nat if x))
+        table = learn_token_map(nat, lat, self.min_support, self.min_precision)
+        self.stats[f"{key}_map_size"] = len(table)
+        return table
+
+    def fit(self, train: Dataset) -> "TranslitNormalizer":
+        recs = train.records
+        self.stats = {}
+        if self.web_names:
+            self.fit_counts = Counter(t for s in self._prep(recs, "business_name") for t in s.split())
+        if train.gt is None:
+            return self
+        row = pd.Series(np.arange(len(recs)), index=recs["entity_id"].to_numpy())
+        pairs = [(s, c) for s, lst in train.gt.items() for c in lst]
+        if not pairs:
+            return self
+        s_rows = row.reindex([p[0] for p in pairs]).to_numpy()
+        c_rows = row.reindex([p[1] for p in pairs]).to_numpy()
+        ok = ~(np.isnan(s_rows) | np.isnan(c_rows))
+        s_rows, c_rows = s_rows[ok].astype(np.int64), c_rows[ok].astype(np.int64)
+        self.name_map = self._learn(recs["business_name"], s_rows, c_rows, "name")
+        if self.map_address:
+            self.addr_map = self._learn(recs["business_address"], s_rows, c_rows, "addr")
+        return self
+
+    # ---------------- transform ----------------
+    def _map_native(self, s: str, table: dict[str, str], fallback: dict[str, str]) -> str:
+        if s.isascii():
+            return s
+        out, extra = [], []
+        for t in s.split():
+            if not _is_native(t):
+                out.append(t)
+                continue
+            f = fold(t) if self.fold_scripts else t
+            lat = table.get(f) or fallback.get(f)
+            if lat is None:
+                out.append(t)
+            elif self.mode == "replace":
+                out.append(lat)
+            else:
+                out.append(t)
+                extra.append(lat)
+        return " ".join(out + extra)
+
+    def _fix_name_token(self, t: str, seg: Segmenter, counts: Counter, web: bool = False) -> str:
+        """1/0 -> l/o variant or word segmentation of one name token; on web-style rows every long token is tried."""
+        if not t.isascii():
+            return t
+        if _HAS_NUM_IN_WORD.match(t):
+            v = t.replace("1", "l").replace("0", "o")
+            if seg.known(v):
+                return v
+            parts = seg.split(v, *self._seg_limits(web)) if len(v) >= self.seg_min_len else None
+            return " ".join(parts) if parts else t
+        if len(t) >= self.seg_min_len and t.isalpha() and (web or counts.get(t, 0) <= self.seg_rare_max):
+            parts = seg.split(t, *self._seg_limits(web))
+            if parts:
+                return " ".join(parts)
+        return t
+
+    @staticmethod
+    def _seg_limits(web: bool) -> tuple[int, int]:
+        """(max_parts, min_part_len): web names are concatenations by construction (up to 4 words of >= 3 chars);
+        elsewhere a rare long token is more often a typo, so only a clean 2-word split (>= 4 chars each) is accepted."""
+        return (4, 3) if web else (2, 4)
+
+    def transform(self, records: pd.DataFrame) -> pd.DataFrame:
+        out = records.copy()
+        raw = records["business_name"].astype(str)
+        name = self._prep(records, "business_name")
+        addr = self._prep(records, "business_address")
+        n_changed = {}
+        web = pd.Series(False, index=name.index)
+        if self.web_names:                              # "...xyzname.com" -> "xyzname" (suffix never a legal form)
+            suf = raw.str.extract(_WEB_SUFFIX, expand=False).str.lower()
+            web = suf.notna() & ~suf.isin(self.legal)
+            web |= raw.str.contains(_WWW)
+            if web.any():
+                stripped = raw[web].str.replace(_WWW, "", regex=True).str.replace(_WEB_SUFFIX, "", regex=True)
+                name.loc[web] = stripped.map(clean).map(_digits_to_ascii)
+            n_changed["web_rows"] = int(web.sum())
+        if self.name_map:
+            nz = ~name.map(str.isascii)
+            name.loc[nz] = name[nz].map(lambda s: self._map_native(s, self.name_map, self.addr_map))
+            n_changed["name_native_rows"] = int(nz.sum())
+        if self.addr_map:
+            nz = ~addr.map(str.isascii)
+            addr.loc[nz] = addr[nz].map(lambda s: self._map_native(s, self.addr_map, self.name_map))
+            n_changed["addr_native_rows"] = int(nz.sum())
+        if self.web_names:                              # segmentation + 1/0 variants on long / mixed tokens
+            counts = Counter(self.fit_counts)
+            if self.seg_target_vocab:
+                counts.update(t for s in name for t in s.split())
+            seg = Segmenter(counts, self.seg_word_freq)
+            cand = name.str.contains(r"[a-z]{%d,}|[a-z][01]|[01][a-z]" % self.seg_min_len, regex=True) | web
+            before = name[cand]
+            is_web = web[cand].to_numpy()
+            name.loc[cand] = [" ".join(self._fix_name_token(t, seg, counts, w) for t in s.split())
+                              for s, w in zip(before, is_web)]
+            n_changed["segmented_rows"] = int((name[cand] != before).sum())
+        if self.join_initials:
+            m = name.str.contains(_SINGLE_RUN_ANY)
+            name.loc[m] = name[m].str.replace(_SINGLE_RUN, lambda mo: mo.group(1).replace(" ", ""), regex=True)
+            n_changed["initials_rows"] = int(m.sum())
+        self.stats["transform"] = n_changed
+        _PREP_CACHE.clear()
+        out["name_norm"] = name
+        out["addr_norm"] = addr
+        legal = self.legal
+        out["name_core"] = name.map(lambda s: " ".join(t for t in s.split() if t not in legal) or s)
+        out["addr_digits"] = addr.map(lambda s: " ".join(_DIGITS.findall(s)))
+        return out
