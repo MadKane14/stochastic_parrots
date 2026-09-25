@@ -26,6 +26,8 @@ blocks your task, say so in your report instead of working around it.
   empty; France test rows look like `63 R. DE DIEPPE, LILLE, Hauts-de-France`.
 - Iterate on the locked dev split **`val_v1@0.1`** (10% sample, default); confirm winners on full `val_v1`.
   Country hold-outs: `xc_India@0.1`, `xc_US@0.1`.
+- **Val is less dense than test** (5–50× fewer distractors per S1, INSIGHTS I-08): val scores are optimistic. Judge any
+  blocking change at full density with `exploration/p1/blk_eval.py --config <your.yaml> --qfrac 0.1` (see TASKS.md Round 2).
 
 Background reading: `docs/research_playbook.md` (external research on similar Kaggle competitions — unverified;
 where it conflicts with our EDA in `exploration/p1/eda_out.md`, the EDA wins).

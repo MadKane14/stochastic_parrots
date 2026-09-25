@@ -22,7 +22,6 @@
    ```
    `--qfrac 0.1` = all 10.3M S2/S3 records, 10% of S1 as queries (forward recall unbiased; label-fitted components are fitted
    only on the other 90% of S1). Reverse-direction retrieval is optimistic under qfrac → confirm finalists with `--qfrac 1`.
-   If your machine has < 48 GB RAM, say so in your report and ask the lead to run it on phoenix.
 5. **Do not run the full `val_v1` split yet** (≈ 58M training pairs → out of memory). p1 lands a fit-sampling fix (T03);
    until then iterate on `val_v1@0.1` and `xc_India@0.1`.
 6. Resource etiquette on shared machines: `BER_THREADS` ≤ 12, `nice -n 10`, one heavy job at a time, tmux + log files.
