@@ -1,0 +1,12 @@
+20:39:05 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+20:39:06 rc=0       0s  setup: nvidia-smi; nproc; free -g; df -h /tmp /kaggle/working; python --version
+20:41:31 rc=0     145s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+20:41:32 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+20:41:34 rc=0       2s  pip: pip freeze | grep -iE '^(numpy|pandas|scipy|scikit-learn|lightgbm|pyarrow|torch|transformers|tokenizers)=='
+20:41:43 rc=0       9s  check: python src/run.py check
+20:41:44 rc=0       1s  check: python tests/test_metrics.py
+20:48:37 rc=0     414s  smoke: python src/run.py run -c configs/exp/p4/T06_e5.yaml --smoke --task T06
+21:22:12 rc=0    2014s  T06_e5: python src/run.py run -c configs/exp/p4/T06_e5.yaml --task T06 --split val_v1@0.1,xc_India@0.1
+21:24:55 rc=0     163s  throughput: python exploration/p4/e5_throughput.py --n 200000 --out /kaggle/working/e5_throughput_out.md
+21:43:11 rc=0    1097s  T06_e5g: python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T06 --split val_v1@0.1,xc_India@0.1
+21:43:11 rc=0       0s  done: du -sh /tmp/ber_artifacts/*; ls -R /kaggle/working/results

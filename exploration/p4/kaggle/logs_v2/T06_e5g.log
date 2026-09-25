@@ -1,0 +1,11 @@
+$ python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T06 --split val_v1@0.1,xc_India@0.1
+[val_v1@0.1] 20260925-212455_p4_T06_T06_e5g_val_v1@0.1_8eacdf
+  F0.5=0.9876 CI95=[0.98698, 0.98817]  singleton_acc=0.9781  pairP=0.99448 pairR=0.97534
+  blocking: oracle_F0.5=0.9986 pair_recall=0.99583 cands/s1=33.53  scorer={'roc_auc': 0.9998, 'avg_precision': 0.99761}
+  by_country={"India": {"n": 17619, "f05": 0.98409}, "US": {"n": 26329, "f05": 0.98993}}  runtime=560.1s 
+  results: /kaggle/working/results/p4/20260925-212455_p4_T06_T06_e5g_val_v1@0.1_8eacdf.json
+[xc_India@0.1] 20260925-213417_p4_T06_T06_e5g_xc_India@0.1_8eacdf
+  F0.5=0.9471 CI95=[0.94621, 0.94806]  singleton_acc=0.8853  pairP=0.9744 pairR=0.91565
+  blocking: oracle_F0.5=0.9942 pair_recall=0.98371 cands/s1=33.37  scorer={'roc_auc': 0.99702, 'avg_precision': 0.97906}
+  by_country={"India": {"n": 88632, "f05": 0.94713}}  runtime=531.3s 
+  results: /kaggle/working/results/p4/20260925-213417_p4_T06_T06_e5g_xc_India@0.1_8eacdf.json

@@ -1,0 +1,192 @@
+{
+ "run_id": "20260925-213417_p4_T06_T06_e5g_xc_India@0.1_8eacdf",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "p4",
+ "task": "T06",
+ "note": "",
+ "mode": "val",
+ "split": "xc_India@0.1",
+ "smoke": false,
+ "sample_frac": 0.1,
+ "created": "2026-09-25T21:34:18",
+ "config_path": "configs/exp/p4/T06_e5g.yaml",
+ "overrides": [],
+ "config_hash": "8eacdf093967",
+ "config": {
+  "paths": {
+   "data_dir": "/kaggle/input/datasets/anishtoshniwal006/ber-data-p4",
+   "artifacts_dir": "/tmp/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "basic",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ]
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "string_sims",
+    "params": {
+     "fields": [
+      "name_norm",
+      "name_core",
+      "addr_norm"
+     ]
+    }
+   },
+   {
+    "name": "p4_e5",
+    "params": {
+     "model": "intfloat/multilingual-e5-small",
+     "fields": [
+      "name",
+      "addr",
+      "full"
+     ],
+     "max_length": 64,
+     "batch_size": 512,
+     "group_feats": true
+    }
+   }
+  ],
+  "scorer": {
+   "name": "hgb",
+   "params": {
+    "max_iter": 300,
+    "learning_rate": 0.08
+   }
+  },
+  "decider": {
+   "name": "threshold",
+   "params": {
+    "threshold": 0.5,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "7b02ab478ad5",
+  "branch": "w/p4",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true,
+  "split_fingerprint": "70135e119b82ca4a",
+  "split_fingerprint_ok": true
+ },
+ "machine": {
+  "host": "ecd943fcfb18",
+  "python": "3.12.13",
+  "platform": "Linux-6.12.90+-x86_64-with-glibc2.35",
+  "gpu": "Tesla T4; Tesla T4"
+ },
+ "sizes": {
+  "train_s1": 132186,
+  "train_right": 617137,
+  "target_s1": 88632,
+  "target_right": 413562
+ },
+ "train_pairs": {
+  "n_pairs": 4478749,
+  "pos_rate": 0.10134593387573182,
+  "n_features": 39
+ },
+ "transductive_components": [
+  "p1_compound"
+ ],
+ "timings_s": {
+  "normalize": 3.93,
+  "block": 19.62,
+  "features:string_sims": 173.31,
+  "features:p4_e5": 115.7,
+  "scorer_fit": 59.24,
+  "score": 13.6
+ },
+ "artifacts_dir": "/tmp/ber_artifacts/runs/20260925-213417_p4_T06_T06_e5g_xc_India@0.1_8eacdf",
+ "metrics": {
+  "f05": 0.94713,
+  "f05_ci95": [
+   0.94621,
+   0.94806
+  ],
+  "n_s1": 88632,
+  "singleton_rate": 0.056,
+  "singleton_acc": 0.8853,
+  "f05_nonsingleton": 0.9508,
+  "pred_empty_rate": 0.0582,
+  "pair_precision": 0.9744,
+  "pair_recall": 0.91565,
+  "n_pred_pairs": 287832,
+  "by_country": {
+   "India": {
+    "n": 88632,
+    "f05": 0.94713
+   }
+  },
+  "blocking": {
+   "pair_recall": 0.98371,
+   "pair_recall_by_source": {
+    "S2": 0.98392,
+    "S3": 0.98352
+   },
+   "entity_full_recall": 0.95229,
+   "oracle_f05": 0.99421,
+   "cands_per_s1_mean": 33.37,
+   "cands_per_s1_median": 32.0,
+   "cands_per_s1_p95": 43.0,
+   "cands_per_s1_max": 160,
+   "n_pairs": 2958074,
+   "reduction_ratio": 0.999919,
+   "s1_without_candidates": 0
+  },
+  "scorer": {
+   "roc_auc": 0.99702,
+   "avg_precision": 0.97906
+  },
+  "diag_plain_threshold_curve": {
+   "0.3": 0.92242,
+   "0.4": 0.92805,
+   "0.5": 0.9312,
+   "0.6": 0.93309,
+   "0.7": 0.93309,
+   "0.8": 0.92948,
+   "0.9": 0.91537
+  }
+ },
+ "runtime_s": 531.3
+}
