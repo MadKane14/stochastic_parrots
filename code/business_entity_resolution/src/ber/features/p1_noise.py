@@ -15,6 +15,12 @@ transform: per pair, over tokens only on the right (resp. left) side: sum and ma
   (1 - drop_rate)) = "unexplained" additions / drops, their count, plus the rank and margin of the total unexplained
   mass among the S1 entities competing for the same S2/S3 record (who explains the record best).
 Rates are keyed by token string, so they transfer to any dataset; unseen tokens get the prior.
+
+unsup (optional, transductive, no labels): S1 is the clean deduplicated source, so a word the generator adds as noise
+is frequent in S2/S3 names but rare in S1 names, while a real (sibling) name word also occurs in S1 names. Within
+each group of equal `country` string of the processed records: noise[t] = log((df_S2S3(t)+1)/N_S2S3) -
+log((df_S1(t)+1)/N_S1). Features: min / mean of noise[t] over the S2/S3-only name tokens (a low minimum = an
+unmatched word that looks like a genuine entity word = sibling evidence) — works for countries unseen in training.
 """
 from __future__ import annotations
 
@@ -43,8 +49,10 @@ class NoiseTokenFeatures(FeatureSet):
     """Unexplained added / dropped tokens under learned noise rates; see module docstring."""
 
     def __init__(self, fields: list[str] | None = None, min_support: int = 30, pseudo: float = 20.0,
-                 chunk: int = 2_000_000):
+                 chunk: int = 2_000_000, unsup: bool = False, group_by: str = "country"):
         self.fields = fields or ["name_norm", "addr_norm"]
+        self.unsup, self.group_by = bool(unsup), group_by
+        self.transductive = self.unsup
         self.min_support, self.pseudo, self.chunk = int(min_support), float(pseudo), int(chunk)
         self.rates: dict = {}
 
@@ -106,6 +114,34 @@ class NoiseTokenFeatures(FeatureSet):
                 out[f"f_p1n_{tag}_{side}_unexpl_max"] = s_max
                 out[f"f_p1n_{tag}_{side}_cnt"] = cnt
                 total += s_sum
+        if self.unsup:
+            B, _ = _field_matrix(recs, "name_norm")
+            codes = pd.factorize(recs[self.group_by].to_numpy())[0]
+            is_s1 = (recs["source"] == 1).to_numpy()
+            row = np.repeat(np.arange(B.shape[0]), np.diff(B.indptr))
+            G, V = int(codes.max()) + 1, B.shape[1]
+            df1, df2 = np.zeros((G, V), np.float32), np.zeros((G, V), np.float32)
+            np.add.at(df1, (codes[row[is_s1[row]]], B.indices[is_s1[row]]), 1.0)
+            np.add.at(df2, (codes[row[~is_s1[row]]], B.indices[~is_s1[row]]), 1.0)
+            n1 = np.bincount(codes[is_s1], minlength=G).astype(np.float32)[:, None]
+            n2 = np.bincount(codes[~is_s1], minlength=G).astype(np.float32)[:, None]
+            noise = np.log((df2 + 1) / n2) - np.log((df1 + 1) / n1)          # (G, V)
+            Bn = sp.csr_matrix((noise[codes[row], B.indices].astype(np.float32) + 100.0, B.indices.copy(),
+                                B.indptr.copy()), shape=B.shape)             # +100 keeps entries non-zero
+            mn = np.empty(len(pairs), np.float32); mean = np.empty(len(pairs), np.float32)
+            for s in range(0, len(pairs), self.chunk):
+                o, t = ri[s:s + self.chunk], li[s:s + self.chunk]
+                W = Bn[o]
+                only = sp.csr_matrix(W - W.multiply(B[t]))
+                only.eliminate_zeros()
+                k = np.diff(only.indptr)
+                tot = np.asarray(only.sum(1)).ravel()
+                neg = only.copy(); neg.data = -neg.data                      # min via max of negatives
+                m = -neg.max(axis=1).toarray().ravel()
+                mn[s:s + len(o)] = np.where(k > 0, m - 100.0, np.nan)
+                mean[s:s + len(o)] = np.where(k > 0, tot / np.maximum(k, 1) - 100.0, np.nan)
+            out["f_p1n_unsup_ro_min"] = mn
+            out["f_p1n_unsup_ro_mean"] = mean
         # who explains this S2/S3 record best among its competing S1 entities (lower unexplained mass = better)
         order = np.lexsort((total, ri))
         g, v = ri[order], total[order]
