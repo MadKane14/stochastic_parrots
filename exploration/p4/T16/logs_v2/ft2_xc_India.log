@@ -1,0 +1,22 @@
+$ python exploration/p4/e5_finetune.py --split xc_India --out /kaggle/working/models/ft2_xc_India --n 400000 --neg blocker --neg-frac 0.25
+blocker triples: 312,184 from a 0.25 sample (330,631 S1, 11,150,009 candidates)
+data ready in 413s; split xc_India train side: 1,323,633 S1
+step 0/1625 field name loss 3.6473 lr 4.94e-07 186 pairs/s
+step 100/1625 field name loss 0.3107 lr 1.88e-05 630 pairs/s
+step 200/1625 field name loss 0.3816 lr 1.75e-05 632 pairs/s
+step 300/1625 field name loss 0.2595 lr 1.63e-05 628 pairs/s
+step 400/1625 field name loss 0.2689 lr 1.51e-05 624 pairs/s
+step 500/1625 field name loss 0.3394 lr 1.38e-05 619 pairs/s
+step 600/1625 field name loss 0.2322 lr 1.26e-05 616 pairs/s
+step 700/1625 field name loss 0.2294 lr 1.14e-05 613 pairs/s
+step 800/1625 field name loss 0.1983 lr 1.01e-05 611 pairs/s
+step 900/1625 field name loss 0.2191 lr 8.91e-06 610 pairs/s
+step 1000/1625 field name loss 0.3857 lr 7.68e-06 609 pairs/s
+step 1100/1625 field name loss 0.2318 lr 6.45e-06 608 pairs/s
+step 1200/1625 field name loss 0.2111 lr 5.22e-06 608 pairs/s
+step 1300/1625 field name loss 0.3041 lr 3.99e-06 607 pairs/s
+step 1400/1625 field name loss 0.2604 lr 2.76e-06 606 pairs/s
+step 1500/1625 field name loss 0.2189 lr 1.53e-06 606 pairs/s
+step 1600/1625 field name loss 0.2170 lr 2.95e-07 606 pairs/s
+step 1624/1625 field name loss 0.3416 lr 0.00e+00 606 pairs/s
+{"split": "xc_India", "neg": "blocker", "neg_frac": 0.25, "epochs": 1, "base_model": "intfloat/multilingual-e5-small", "n_triples": 312184, "n_hard_negatives": 312184, "steps": 1625, "batch": 192, "lr": 2e-05, "tau": 0.05, "max_length": 64, "seed": 0, "train_seconds": 515.6, "pairs_used": 312000, "gpu": "Tesla T4", "torch": "2.8.0+cu128"}

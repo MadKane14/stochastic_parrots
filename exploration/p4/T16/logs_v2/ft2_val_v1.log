@@ -1,0 +1,26 @@
+$ python exploration/p4/e5_finetune.py --split val_v1 --out /kaggle/working/models/ft2_val_v1 --n 400000 --neg blocker --neg-frac 0.25
+blocker triples: 416,985 from a 0.25 sample (441,635 S1, 14,855,017 candidates)
+data ready in 617s; split val_v1 train side: 1,765,457 S1
+step 0/2083 field name loss 3.7561 lr 3.84e-07 158 pairs/s
+step 100/2083 field name loss 0.4722 lr 1.87e-05 523 pairs/s
+step 200/2083 field name loss 0.5607 lr 1.81e-05 524 pairs/s
+step 300/2083 field name loss 0.2808 lr 1.71e-05 523 pairs/s
+step 400/2083 field name loss 0.2198 lr 1.61e-05 519 pairs/s
+step 500/2083 field name loss 0.1326 lr 1.52e-05 518 pairs/s
+step 600/2083 field name loss 0.2255 lr 1.42e-05 517 pairs/s
+step 700/2083 field name loss 0.1836 lr 1.33e-05 514 pairs/s
+step 800/2083 field name loss 0.1633 lr 1.23e-05 512 pairs/s
+step 900/2083 field name loss 0.3695 lr 1.13e-05 511 pairs/s
+step 1000/2083 field name loss 0.2385 lr 1.04e-05 509 pairs/s
+step 1100/2083 field name loss 0.2337 lr 9.43e-06 508 pairs/s
+step 1200/2083 field name loss 0.2293 lr 8.47e-06 507 pairs/s
+step 1300/2083 field name loss 0.2516 lr 7.51e-06 506 pairs/s
+step 1400/2083 field name loss 0.3282 lr 6.55e-06 506 pairs/s
+step 1500/2083 field name loss 0.1808 lr 5.59e-06 505 pairs/s
+step 1600/2083 field name loss 0.3646 lr 4.63e-06 504 pairs/s
+step 1700/2083 field name loss 0.1619 lr 3.67e-06 504 pairs/s
+step 1800/2083 field name loss 0.1777 lr 2.71e-06 504 pairs/s
+step 1900/2083 field name loss 0.2374 lr 1.75e-06 503 pairs/s
+step 2000/2083 field name loss 0.2593 lr 7.87e-07 503 pairs/s
+step 2082/2083 field name loss 0.2075 lr 0.00e+00 503 pairs/s
+{"split": "val_v1", "neg": "blocker", "neg_frac": 0.25, "epochs": 1, "base_model": "intfloat/multilingual-e5-small", "n_triples": 400000, "n_hard_negatives": 416985, "steps": 2083, "batch": 192, "lr": 2e-05, "tau": 0.05, "max_length": 64, "seed": 0, "train_seconds": 796.2, "pairs_used": 399936, "gpu": "Tesla T4", "torch": "2.8.0+cu128"}

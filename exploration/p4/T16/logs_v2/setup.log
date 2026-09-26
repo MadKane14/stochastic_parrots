@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+d81aecd p4 T12: fine-tuning v2 option (hard negatives = top blocker non-matches on a train-side sample, epochs), Kaggle kernel comparing pretrained / v1 / v2
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-b7ef39ad-4cfe-ccff-fff9-647e12be60f9)
+GPU 1: Tesla T4 (UUID: GPU-7be428ea-9738-e61d-cab2-9423c2487e3d)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

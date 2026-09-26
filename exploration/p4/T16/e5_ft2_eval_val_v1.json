@@ -1,0 +1,68 @@
+[
+ {
+  "model": "intfloat/multilingual-e5-small",
+  "field": "name",
+  "n_pairs": 1473511,
+  "pos": 151094,
+  "auc": 0.93794,
+  "ap": 0.67864,
+  "top1_true": 0.86937,
+  "auc_nonlatin": 0.96606,
+  "n_nonlatin": 77750
+ },
+ {
+  "model": "intfloat/multilingual-e5-small",
+  "field": "full",
+  "n_pairs": 1473511,
+  "pos": 151094,
+  "auc": 0.99447,
+  "ap": 0.97643,
+  "top1_true": 0.99478,
+  "auc_nonlatin": 0.98891,
+  "n_nonlatin": 77750
+ },
+ {
+  "model": "/kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft/models/ft_val_v1",
+  "field": "name",
+  "n_pairs": 1473511,
+  "pos": 151094,
+  "auc": 0.97852,
+  "ap": 0.80544,
+  "top1_true": 0.91354,
+  "auc_nonlatin": 0.99886,
+  "n_nonlatin": 77750
+ },
+ {
+  "model": "/kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft/models/ft_val_v1",
+  "field": "full",
+  "n_pairs": 1473511,
+  "pos": 151094,
+  "auc": 0.99956,
+  "ap": 0.99607,
+  "top1_true": 0.99885,
+  "auc_nonlatin": 0.99992,
+  "n_nonlatin": 77750
+ },
+ {
+  "model": "/kaggle/working/models/ft2_val_v1",
+  "field": "name",
+  "n_pairs": 1473511,
+  "pos": 151094,
+  "auc": 0.9811,
+  "ap": 0.82268,
+  "top1_true": 0.92656,
+  "auc_nonlatin": 0.99916,
+  "n_nonlatin": 77750
+ },
+ {
+  "model": "/kaggle/working/models/ft2_val_v1",
+  "field": "full",
+  "n_pairs": 1473511,
+  "pos": 151094,
+  "auc": 0.99968,
+  "ap": 0.9978,
+  "top1_true": 0.99969,
+  "auc_nonlatin": 0.99997,
+  "n_nonlatin": 77750
+ }
+]
