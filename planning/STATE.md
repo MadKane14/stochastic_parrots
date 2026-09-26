@@ -52,6 +52,7 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 1 | Fri | ~00:40 | 20260925-233233_p1_T03_T03_sub_test_d4f44c | T03_sub / 94bb5d8 | 0.96961 | **0.9487** | val_v1@0.1 said 0.9917; top of LB 0.9884 |
 | 2 | Sat | ~09:00 | 20260926-063526_p1_T09_T08_sub_test_724a04 | T08_sub / c1b9f99 | 0.97885 | **0.969** | validator PASS (--check-ids); expected-F on test 0.981 vs 0.961 for #1 (`exploration/p1/expected_f_out.md`) |
 | 3 | Sat | _to upload_ | 20260926-171638_p1_T13_T10_e5_test_08f49f | T10_e5 / 4e6d871 | 0.98313 | _pending_ | validator PASS (--check-ids); T09 (+p2_translit) + pretrained E5 |
+| 4 | Sat | _to upload_ | 20260926-201615_p1_T13_T13_sub4_test_fb141a | T13_sub4 / 1d9e21b | 0.98405 (T12_noise2) | _pending_ | + p1_noise + learned pruning: ~6.5 cands/S1 (was ~35); validator PASS |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
