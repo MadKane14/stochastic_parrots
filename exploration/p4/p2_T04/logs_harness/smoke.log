@@ -1,0 +1,6 @@
+$ python src/run.py run -c configs/exp/p2/T04_a.yaml --smoke --task T04
+[val_v1@0.1 SMOKE] 20260925-230115_p4_T04_T04_a_val_v1@0.1_7474a1_smoke
+  F0.5=0.9938 CI95=[0.99228, 0.99509]  singleton_acc=0.9872  pairP=0.99811 pairR=0.98766
+  blocking: oracle_F0.5=0.9999 pair_recall=0.99953 cands/s1=32.75  scorer={'roc_auc': 0.99979, 'avg_precision': 0.99857}
+  by_country={"India": {"n": 1766, "f05": 0.99018}, "US": {"n": 2566, "f05": 0.99627}}  runtime=193.8s 
+  results: /kaggle/working/results/p4/smoke/20260925-230115_p4_T04_T04_a_val_v1@0.1_7474a1_smoke.json

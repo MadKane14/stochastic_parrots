@@ -1,0 +1,31 @@
+{
+ "label": "base",
+ "config": "code/business_entity_resolution/configs/best.yaml",
+ "qfrac": 0.1,
+ "metrics": {
+  "pair_recall": 0.9805,
+  "oracle_f05": 0.9932,
+  "cands_mean": 142.6859,
+  "cands_p95": 301.0,
+  "cands_max": 1126,
+  "recall_India": 0.9731,
+  "recall_US": 0.9856,
+  "recall_nonlatin_name": 0.9183,
+  "n_nonlatin_name": 54800,
+  "recall_web_name": 0.9502,
+  "n_web_name": 39208,
+  "recall_empty_addr": 0.8809,
+  "n_empty_addr": 33557,
+  "recall_letter_run_name": 0.9937,
+  "n_letter_run_name": 26294
+ },
+ "timings_s": {
+  "b0_p1_compound": 609.6
+ },
+ "peak_rss_gb": 27.4,
+ "normalizer_stats": {
+  "normalize_s": 372.4
+ },
+ "host": "ba426b9118d2",
+ "time": "2026-09-25 23:20"
+}

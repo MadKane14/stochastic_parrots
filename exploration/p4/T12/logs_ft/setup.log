@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+188f228 p4 T12: contrastive fine-tuning of e5-small on train pairs (same-address hard negatives), intrinsic eval on held-out blocker candidates, Kaggle kernel
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-9066926b-0abe-5d77-09ac-c30184af9324)
+GPU 1: Tesla T4 (UUID: GPU-fa5ae009-3743-ad77-98c1-e653df709cbc)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

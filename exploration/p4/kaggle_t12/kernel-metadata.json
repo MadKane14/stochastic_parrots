@@ -1,0 +1,16 @@
+{
+  "id": "anishtoshniwal006/ber-p4-t12",
+  "title": "ber-p4-t12",
+  "code_file": "ber_p4_t12.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "machine_shape": "",
+  "dataset_sources": ["anishtoshniwal006/ber-data-p4", "anishtoshniwal006/ber-p4-code"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

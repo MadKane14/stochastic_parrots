@@ -1,0 +1,5 @@
+# T12 (p4) ablation: T12_e5 with only the E5 cosines (rank/gap group features dropped). Same features as T12_e5,
+# so dense_cv.py reuses T12_e5's feature cache; only the scorer is refit.
+inherit: T12_e5.yaml
+scorer:
+  params: {drop_features: ['^f_p4_e5_.*_(gap|rank)$']}

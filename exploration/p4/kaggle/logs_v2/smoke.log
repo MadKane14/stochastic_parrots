@@ -1,0 +1,14 @@
+$ python src/run.py run -c configs/exp/p4/T06_e5.yaml --smoke --task T06
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+[p4_e5] name: embedded 89,375 new texts in 131.2s (681/s); 0 from cache
+[p4_e5] addr: embedded 88,723 new texts in 13.1s (6,762/s); 0 from cache
+[p4_e5] full: embedded 99,084 new texts in 18.0s (5,515/s); 0 from cache
+[p4_e5] name: embedded 21,948 new texts in 2.2s (10,125/s); 467 from cache
+[p4_e5] addr: embedded 22,169 new texts in 3.0s (7,353/s); 9 from cache
+[p4_e5] full: embedded 24,687 new texts in 4.5s (5,448/s); 0 from cache
+[val_v1@0.1 SMOKE] 20260925-204144_p4_T06_T06_e5_val_v1@0.1_b35e9f_smoke
+  F0.5=0.9936 CI95=[0.99208, 0.99489]  singleton_acc=0.983  pairP=0.99724 pairR=0.98813
+  blocking: oracle_F0.5=0.9997 pair_recall=0.99913 cands/s1=32.78  scorer={'roc_auc': 0.99975, 'avg_precision': 0.99449}
+  by_country={"India": {"n": 1766, "f05": 0.99063}, "US": {"n": 2566, "f05": 0.99556}}  runtime=407.7s 
+  results: /kaggle/working/results/p4/smoke/20260925-204144_p4_T06_T06_e5_val_v1@0.1_b35e9f_smoke.json

@@ -1,0 +1,16 @@
+23:00:24 rc=0       0s  setup: git clone -b w/p2 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+23:00:24 rc=0       0s  setup: nproc; free -g; df -h /tmp /kaggle/working; python --version
+23:01:02 rc=0      38s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements.txt
+23:01:09 rc=0       8s  check: python src/run.py check
+23:01:10 rc=0       1s  check: python exploration/p2/test_translit.py
+23:20:22 rc=0    1152s  blk_base: python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/best.yaml --qfrac 0.1 --label base --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/base_q0.1.json
+23:20:22 rc=0       0s  cleanup: rm -f /tmp/ber_artifacts/cache/p2blk_norm_*
+23:43:51 rc=0    1409s  blk_T04_a: python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/exp/p2/T04_a.yaml --qfrac 0.1 --label T04_a --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/T04_a_q0.1.json
+23:43:51 rc=0       0s  cleanup: rm -f /tmp/ber_artifacts/cache/p2blk_norm_*
+00:09:01 rc=0    1509s  blk_T04_d: python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/exp/p2/T04_d.yaml --qfrac 0.1 --label T04_d --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/T04_d_q0.1.json
+00:09:01 rc=0       0s  cleanup: rm -f /tmp/ber_artifacts/cache/p2blk_norm_*
+00:35:26 rc=0    1585s  blk_T04_c: python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/exp/p2/T04_c.yaml --qfrac 0.1 --label T04_c --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/T04_c_q0.1.json
+00:35:26 rc=0       0s  cleanup: rm -f /tmp/ber_artifacts/cache/p2blk_norm_*
+00:56:33 rc=137    1267s  blk_T04_b: python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/exp/p2/T04_b.yaml --qfrac 0.1 --label T04_b --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/T04_b_q0.1.json
+00:56:33 rc=0       0s  cleanup: rm -f /tmp/ber_artifacts/cache/p2blk_norm_*
+00:56:33 rc=0       0s  done: free -g; du -sh /tmp/ber_artifacts/* 2>/dev/null; ls -R /kaggle/working

@@ -1,0 +1,22 @@
+$ python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/exp/p2/T04_c.yaml --qfrac 0.1 --label T04_c --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/T04_c_q0.1.json
+normalized 12,527,040 records in 554s; stats {'normalize_s': 554.0, 'name_pairs_with_native': 496440, 'name_map_size': 937, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'name_native_rows': 752869, 'addr_native_rows': 953299}}
+loaded 10,540,382 records, 220,163 S1 queries (638s, peak 12.1 GB)
+2026-09-26 00:21:02,747 ber.blocking.p1_compound tokenize 52s
+2026-09-26 00:22:16,654 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 26713898 features (30.0/record), built in 73s
+2026-09-26 00:25:01,230 ber.blocking.p1_compound group 0 forward top-30: 165s
+2026-09-26 00:27:37,198 ber.blocking.p1_compound group 0 reverse top-3: 156s
+2026-09-26 00:29:00,148 ber.blocking.p1_compound group 1: 88077 S1 x 4133346 right, 15541009 features (57.9/record), built in 83s
+2026-09-26 00:32:06,038 ber.blocking.p1_compound group 1 forward top-30: 186s
+2026-09-26 00:34:58,748 ber.blocking.p1_compound group 1 reverse top-3: 173s
+blocker b0_p1_compound: 31,475,037 pairs in 903s (peak 28.3 GB)
+
+## T04_c — 2026-09-26 00:35 — config=code/business_entity_resolution/configs/exp/p2/T04_c.yaml qfrac=0.1 BER_THREADS=4 host=ba426b9118d2
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 903.0}; peak RSS 28.3 GB; normalizer stats: {'normalize_s': 554.0, 'name_pairs_with_native': 496440, 'name_map_size': 937, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'name_native_rows': 752869, 'addr_native_rows': 953299}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T04_c | 0.9844 | 0.9948 | 142.9624 | 304.0 | 1126 | 0.9827 | 0.9856 | 0.9779 | 0.95 | 0.8781 | 0.9937 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294

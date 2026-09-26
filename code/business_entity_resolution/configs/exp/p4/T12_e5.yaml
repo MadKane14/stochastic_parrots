@@ -1,0 +1,14 @@
+# T12 (p4) hypothesis: E5 cosine features (name, name+address) + their rank/gap within each S1 entity and each
+# S2/S3 record raise dense CV over T08_sub AND raise dense LOCO (a multilingual encoder should transfer to an unseen
+# country/script better than string features). Everything else = T08_sub (submission #2 candidate).
+# Judge with exploration/p1/dense_cv.py (+ --loco) vs T08_sub, same commit and machine.
+# model: intfloat/multilingual-e5-small, licence: MIT, params: 117,653,760 (counted at load)
+inherit: ../p1/T08_sub.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p4_e5
+    params: {model: intfloat/multilingual-e5-small, fields: [name, full], max_length: 64, batch_size: 512,
+             group_feats: true, group_sides: [s1, rec]}

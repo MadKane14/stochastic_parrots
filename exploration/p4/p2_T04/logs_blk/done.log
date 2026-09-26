@@ -1,0 +1,28 @@
+$ free -g; du -sh /tmp/ber_artifacts/* 2>/dev/null; ls -R /kaggle/working
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          30           0           0          30
+Swap:              0           0           0
+875M	/tmp/ber_artifacts/cache
+/kaggle/working:
+blk_eval_json
+blk_eval_out.md
+logs
+summary.txt
+
+/kaggle/working/blk_eval_json:
+base_q0.1.json
+T04_a_q0.1.json
+T04_c_q0.1.json
+T04_d_q0.1.json
+
+/kaggle/working/logs:
+blk_base.log
+blk_T04_a.log
+blk_T04_b.log
+blk_T04_c.log
+blk_T04_d.log
+check.log
+cleanup.log
+done.log
+pip.log
+setup.log

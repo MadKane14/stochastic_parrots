@@ -1,0 +1,27 @@
+train: 12,527,040 records loaded in 31s
+train/name: 12,527,040 texts, 9,523,680 unique non-empty, 9,523,680 to embed
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+  1,000,000/9,523,680  9,562/s
+  2,000,000/9,523,680  9,301/s
+  3,000,000/9,523,680  9,082/s
+  4,000,000/9,523,680  8,993/s
+  5,000,000/9,523,680  8,896/s
+  6,000,000/9,523,680  8,865/s
+  7,000,000/9,523,680  8,809/s
+  8,000,000/9,523,680  8,785/s
+  9,000,000/9,523,680  8,771/s
+  9,523,680/9,523,680  8,765/s
+{"part": "train", "field": "name", "records": 12527040, "unique_nonempty": 9523680, "embedded": 9523680, "seconds": 1086.5, "texts_per_s": 8765.4, "gpu": "Tesla T4", "cache_bytes": 7390380700}
+test: 11,702,133 records loaded in 23s
+test/name: 11,702,133 texts, 9,114,719 unique non-empty, 8,435,277 to embed
+  1,000,000/8,435,277  9,676/s
+  2,000,000/8,435,277  9,107/s
+  3,000,000/8,435,277  8,963/s
+  4,000,000/8,435,277  8,856/s
+  5,000,000/8,435,277  8,791/s
+  6,000,000/8,435,277  8,795/s
+  7,000,000/8,435,277  8,790/s
+  8,000,000/8,435,277  8,787/s
+  8,435,277/8,435,277  8,775/s
+{"part": "test", "field": "name", "records": 11702133, "unique_nonempty": 9114719, "embedded": 8435277, "seconds": 961.3, "texts_per_s": 8775.1, "gpu": "Tesla T4", "cache_bytes": 13936160170}

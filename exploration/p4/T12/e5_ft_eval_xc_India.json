@@ -1,0 +1,46 @@
+[
+ {
+  "model": "intfloat/multilingual-e5-small",
+  "field": "name",
+  "n_pairs": 2958074,
+  "pos": 301312,
+  "auc": 0.91359,
+  "ap": 0.60895,
+  "top1_true": 0.78747,
+  "auc_nonlatin": 0.97017,
+  "n_nonlatin": 420828
+ },
+ {
+  "model": "intfloat/multilingual-e5-small",
+  "field": "full",
+  "n_pairs": 2958074,
+  "pos": 301312,
+  "auc": 0.98635,
+  "ap": 0.94359,
+  "top1_true": 0.98088,
+  "auc_nonlatin": 0.98414,
+  "n_nonlatin": 420828
+ },
+ {
+  "model": "/kaggle/working/models/ft_xc_India",
+  "field": "name",
+  "n_pairs": 2958074,
+  "pos": 301312,
+  "auc": 0.95664,
+  "ap": 0.72196,
+  "top1_true": 0.83746,
+  "auc_nonlatin": 0.99307,
+  "n_nonlatin": 420828
+ },
+ {
+  "model": "/kaggle/working/models/ft_xc_India",
+  "field": "full",
+  "n_pairs": 2958074,
+  "pos": 301312,
+  "auc": 0.99382,
+  "ap": 0.96543,
+  "top1_true": 0.98688,
+  "auc_nonlatin": 0.99753,
+  "n_nonlatin": 420828
+ }
+]
