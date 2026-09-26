@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+d62ddbe p4 T16: v2 results (blocker negatives: better in-country, worse unseen-country), --mix option, kernels T16a (recipe on US->India) and T16b (cross-fitting vs naive on val)
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-85e1307e-dc9f-54da-3164-4b01febec782)
+GPU 1: Tesla T4 (UUID: GPU-737e4f76-111a-0d70-84da-89413f522a13)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

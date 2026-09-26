@@ -116,13 +116,14 @@ class Pipeline:
         return merged
 
     def _features(self, ds: Dataset, pairs: pd.DataFrame) -> pd.DataFrame:
+        frames = []   # feature sets only read pairs' id columns: collect, then concatenate ONCE (one copy, not one per set)
         for fs in self.featuresets:
             t0 = time.time()
             f = fs.transform(ds, pairs)
             schema.check_features(f, pairs, f"features:{fs.registry_name}")
-            pairs = pd.concat([pairs, f], axis=1)
+            frames.append(f)
             self._tick(f"features:{fs.registry_name}", t0)
-        return pairs
+        return pd.concat([pairs, *frames], axis=1) if frames else pairs
 
     def _prune_view(self, pairs: pd.DataFrame) -> pd.DataFrame:
         cols = ["s1_id", "cand_id"] + [c for c in ("label",) if c in pairs.columns] + list(self.prune_cfg["features"])

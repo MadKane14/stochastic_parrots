@@ -15,11 +15,14 @@ Differences from exploration/p1/blk_eval.py and exploration/p3/blk_union.py:
   * per-S1 caps emulate Pipeline._block exactly (best rank over blockers); recall is also reported on raw-defined
     subsets of true pairs (right address empty / right name non-ASCII after normalization / no shared name token),
     plus each blocker's unique contribution to the uncapped union.
+  * T15: blockers exposing `candidate_rows_prov` (p3_compound_rc, p3_chargram) also store which pairs came only from
+    the reverse direction; `--rev-caps 5,10,20` then emulates their `rev_cap` option (keep all forward pairs + the
+    best `rev_cap` reverse-only pairs per S1, ranks recomputed) crossed with the per-S1 caps, from one run.
 
 Usage (repo root, Linux, env as in CLAUDE.md):
     nice -n 10 python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 50,70,100 \
         --config code/business_entity_resolution/configs/exp/p3/T11_a.yaml [--config ... ] \
-        --out exploration/p3/blk_dense_out.md [--misses 40]
+        --out exploration/p3/blk_dense_out.md [--misses 40] [--rev-caps 5,10,20]
 """
 from __future__ import annotations
 
@@ -49,6 +52,7 @@ import pyarrow.parquet as pq  # noqa: E402
 import blk_eval as be  # noqa: E402
 from ber.config import env, load_config  # noqa: E402
 from ber.data import unit_hash  # noqa: E402
+from ber.blocking.p3_revcap import cap_reverse  # noqa: E402
 from ber.pipeline import _component_fp  # noqa: E402
 from ber.registry import build  # noqa: E402
 
@@ -107,15 +111,21 @@ def run_one(cfg: dict, i: int, qfrac: float, dense: bool, group: str, out: Path)
           flush=True)
     b = build("blocker", cfg["blocking"]["blockers"][i])
     t = time.time()
-    r, c, v = b.candidate_rows(recs)
+    if hasattr(b, "candidate_rows_prov"):            # candidates + reverse-only flag (rev_cap emulation)
+        r, c, v, is_rev = b.candidate_rows_prov(recs)
+        keep = cap_reverse(r, v, is_rev, getattr(b, "rev_cap", None))
+        r, c, v, is_rev = r[keep], c[keep], v[keep], is_rev[keep]
+    else:
+        r, c, v = b.candidate_rows(recs)
+        is_rev = np.zeros(len(r), bool)
     secs = time.time() - t
     order = np.lexsort((-v, r))
-    r, c = r[order], c[order]
+    r, c, is_rev = r[order], c[order], is_rev[order]
     start = np.r_[0, np.flatnonzero(np.diff(r)) + 1]
     rank = np.arange(len(r)) - np.repeat(start, np.diff(np.r_[start, len(r)]))
     out.parent.mkdir(parents=True, exist_ok=True)
     np.savez(out.with_suffix(".tmp.npz"), key=pos[r].astype(np.int64) * n_all + pos[c], rank=rank.astype(np.int32),
-             secs=secs, peak_gb=be.peak_gb(), n=n_all)
+             is_rev=is_rev, secs=secs, peak_gb=be.peak_gb(), n=n_all)
     out.with_suffix(".tmp.npz").replace(out)
     print(f"blocker {i} group {group}: {len(r):,} pairs in {secs:.0f}s, peak {be.peak_gb():.1f} GB -> {out}", flush=True)
 
@@ -139,6 +149,22 @@ def union_keys(chans: list[tuple[np.ndarray, np.ndarray]], n: int, cap: int | No
     return keys
 
 
+def rev_capped(chan: tuple, n: int, cap: int | None) -> tuple[np.ndarray, np.ndarray]:
+    """Emulate a blocker's `rev_cap` on its stored (key, rank, is_rev): keep forward pairs + the `cap` best-ranked
+    reverse-only pairs per S1, then recompute the rank within S1 over the kept pairs (what the pipeline sees)."""
+    key, rank, is_rev = chan
+    if cap is None or not is_rev.any():
+        return key, rank
+    s1 = key // n
+    keep = cap_reverse(s1, -rank.astype(np.float64), is_rev, cap)
+    key, rank, s1 = key[keep], rank[keep], s1[keep]
+    o = np.lexsort((rank, s1))
+    key, s1 = key[o], s1[o]
+    start = np.r_[0, np.flatnonzero(np.diff(s1)) + 1] if len(s1) else np.zeros(0, np.int64)
+    new_rank = np.arange(len(s1)) - np.repeat(start, np.diff(np.r_[start, len(s1)]))
+    return key, new_rank.astype(np.int32)
+
+
 def read_gt() -> dict:
     df = pd.read_csv(Path(env("BER_DATA_DIR")) / "train" / "train_ground_truth.tsv", sep="\t", dtype=str,
                      keep_default_na=False, na_filter=False)
@@ -155,6 +181,7 @@ def main():
     ap.add_argument("--group", default="")
     ap.add_argument("--caps", default="", help="extra per-S1 caps, e.g. 50,70,100")
     ap.add_argument("--misses", type=int, default=0, help="print this many missed pairs of the first config (config cap)")
+    ap.add_argument("--rev-caps", default="", help="reverse-only caps per S1 to emulate, e.g. 5,10,20 (T15)")
     ap.add_argument("--out", default=str(REPO / "exploration/p3/blk_dense_out.md"))
     a = ap.parse_args()
     cfgs = [load_config(c) for c in a.config]
@@ -223,8 +250,9 @@ def main():
             assert all(int(z["n"]) == n for z in zs), "record order differs between cached runs"
             k = np.concatenate([z["key"] for z in zs])
             r = np.concatenate([z["rank"] for z in zs])
-            sel = q[k // n]                       # only query S1 are scored
-            chans.append((k[sel], r[sel]))
+            f = np.concatenate([z["is_rev"] if "is_rev" in z.files else np.zeros(len(z["key"]), bool) for z in zs])
+            sel = q[k // n]                       # only query S1 are scored (per-S1 caps are per S1: exact)
+            chans.append((k[sel], r[sel], f[sel]))
             secs.append(sum(float(z["secs"]) for z in zs))
             peaks.append(max(float(z["peak_gb"]) for z in zs))
 
@@ -248,17 +276,25 @@ def main():
 
         names = [f"b{i}_{s['name']}" for i, s in enumerate(specs)]
         rows = [{"candidates": nm, **metrics(np.unique(ch[0]))} for nm, ch in zip(names, chans)]
+        rev_share = [float(ch[2].mean()) if len(ch[2]) else 0.0 for ch in chans]
+        chans2 = [(ch[0], ch[1]) for ch in chans]
         cfg_cap = cfg["blocking"].get("max_candidates")
         caps = sorted({int(x) for x in a.caps.split(",") if x} | ({int(cfg_cap)} if cfg_cap else set()))
-        full = union_keys(chans, n, None)
-        if len(chans) > 1:
+        full = union_keys(chans2, n, None)
+        if len(chans2) > 1:
             rows.append({"candidates": "union", **metrics(full)})
             for i, nm in enumerate(names):   # unique contribution: recall lost when blocker i is removed
-                rest = union_keys([c for j, c in enumerate(chans) if j != i], n, None)
+                rest = union_keys([c for j, c in enumerate(chans2) if j != i], n, None)
                 rows.append({"candidates": f"union - {nm}", **metrics(rest)})
         for cap in caps:
             rows.append({"candidates": f"union cap {cap}" + (" (config)" if cap == cfg_cap else ""),
-                         **metrics(union_keys(chans, n, cap))})
+                         **metrics(union_keys(chans2, n, cap))})
+        rev_caps = [int(x) for x in a.rev_caps.split(",") if x]
+        for rc in rev_caps:   # T15: reverse-flood caps (per blocker with provenance) x per-S1 caps
+            rchans = [rev_capped(ch, n, rc) for ch in chans]
+            for cap in [None, *caps]:
+                rows.append({"candidates": f"rev_cap {rc}" + (f" + cap {cap}" if cap else ""),
+                             **metrics(union_keys(rchans, n, cap))})
         rows = [{k: (round(float(v), 4) if not isinstance(v, str) else v) for k, v in r.items()} for r in rows]
         for r in rows:
             print(r, flush=True)
@@ -269,6 +305,8 @@ def main():
                  "- blockers: " + "; ".join(f"`{s['name']} {json.dumps(s.get('params') or {})}`" for s in specs),
                  f"- records {n:,} (S1 {int(is_s1.sum()):,}, query S1 {len(q_rows):,}, right {n - int(is_s1.sum()):,});"
                  f" query GT pairs {len(gt_keys):,}; subset sizes {n_subset}",
+                 "- share of reverse-only pairs per blocker (query S1): "
+                 + ", ".join(f"{nm}={sh:.3f}" for nm, sh in zip(names, rev_share)),
                  "- blocking time summed over groups (s) / max peak RSS (GB) per blocker: "
                  + ", ".join(f"{nm}={t:.0f}s/{p:.1f}GB" for nm, t, p in zip(names, secs, peaks))
                  + (f" — at dense=True this is the full-train blocking time (test ≈ x{1.73 / 2.21:.2f})" if a.dense
@@ -278,7 +316,7 @@ def main():
         sections.append("\n".join(lines))
         print(sections[-1], flush=True)
         if a.misses and path == a.config[0]:
-            keys = union_keys(chans, n, cfg_cap)
+            keys = union_keys(chans2, n, cfg_cap)
             missed = gt_keys[~np.isin(gt_keys, keys)]
             rng = np.random.default_rng(0)
             show = rng.choice(missed, size=min(a.misses, len(missed)), replace=False)

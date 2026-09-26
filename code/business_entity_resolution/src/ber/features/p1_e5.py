@@ -42,7 +42,8 @@ def _rank_gap(gid: np.ndarray, v: np.ndarray):
     first = np.r_[True, g[1:] != g[:-1]]
     start = np.maximum.accumulate(np.where(first, np.arange(len(g)), 0))
     rank = np.empty(len(v), np.float32); rank[order] = np.arange(len(g)) - start + 1
-    gap = np.empty(len(v), np.float32); gap[order] = s[start] - s
+    with np.errstate(invalid="ignore"):                       # -inf - -inf for all-NaN groups -> NaN below
+        gap = np.empty(len(v), np.float32); gap[order] = s[start] - s
     gap[~np.isfinite(gap)] = np.nan
     return rank, gap
 
@@ -97,16 +98,22 @@ class E5MemmapCosine(FeatureSet):
         li = index.get_indexer(pairs["s1_id"])
         ri = index.get_indexer(pairs["cand_id"])
         out = {}
+        s1u = np.unique(li)                       # S1 rows repeat ~30x: read each once
+        order = np.argsort(ri, kind="stable")     # right rows read in sorted order (sequential memmap access)
         for field in self.fields:
             M = self.matrix(ds, field)
+            E1 = np.asarray(M[s1u])               # (n_S1, dim) fp16, ~1.7 GB on full train
             cos = np.empty(len(pairs), np.float32)
             for s in range(0, len(pairs), self.chunk):
-                a = np.asarray(M[li[s:s + self.chunk]], dtype=np.float32)
-                b = np.asarray(M[ri[s:s + self.chunk]], dtype=np.float32)
+                o = order[s:s + self.chunk]
+                ru, inv = np.unique(ri[o], return_inverse=True)
+                b = np.asarray(M[ru], dtype=np.float32)[inv]
+                a = E1[np.searchsorted(s1u, li[o])].astype(np.float32)
                 c = np.einsum("ij,ij->i", a, b)
                 zero = (np.abs(a).sum(1) == 0) | (np.abs(b).sum(1) == 0)
                 c[zero] = np.nan
-                cos[s:s + len(c)] = c
+                cos[o] = c
+            del E1
             out[f"f_p1_e5_{field}_cos"] = cos
             for side, gid in (("s1", li), ("rec", ri)):
                 rank, gap = _rank_gap(gid, cos)

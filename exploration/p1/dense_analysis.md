@@ -122,3 +122,142 @@ By country: {"India": 0.95749, "US": 0.97769}
 - p=0.02 `Cava Cantor` | `111 Glenmere Avenue, Florida, NY`  ⇄  `Cava Services` | `` [S3]
 - p=0.21 `Jarlial Devices LLC` | `Oneonta, 2294 Sims Road, AL`  ⇄  `Jarlial Devices` | `` [S3]
 - p=0.04 `Unique Builders Private Limited` | `C/O Sh. Ramrao Dharaji, Ap Ektuni Tq Paithan, Ambad, Jalna, Maharashtra`  ⇄  `Unique Builders Private  Limited` | `` [S3]
+
+## 20260926-161049_densecv_T10_e5_08f49f — threshold 0.7 (dense CV F0.5 0.98313)
+
+- recomputed macro F0.5 0.98313; S1 2,206,821; predicted pairs 7,339,838; FP 22,604; FN in candidates 162,048; FN blocking 159,083
+
+FP by type × ownership of the wrongly matched record:
+```
+record                             record owned by another S1  record unmatched (distractor)    All
+FP type                                                                                            
+all predictions wrong                                      36                             23     59
+extra, entity also has right ones                        6626                          14372  20998
+on singleton                                              348                           1199   1547
+All                                                      7010                          15594  22604
+```
+- FPs whose record's true owner S1 was ALSO a candidate of that record: 5,303 (23.5% of FPs)
+
+FN inside candidates:
+```
+lost to another S1 (exclusivity)    81110
+below threshold                     80938
+```
+
+Macro-F0.5 loss by entity category:
+```
+                                      size  macro_loss
+cat                                                   
+non-singleton: FP                    19717     0.00195
+non-singleton: FP + blocking miss     1066     0.00015
+non-singleton: blocking miss only   129312     0.00780
+non-singleton: other               1933479     0.00629
+singleton                           123247     0.00068
+```
+
+By country: {"India": 0.98294, "US": 0.98326}
+
+#### FP all predictions wrong — record owned by another S1 (36)
+- p=0.70 `Siddiqui Welfare Society` | `7, H.Fb Bahadurpur Housing Colony, Patna, Bihar`  ⇄  `Siddiqui Society Center` | `` [S2] | true owner: `Siddiqui Welfare Society` | `Door No. 27-1/919-2, Nellore, Andhra Pradesh, Putta Street, Balaji Nagar, Nellore`
+- p=0.85 `Quik Medical Centre Corporation` | `Tc-79/4 Veli, Thiruvananthapuram, Trivandrum, Kerala`  ⇄  `Quik Medical  Centre Corporation` | `` [S2] | true owner: `Quik Medical Centre Corp` | `H No / # 00 Vidya Nagara, A Block, 1St Main, Harihara, Davanagere, Karnataka`
+- p=0.80 `Modern Builders Private Limited` | `Telangana, 8-1-307 & 8, Aditya Empress Towers Aziz Bagh, Puran Bagh, Shaikpet, Hyderabad, C-1104`  ⇄  `Synkelo` | `8-1-307/&8, Hyderabad, TG` [S3] | true owner: `Neo Imports Pvt Ltd` | `8-1-307/3&8, 1801, Aditya Empress Towers C Block, Shaikpet, Passsport Office Lane, Hyderabad, Telangana`
+- p=0.77 `Uptown Yoga` | `3201 Echeta, Gillette, WY`  ⇄  `Lyraevo` | `3200 ECHETA, GILLETTE, WY` [S2] | true owner: `Lamm, Shropshire and Dickens` | `3201 Echeta, Gillette, WY`
+- p=0.99 `Crystal & Co` | `Fl-A-1 Gr Floor, 20/1, Netaji Subhas Road, Kolkata, Kolkata, Howrah, West Bengal`  ⇄  `Crystal &  Co` | `1, Kolkata, Howrah, WB` [S3] | true owner: `Crystal & Co` | `1, R. N. Mukherjee Road Room No.-329, Kolkata, Kolkata, Howrah, West Bengal`
+- p=0.80 `First Industries Private Limited` | `Hyderabad, Ys Rao Towers, Sri Rama Colony, Jubilee Hills, 2Nd Floor, Telangana, Shaikpet`  ⇄  `*** First Industries Private` | `TG, Hyderabad` [S3] | true owner: `First Industries Private Limited` | `H.No 8-3-229/T/6, Tahir Ville Colony, Behind St. Marry'S College, Yousufguda Ch, Eck Post, Hyderabad, Telangana`
+- p=0.85 `Liberty Federal Xsolla` | `4325 28th Place, Portland, OR`  ⇄  `Liberty Federal Xsolla` | `` [S2] | true owner: `Liberty Federal Xsolla PC` | `14680 Hinton Drive, Fishers, IN`
+- p=0.76 `Amaya and Hebert` | `51 Manchester Drive, Staten Island, NY`  ⇄  `Amaya And Hebert` | `` [S3] | true owner: `Amaya and Hebert Group` | `1700 Harrison Street, Unit Ste F, Batesville, AR`
+- p=0.84 `Precision Printing Partners Inc` | `624 Maple Street, Oxnard, CA`  ⇄  `Precision-Printing Pártners` | `` [S3] | true owner: `Precision Printing Works` | `707 3rd Avenue, Unit 4, Lewistown, MT`
+- p=0.88 `Cascade Lafayette` | `405 Country Club Road, Lumberton, NC`  ⇄  `Cáscade-Lafayette` | `` [S3] | true owner: `Cascade Lafayette PC` | `612 Anchor Drive, Lafayette, IN`
+- p=0.82 `Cascade Lafayette` | `405 Country Club Road, Lumberton, NC`  ⇄  `Cascade  Lafayette` | `` [S2] | true owner: `Cascade Lafayette PC` | `612 Anchor Drive, Lafayette, IN`
+- p=0.94 `Anand Logistics Private Limited` | `Office No-09, 1St Floor Plot -66 Hilton, Thane, Maharashtra`  ⇄  `आनंद लॉजिस्टिक्स प्राइवेट लिमिटेड` | `66, THANE, महाराष्ट्र` [S2] | true owner: `Anand Logistics Private Limited` | `Plot No. 66A, Office 607, Sector 11, Cbd Belapur, Navi Mumbai, Thane, Maharashtra`
+#### FP all predictions wrong — record unmatched (distractor) (23)
+- p=0.81 `Patriot Council` | `399 Main Street, Dalton, MA`  ⇄  `Patriot Council  Inc` | `40 MAIN SAINT, DALTON, MA` [S2]
+- p=0.93 `Metropolitan Veterinary Clinic` | `24 Glendale Road, Fl 0, Saint Louis, MO`  ⇄  `METROPOLITAN VETERINARY CLINIC (EAST)` | `24 GLENDALE RD, SAINT LOUIS, MO` [S2]
+- p=0.88 `Galaxy Finance` | `Plot No-5 Block No-1 G.T Road Dilshad Garden Shahdara Near Sansar Fact, Ory, Delhi, North East, Delhi, 519-B-1`  ⇄  `गैलेक्सी फाइनेंस ट्रेडर्स` | `519-B, PLOT NO-5 BLOCK NO-1 G.T ROAD DILSHAD GARDEN SHAHDARA NEAR SANSAR FACT, ORY, DELHI, NORTH EAST, Delhi` [S2]
+- p=0.99 `Finance Transnational Solutions Private Limited` | `Kailash Business Park, 511/510 - C Wing Hiranandani Vikhroli Link Road, Vikhroli, West, Mumbai, Mumbai City, Maharashtra`  ⇄  `Finance Transnational Solutions` | `Usit No 310, Mumbai, Mumbai City, MH` [S3]
+- p=0.93 `Maa Projects Private Limited` | `Shivajinagar Fno.10, Pune, Maharashtra, Pune, 1099/B, Model Colony, Shirole House, Shivajinagar`  ⇄  `माँ प्रोजेक्ट्स प्राइवेट लिमिटेड` | `Pune, MH, Unit No 10, Pune City` [S3]
+- p=0.90 `Rosamund's Excavation Associates` | `4400 Shandwick Drive, Unit APT 93, Antelope, CA`  ⇄  `Rosamund's Excavation Associates Co` | `440 Shandwick Drive, Unit APT 93, Antelope, California` [S3]
+- p=0.92 `FGZ Vidya Ltd` | `Flat No 2, First Floor, Ananda Bhavan (Pillar Enclave), No.27, 10Th Avenue, Ashok Nagar, Chennai, Chennai City Corporation, Chennai, Tamil Nadu`  ⇄  `FGZ Vidya Infratech` | `H.NO 2 , FIRST FLOOR, ANANDA BHAVAN (PILLAR ENCLAVE), NO.27, 10TH AVENUE, ASHOK NAGAR, CHHNNAI, CHENNAI CITY CORPORATION, Tamil Nadu` [S2]
+- p=0.78 `Jemmie Chandler, DPM` | `1225 Fortune Drive, Fl 1, Medford, OR`  ⇄  `Jemmie Chandler, DP` | `001225 FORTUNE DRIVE, MEDFORD, OR` [S2]
+- p=0.77 `Sachish Hindustan` | `North 24 Parganas, Titagarh], Ground Floor, West Bengal, 30 Bt Road, Near- Khardah Janta Bhawan, Ps- Khardah, Post- Titagarh`  ⇄  `Sachish Hindustan Limited` | `No G-51 Ground Floor, 30 Bt Road, Near- Khardah Janta Bhawan, Ps- Khardah, Post- Titagarh, Titagarh], North 24 Parganas, WB` [S3]
+- p=0.84 `TA Media Private Limited` | `C/O Sri Radhey Shyam Sunanda Tower, Gorakhpur, Uttar Pradesh`  ⇄  `NTA Media Private Limited` | `C/o Sri Radhey Shyam Sunanda Tower, Gorakhpur, उत्तर प्रदेश` [S3]
+- p=0.82 `A Cure 9 You` | `TX, Lubbock, 4413 10th Street`  ⇄  `A Cure 9 You  Co` | `10 Main Street, Massachusetts, Southborough` [S3]
+- p=0.95 `Kaverora Telenetworks Private Limited` | `Plot No.7, House No. 13, Bhankhri Gbl School, Ballabgarh, Faridabad, Haryana`  ⇄  `Kaveroraer  Telenetworks Private Limited` | `Plot No.7, Ballabgarh, Fatehabad, HR` [S3]
+#### FP extra, entity also has right ones — record owned by another S1 (6,626)
+- p=0.71 `Jasper Ventures` | `11616 Maple Way, Louisville, KY`  ⇄  `Jasper Ventures` | `` [S3] | true owner: `Jasper Inc.` | `188 Linebacker Lane, Ferguson Twp, PA`
+- p=0.94 `LY Payment, LLC` | `New Holland, 871 Lauderman Road, OH`  ⇄  `LY Payment LLC Center` | `` [S3] | true owner: `LY Capital Payment LLC` | `TX, Austin, 3307 Dolphin Drive`
+- p=0.75 `Date, Zhao & Horner Perfect` | `3317 Stratford Court, Unit UNIT 3E, North Chicago, IL`  ⇄  `Date, Zhao & Horner Perfect` | `` [S2] | true owner: `Date, Zhao & Horner Perfect LP` | `5297 1000, Ligonier, IN`
+- p=0.72 `Rocky College` | `963 Wheatland Drive, IL, Crystal Lake`  ⇄  `ROCKY SERVICE` | `BRIARWOOD CIR, IL, CRYSTAL LAKE` [S2] | true owner: `Rocky Initiative` | `1497 Briarwood Circle, Crystal Lake, IL`
+- p=0.86 `One Technologies (India) Private Limited` | `Maharashtra, Aurangabad, Shreeram Chowk, Bajaj Nagar, Wadgaon Kolhati, Chh. Sambhajinagar, Aurangabad, Rx 6/8-17 Ayodhya Nagar`  ⇄  `Fluxkelobrix` | `POT NO.RX-17, AURANGABAD, CHH SAMBHAJINAGAR, महाराष्ट्र` [S2] | true owner: `XK (india) Pvt. Ltd.` | `Plot No.Rx-17, House Nod-9, Bajaj Nagar, Gangapur, Aurangabad, Maharashtra`
+- p=0.75 `Vasudha Solutions Private Limited` | `F No. G 102, P No. 54, Prince Cghs, I.P. Extn., East Delhi, Delhi`  ⇄  `Vasudha Private Solutions Limited` | `` [S3] | true owner: `Vasudha Solutions Private Limited` | `Nexus Builders Building No. C-2 /403 Housing Complex, Thane, Maharashtra`
+- p=0.76 `Abundis Cyber` | `68 Myrtle Drive, Unit A, Angier, NC`  ⇄  `Abundis Cytre` | `` [S2] | true owner: `Abundis Cyber` | `766 Green Street, Lewisburg, KY`
+- p=0.89 `Zephium Super Inc` | `8165 Indian Bend Road, Unit UNIT 142, Scottsdale, AZ`  ⇄  `Zephium Sfpe Inc` | `` [S2] | true owner: `Zephium Spire Inc` | `11025 Margatehall Drive, Bridgeton, MO`
+- p=1.00 `Global Software Private Limited` | `R.No 6, Chaudhari Chl E Ward Gandhi Nagar Janta Colony, Jogeshwari E, Mumbai, Mumbai City, Maharashtra`  ⇄  `ग्लोबल सॉफ्टवेयर प्राइवेट लिमिटेड` | `##6, MUMBAI CITY, MUMBAI, Maharashtra` [S2] | true owner: `Global Software Private Limited` | `6, Bhavsagar, Old Nagardas Cross Road Near Bhuta High School, Andheri (East), Maharashtra, Mumbai City, Mumbai`
+- p=0.75 `Great Software Private Limited` | `Navi Mumbai, Plot No. 54, Midc, Ttc Industrial Area, Mahape, Thane, Federal Engineers, Maharashtra`  ⇄  `Great  Software Private Limited` | `A-1-54, Mumbai, Mumbai City, MH` [S3] | true owner: `Great Software Private Limited` | `A-154, Floor 15, Plot 98, A, Nav Shanti Nagar Chs, Laxmibai Jagmohandas Marg, Malabar Hill, Mumbai, Mumbai City, Maharashtra`
+- p=0.82 `Cooperative Telecom Labs Center` | `2178 Bruce Road, Unit 107, Delaware, OH`  ⇄  `Cooperative Labs-Center Labs-Center` | `` [S3] | true owner: `Cooperative Telecom Labs` | `LA, Chauvin, 7338 Highway 56`
+- p=0.92 `Cook Empire` | `Unit Apartment C, 4358 94, NY, Goshen`  ⇄  `COOK EMPIRE` | `` [S2] | true owner: `Cook Empire Cadenza Inc.` | `122 Chinquapin Orchard, York County, VA`
+#### FP extra, entity also has right ones — record unmatched (distractor) (14,372)
+- p=0.83 `Smith Colonial Jewelers` | `2000 Sam Houston Road, Mesquite, TX`  ⇄  `Smith Colonial Jewelers LLC` | `200 SAM HOUSTON RD, MESQUITE, TX` [S2]
+- p=0.97 `Vanguard Global Holdings` | `6160 Rockburn Hill Road, Elkridge, MD`  ⇄  `VANGUARD GLOBDL HOLDINGS HOLDINGS` | `6162 ROCKBURN HILL ROAD, ELKRIDGE, MD` [S2]
+- p=0.97 `Casa By Private Limited` | `The Water Mark Building, Plot No.11 Surveyno.9, 8 Floor, Kondapur, Hitech City, Hyderabad, Rangareddy, Telangana`  ⇄  `Casa Bizz Prívate Limited` | `11 The Water Mark Building, Hyderabad, Rangareddy, TG` [S3]
+- p=0.75 `Summit Heartland Hub Inc.` | `4618 Washington Street, Unit 3B, Skokie, IL`  ⇄  `Summit Heartland Hub Inc` | `Skokie, # 3B, Illinois, 4621 Washington Street` [S3]
+- p=0.92 `Phyllida Mccormick Connecticut LLC` | `6846 Tabby Drive, Huber Heights, OH`  ⇄  `Phyllida Mccormick Connecticut Uptown LLC` | `6846 TABBY DRIVE, DAYTNO, OH` [S2]
+- p=0.99 `Keystone (india)` | `Door No. 28/280, Ground Floor, Perinthalmanna, Malappuram, Malapuram, Kerala`  ⇄  `KEYSTONE (ÍNDÍA) LLP` | `Kerala, DOOR NO. 28/28 , GROUND FLOOR, PERINTHALMANNA, MALAPPURAM` [S2]
+- p=0.85 `Devraj Polytechnic Group` | `P. S. Agrawal Raod, Santra Market, Nagpur, Maharashtra`  ⇄  `Engineering Devraj Group` | `NO ##71 P. S. AGRAWAL RAOD, MUMBAI, NAGPUR, महाराष्ट्र` [S2]
+- p=0.93 `Best Builders Private Limited` | `1091/1 Shop No 117 T/F, Ambawatta Complex Ward No 1 Mehrauli, New Delhi, South West Delhi, Delhi`  ⇄  `QK Private  Builders Limited` | `1091/1, AMBAWATTA COMPLEX, MAHRAULI, NEW DELHI, दिल्ली` [S2]
+- p=0.99 `Myriam Heaven Prairie Yhn L.L.C.` | `IL, Unit 2B, Mchenry, 721 Mill Street`  ⇄  `Myriam Heaven Prairie Yhn LLC` | `726 MILL ST, MCHENRY, IL` [S2]
+- p=0.89 `Akshay Welfare Society` | `Piyush Gupta S/O Vimal Gupta Metro Plaza Shop No 213 & 214, Baghpat Gate, Meerut, Uttar Pradesh`  ⇄  `AKSHAY WELFARE SOCIETY  LLP` | `DOOR NO 313 PIYUSH GUPTA S/O VIMAL GUPTA METRO PLAZA SHOP NO 213 & 227, BAGHPAT GATE, MEERUT, Uttar Pradesh` [S2]
+- p=0.80 `Clem Kluttz Safe Pyrophyte LLC` | `404 Lincoln Avenue, Unit Unit 20, Village Of Reeseville, WI`  ⇄  `Heidler Klutzf Safe Pyrophyte LLC` | `#404 LINCOLN AVE, REESEVILLE, WI` [S2]
+- p=0.99 `Amaya Ventures (India)` | `Narasus Murali Towers, No.18, Old Survey No. 117, New No. 83/1B1 & 84/16, John F Kennady R, Oad, Salem, Tamil Nadu`  ⇄  `Amaya Ventures (India) Limited` | `NO 83 NARASUS MURALI TOWERS, NO.18, OLD SURVEY NO. 117, NEW NO. 83/1B1 & 84/16, JOHN F KENNADY R, OAD, SALEM, தமிழ்நாடு` [S2]
+#### FP on singleton — record owned by another S1 (348)
+- p=0.84 `Sushila Trading Limited` | `B-18, Ganpati Enclave, Central Spine, Vidhyadhar Nagar, Jaipur, Rajasthan`  ⇄  `Sushila [Trading]` | `` [S3] | true owner: `Sushila Trading Pvt Ltd` | `A-2/1403, 14Th Floor Tower A 2, Gardenia Glory Noida Sector 46, Noida, Gautam Buddha Nagar, Uttar Pradesh`
+- p=0.76 `Lora's Machine Works LLC` | `8016 Wolftever Drive, Ooltewah, TN`  ⇄  `Lora's Machine LLC Services` | `` [S3] | true owner: `Lora's Machine Works LLC` | `5221 Sandwood Drive, Indianapolis, IN`
+- p=0.75 `OT Oxley` | `3994 Marquart Lane, Town Of Omro, WI`  ⇄  `NOVIYUMA` | `3994 MARQUART LANE, TOWN OF OMRO, WI` [S2] | true owner: `Superior Cascade Blackstone, Inc` | `3994 Marquart Lane, Town Of Omro, WI`
+- p=0.86 `Perfect Healthcare Private Limited` | `No 20, 1St Main Prakash Nagar, Bangalore, Karnataka`  ⇄  `Perfect Healthcare Private Ltd` | `No 02., Bangalore, ಕರ್ನಾಟಕ` [S3] | true owner: `Perfect Healthcare Private Limited` | `Karnataka, Bangalore, 1St Main, Gm Palya, New Thippasandra, Opp- Vaibhav Residency, Bangalore, No. 02`
+- p=0.91 `Craze Agro Pvt. Ltd.` | `E-48/9 Okhla Industrial Area, Phase-2, Delhi, South Delhi, Delhi`  ⇄  `Avinyla` | `E 48/9 Okhla Phase 2, Okhla Industrial Area, South Delhi, Delhi` [S3] | true owner: `Ternion Brothers Private Limited` | `E 48/9 Okhla Phase 2, Okhla Industrial Area, South Delhi, Delhi`
+- p=0.81 `Sweet Grill Center` | `CO, Pueblo West, 644 Song Sparrow Drive`  ⇄  `Sweet Grill! Center` | `` [S3] | true owner: `Sweet Grill!` | `55 Canterbury Lane, Tonawanda, NY`
+- p=0.80 `Mao Optics Corp` | `57-68 73 Place, Maspeth, NY`  ⇄  `Mao Opisc Corp` | `` [S2] | true owner: `Mao Optics Corp` | `54 Monhollen Drive, Corbin, KY`
+- p=0.70 `Sai Media` | `Orissa, Angula Mahumohan, C/O- Ramakanta Ghadei, Balasore, Baleswar`  ⇄  `Arcjax` | `C/O- Ramakanta Ghadei, Angula Mahumohan, Baleswar, Balasore, Orissa` [S3] | true owner: `PRK Managers Private Limited` | `C/O- Ramakanta Ghadei, Angula Mahumohan, Baleswar, Balasore, Orissa`
+- p=0.83 `Cure Grill LP` | `10700 Crestwood Drive, Unit UNIT 105, Prince William County, VA`  ⇄  `CURE-GRILL LP` | `` [S2] | true owner: `Cure Grill` | `2895 Us Highway 90A, Shiner, TX`
+- p=0.89 `Smail, Luci L., CPA` | `Salem, OH, 318 Woodland Avenue`  ⇄  `Smail, Luci L., CPA [of]` | `` [S3] | true owner: `Smail, Luci L., CPA of Redmond` | `14101 177th Court, Redmond, WA`
+- p=0.81 `Sunrise Exports Private Limited` | `Sr. No.172/10, Mehta Warehousing Company, Near Mseb, Pune - Saswad Road, Phursungi, Pune, Maharashtra`  ⇄  `सनराइज एक्सपोर्ट्स प्राइवेट लिमिटेड` | `10, THANE, KALYAN, Maharashtra` [S2] | true owner: `Sunrise Exports Private Limited` | `101, D-Wing, Mayur Vihar, Bhoirwadi Birla Collage Road, Kalyan West, Kalyan, Thane, Maharashtra`
+- p=0.79 `Supreme Newbridge Inc` | `4040 Laurel Court, Amelia County, VA`  ⇄  `Supreme Newbridge Inc.` | `` [S3] | true owner: `Supreme Newbridge` | `1611 Gardenia Drive, Houston, TX`
+#### FP on singleton — record unmatched (distractor) (1,199)
+- p=0.79 `AM Aspect Pvt Ltd` | `33/2 Nera Ramphal Chowk Palam Extension Sector Dwarka, North West, Delhi, E-600 Khasra No 33/1`  ⇄  `AI AI Aspect-Pvt` | `E-600 Khasra No 33/1, 33/2 Nera Ramphal Chowk Palam Extension Sector Dwarka, DL, Delhi, North West` [S3]
+- p=0.93 `Sanchez, Sellers and Fortin, Inc` | `10110 Beaumont Avenue, Chesterfield County, VA`  ⇄  `Sanchez, Sellers And Fortin Northside, Inc #79099` | `1011 Beaumont Avenue, Chesterfield County, Virginia` [S3]
+- p=0.73 `Tarini Foundation` | `731 10Th Main 34Th Crossjayanagar 4Th Block, Bangalore, Karnataka`  ⇄  `Tarini Foundation LLP` | `35 10Th Main 34Th Crossjayanagar 4Th Block, Bangalore, KA` [S3]
+- p=0.91 `Akaar Industries Group Limited` | `5-264, Bala Nagar Moosapet, Hyderabad, Telangana`  ⇄  `Akaar Industries Group Industries Ltd` | `5-277, BALA NAGAR MOOSAPET, Andhra Pradesh` [S2]
+- p=0.97 `New Delhi Trading LLP` | `1802 Iind Floorbhagirath Place, New Delhi, Central Delhi, Delhi`  ⇄  `New Dihhi Trading Group LLP (ID: 50844)` | `New Delhi, Iind Floorbhagirath Place, Central Delhi, दिल्ली` [S3]
+- p=0.72 `Meis Supply LLC` | `7618 Sni-a-bar Road, Kansas City, MO`  ⇄  `... lumio madison` | `7618 SNI-A-BAR ROAD, KANSAS CITY, MO` [S2]
+- p=0.97 `4232 Second Plaza Realty` | `311 Sparrow Lane, Princeton, TX`  ⇄  `Yumalyrazeph` | `Sparrow Lane, Princeton, Texas` [S3]
+- p=0.78 `UV It` | `210 Steel Chambersdevji Ratansi Marg Dana Bunder, Mumbai, Maharashtra`  ⇄  `UVV  It` | `NO 211 STEEL CHAMBERSDEVJI RATANSI MARG DANA BUNDER, MUMBAI, Maharashtra` [S2]
+- p=0.86 `Heartland Total Oceanhawk Associates` | `Unit 1, Boston, MA, 21 Chamberlain Street`  ⇄  `Heartland  Total Oceanhawk Associates Riverside - 9022724875` | `##25 Chamberlain Street, Unit 1, Dorchester Center, Massachusetts` [S3]
+- p=0.90 `Louisette Montgomery, DPM` | `15900 Coldwater Drive, Huntsville, AL`  ⇄  `Louisette Mcomtngomycr, PM` | `15900 Coldwater Dr, Huntsville, Alabama` [S3]
+- p=0.96 `Gangora Infra Private Limited` | `Ab - 14, Raj Dharshan, Opp Rly Platform 1, Behind Icici Atm, Thane, Maharashtra`  ⇄  `GANGORAYN INFRA PRIVATE LTD - 9540837177` | `AB - 14, RAJ DHARSHAN, OPP RLY PLATFORM 1, BEHIND ICICI ATM, THANE, Maharashtra` [S2]
+- p=0.98 `3682 Commerce Lane Owners Corp Group` | `MA, Boston, Unit 1, 15 Groveland Street`  ⇄  `3682 commerce lane owners corp [corp]` | `18 GROVELAND ST, PMB 5110, MATTAPAN, MA` [S2]
+#### FN below threshold (80,938)
+- p=0.54 `EA Services Private Limited` | `Flat No. 503, 5Th Floor, Prabhat Kiran Building 17 Rajendra Place, New Delhi, Delhi`  ⇄  `EA Services Private` | `` [S2]
+- p=0.43 `Baba Investment Private Limited` | `House No 1-7-816 Strt No, 9 Hanamkonda Shanthi Ngr, Hanamkonda, Warangal Urban, Telangana`  ⇄  `బాబా ఇన్వెస్ట్‌మెంట్ ప్రైవేట్ లిమిటెడ్` | `తెలంగాణ, HANAMKONDA, WARANGAL URBAN, NULL, 58 HOUSE NO 1-7-816 STRT NO` [S2]
+- p=0.28 `Apex Continental Futurecorp L.L.C.` | `4845 Phipps Drive, Memphis, TN`  ⇄  `Apex Continental L.L.C.-Services` | `` [S3]
+- p=0.52 `Salcedo Plutonian` | `MA, Fitchburg, 16 Prichard Street, Unit 412`  ⇄  `5alcedo Plutonian LP` | `16-18 PRICHARD STREET, FITCHBURG, MA` [S2]
+- p=0.34 `Economy Real Private Limited` | `Iind Floor, 120/190 Lajpat Nagar, Kanpur, Uttar Pradesh`  ⇄  `Mr Economy Real Private` | `` [S2]
+- p=0.39 `Haggard Metlife` | `NY, Waterville, 186 Madison Street`  ⇄  `Haggard Metlife` | `` [S2]
+- p=0.46 `Fashion Eco Pvt Ltd` | `126, Jaton Ki Dhani Vpo Kidhwana, Tehsil Surajgarh, Jhunjhunun, Rajasthan`  ⇄  `Fashion Eco` | `` [S3]
+- p=0.41 `Arras Partners` | `46 Chase Lane, Corbin, KY`  ⇄  `Arras Partners Corporation` | `` [S2]
+- p=0.02 `Bright Om Investments Private Limited` | `Suite 5A, 1St Floor, Reliance Cyber Ville Vittal Rao Nagar, Madhapur, Hyderabad, Telangana`  ⇄  `బ్రైట్ ఓమ్ ఇన్వెస్ట్‌మెంట్స్ ప్రైవేట్ లిమిటెడ్` | `Suite 7-5A, Hyderabad, Andhra Pradesh` [S3]
+- p=0.42 `Unified Bay Universal LLC` | `2901 Aldersgate Road, Unit Apt 270, Little Rock, AR`  ⇄  `UNIFIED BAY LLC SERVICE` | `` [S2]
+- p=0.59 `Airavat & Co of Dhule Pvt Ltd` | `C/O. Rajesing Udesing Rajput Wadi Burduk, Maharashtra, Dhule, Taluka Shirpur, Wadi Bk, Dhule`  ⇄  `AIRAVAT + CO OF DE PVT LTD` | `C/O. RAJESING UDESING RAJPUT WADI BURDUK, TALUKA SHIRPUR, WADI BK, DHULE, Maharashtra` [S2]
+- p=0.40 `Preferred Xsolla Inc` | `N11430 F, WI, Town Of Hay River`  ⇄  `Center Preferred lnc` | `N11430 F, Town Of Hay River, Wisconsin` [S3]
+#### FN lost to another S1 (exclusivity) (81,110)
+- p=0.00 `Lucky Coffee` | `40 Haven Loop, Westmore, VT`  ⇄  `LUCKY COFFEE CENTER` | `` [S2]
+- p=0.17 `Gratiana Stoltzfus Atlantic` | `139 Oakdale Lane, New Hope, AL`  ⇄  `Gratiana Stoltzfus` | `` [S2]
+- p=0.01 `Maa Properties Private Limited` | `Flat No B 109, Exide Gate, Bilepur, Pinninsula Pinnacle, Bangalore, Karnataka`  ⇄  `Maa Properties Private  Limited` | `` [S2]
+- p=0.14 `Elly Mcnamara Federal Star LLC` | `Unit Unit 9102, OR, Bend, 61554 Aaron Way`  ⇄  `ELLY MCNAMARA FEDERAL LLC SERVlCES` | `` [S2]
+- p=0.14 `Yashoda Agriventure Pvt Ltd` | `Door.No-44-76/1, 1St Floor, Beside 7Th Day High School, Maharajupeta, Bobbili, Vizianagaram, Andhra Pradesh`  ⇄  `YASHODA PVT LTD SERVICES` | `` [S2]
+- p=0.02 `Lotus Properties Private Limited` | `C/O Mahadeo Bhavgi Jane, At Post Amsari, Shegaon, Dist. Buldana, Shegaon, Buldhana, Maharashtra`  ⇄  `lotus properties private limited` | `` [S3]
+- p=0.02 `Sky Marketing Private Limited` | `6/3903 Moh-Khumran, Nai Basti, Saharanpur, Uttar Pradesh`  ⇄  `Sky Marketing  Private Limited` | `` [S3]
+- p=0.34 `Jaine Dearth, L.C.S.W. Inc.` | `Lewes, DE, 30971 Edgewood Drive`  ⇄  `Jaine-Dearth, L.C.S.W.` | `` [S2]
+- p=0.13 `Montic Bitcoin LLC` | `25 Prospect Street, Stafford, CT`  ⇄  `Montic Bitcoin` | `` [S2]
+- p=0.44 `Harbor Cornerstone Top` | `2 International Place, Unit 3500, Boston, MA`  ⇄  `Harbor Top Córnerstone` | `` [S2]
+- p=0.23 `Ferrance Tokyo` | `547 Stonetree Place, Andover, KS`  ⇄  `Ferrance Tokyo` | `` [S2]
+- p=0.47 `Divine Brothers Pvt Ltd` | `Shop No. 4, Upkar Shopping Center Pradhan Marg, Malviya Nagar, Jaipur, Rajasthan`  ⇄  `Divine Brothers  Pvt Ltd` | `` [S3]

@@ -1,0 +1,3 @@
+2.8G	/tmp/ber_artifacts/cache
+1.8G	/tmp/ber_artifacts/p3_dense
+32M	/tmp/ber_artifacts/runs

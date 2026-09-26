@@ -1,0 +1,14 @@
+$ python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T12 --split xc_India@0.1 --set features.1.params.model=/kaggle/working/models/ft2_xc_India --note 'e5 fine-tuned v2 (blocker negatives) on xc_India train side'
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] /kaggle/working/models/ft2_xc_India on cuda (torch.float16), params=117,653,760, dim=384
+[p4_e5] name: embedded 644,175 new texts in 74.1s (8,692/s); 0 from cache
+[p4_e5] addr: embedded 660,798 new texts in 75.4s (8,760/s); 1 from cache
+[p4_e5] full: embedded 746,348 new texts in 127.5s (5,855/s); 0 from cache
+[p4_e5] name: embedded 414,826 new texts in 40.0s (10,377/s); 1,727 from cache
+[p4_e5] addr: embedded 451,960 new texts in 80.5s (5,617/s); 1 from cache
+[p4_e5] full: embedded 499,089 new texts in 113.4s (4,402/s); 0 from cache
+[xc_India@0.1] 20260926-111205_p4_T12_T06_e5g_xc_India@0.1_fb3dbd
+  F0.5=0.9521 CI95=[0.95126, 0.95302]  singleton_acc=0.8742  pairP=0.97259 pairR=0.93249
+  blocking: oracle_F0.5=0.9942 pair_recall=0.98371 cands/s1=33.37  scorer={'roc_auc': 0.99629, 'avg_precision': 0.98086}
+  by_country={"India": {"n": 88632, "f05": 0.95213}}  runtime=1046.7s 
+  results: /kaggle/working/results/p4/20260926-111205_p4_T12_T06_e5g_xc_India@0.1_fb3dbd.json

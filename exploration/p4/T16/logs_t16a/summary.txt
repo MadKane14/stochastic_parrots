@@ -1,0 +1,14 @@
+12:25:29 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+12:25:29 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+12:27:35 rc=0     126s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+12:27:37 rc=0       1s  pip: pip uninstall -y -q torchvision torchaudio
+12:27:44 rc=0       7s  check: python src/run.py check
+12:29:07 rc=0      83s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+12:29:44 rc=0      37s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+12:40:03 rc=0     620s  cands: python src/run.py run -c configs/exp/p4/T06_base.yaml --task T16 --split xc_India@0.1
+13:00:49 rc=0    1245s  ft_v2b: python exploration/p4/e5_finetune.py --split xc_India --out /kaggle/working/models/v2b_xc_India --n 400000 --neg blocker --neg-frac 0.35
+13:21:53 rc=0    1265s  ft_v3mix: python exploration/p4/e5_finetune.py --split xc_India --out /kaggle/working/models/v3mix_xc_India --n 400000 --neg blocker --neg-frac 0.35 --mix 0.5
+13:38:08 rc=0     975s  eval: python exploration/p4/e5_ft_eval.py --pairs /tmp/ber_artifacts/runs/20260926-122944_p4_T16_T06_base_xc_India@0.1_5b1ef7/scored_pairs.parquet --label xc_India@0.1 --models intfloat/multilingual-e5-small /kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft/models/ft_xc_India /kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft2/models/ft2_xc_India /kaggle/working/models/v2b_xc_India /kaggle/working/models/v3mix_xc_India --out /kaggle/working/e5_ft_eval_out.md --json /kaggle/working/e5_ft_eval_t16a.json
+13:55:39 rc=0    1051s  harness_v2b: python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T16 --split xc_India@0.1 --set features.1.params.model=/kaggle/working/models/v2b_xc_India --note 'e5 fine-tuned v2b on US pairs'
+14:13:16 rc=0    1057s  harness_v3mix: python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T16 --split xc_India@0.1 --set features.1.params.model=/kaggle/working/models/v3mix_xc_India --note 'e5 fine-tuned v3mix on US pairs'
+14:13:16 rc=0       0s  done: free -g; du -sh /kaggle/working/models/*

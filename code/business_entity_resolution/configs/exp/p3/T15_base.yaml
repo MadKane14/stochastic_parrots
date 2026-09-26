@@ -1,0 +1,8 @@
+# T15 (p3) — T09_tr's blocker through p3_compound_rc (= p1_compound imported unchanged, rev_cap null -> identical
+# candidates) so blk_dense.py can see which pairs only the reverse direction proposed and emulate rev caps.
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p3_compound_rc       # transductive (as p1_compound)
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: null}
