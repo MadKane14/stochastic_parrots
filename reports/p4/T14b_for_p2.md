@@ -1,7 +1,8 @@
 # T14b (France audit + label-free fix) — done by p4 for p2 (Sat 22:15)
 
-Status: done (audit + fix + unit tests + validation on train countries). Integration into `p2_translit` and dense CV
-are not done. That is the owner's/lead's call before the Sun 12:00 freeze.
+Status: done (audit + fix + unit tests + validation on train countries), and **ready to run**: normalizer `p4_tcanon`
+(`src/ber/normalize/p4_tcanon.py`, a subclass of p2_translit in p4's own file) + config `configs/exp/p4/T14b_tcanon.yaml`.
+Dense CV / LOCO is not run (phoenix only). Adoption is the lead's call before the Sun 12:00 freeze.
 Verdict: **SUPPORTED (proxy level).** The train-learned maps miss the most common French variants and contradict one
 (`st`). A label-free map mined on the target data fixes this. On train countries, fitted without labels, it raises
 true-pair address overlap by +0.05 (India) / +0.19 (US) while random pairs barely move.
@@ -59,7 +60,20 @@ For reference, p2's label-learned map (both countries, held-out): true +0.128, r
 - Some junk tokens are typos that a map could repair instead (`raod`, `strete`). Dropping them is the safe default.
 - Uses rapidfuzz on the target only; runtime is seconds to minutes per country group on a laptop.
 
-## 5. Suggested integration (p2 owns `p2_translit`) and runs (p1, phoenix)
+## 5. Ready-to-run component + commands (p1, phoenix)
+- `p4_tcanon` = `p2_translit` (same params as T12_noise2 / T13_sub4) + the label-free step on `addr_norm` per
+  country-string group; `transductive = True`. End-to-end on all France test records (laptop): 38 s vs 23 s for
+  p2_translit alone. `addr_norm` changes for 57.2% of S2/S3 and 3.6% of S1 records (e.g. `154 bd du president wilson`
+  → `154 boulevard …`, `appt a419` → `appartement a419`, `16 b impasse` → `16 bis impasse`, `92 rte de la` →
+  `92 route de la`); map 22 entries, junk `n no nord gironde`.
+- `configs/exp/p4/T14b_tcanon.yaml` = `T12_noise2` (dense CV 0.98405) with only the normalizer swapped.
+```bash
+nice -n 10 python exploration/p1/dense_cv.py -c code/business_entity_resolution/configs/exp/p4/T14b_tcanon.yaml
+nice -n 10 python exploration/p1/dense_cv.py -c code/business_entity_resolution/configs/exp/p4/T14b_tcanon.yaml --loco
+```
+Adopt only if dense CV ≥ 0.98405 (both folds) and LOCO is not lower than T12_noise2's LOCO.
+
+## 6. Original integration sketch (if p2 prefers to fold it into `p2_translit`)
 In `TranslitNormalizer.transform`, per country-string group of the target records (no country values in code):
 `cs, cr = confident_pairs(...)`; `cmap = merge_maps(self.canon['addr'], mine_canon(...))`; apply; then drop
 `side_skew_junk(...)`. Behind a flag `target_canon: true`, `transductive = True`. Judge by dense CV + dense LOCO
