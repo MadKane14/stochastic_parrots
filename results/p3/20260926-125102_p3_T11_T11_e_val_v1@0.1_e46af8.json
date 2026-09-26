@@ -1,0 +1,211 @@
+{
+ "run_id": "20260926-125102_p3_T11_T11_e_val_v1@0.1_e46af8",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "p3",
+ "task": "T11",
+ "note": "",
+ "mode": "val",
+ "split": "val_v1@0.1",
+ "smoke": false,
+ "sample_frac": 0.1,
+ "created": "2026-09-26T12:51:02",
+ "config_path": "configs/exp/p3/T11_e.yaml",
+ "overrides": [],
+ "config_hash": "e46af816027d",
+ "config": {
+  "paths": {
+   "data_dir": "/kaggle/input/datasets/grootji/ber-student-resource/data/dataset",
+   "artifacts_dir": "/tmp/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p2_translit",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    },
+    {
+     "name": "p3_chargram",
+     "params": {
+      "field": "name_norm",
+      "ngrams": [
+       3,
+       4
+      ],
+      "words": true,
+      "right_max_addr_tokens": 0,
+      "k": 2,
+      "k_rev": 5,
+      "max_df": 5000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.7,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "dae2ce2fcb7f",
+  "branch": "w/p3",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true,
+  "split_fingerprint": "113f95b9afa25a9c",
+  "split_fingerprint_ok": true
+ },
+ "machine": {
+  "host": "4ad5c259d0ef",
+  "python": "3.12.13",
+  "platform": "Linux-6.12.90+-x86_64-with-glibc2.35",
+  "gpu": null
+ },
+ "sizes": {
+  "train_s1": 176870,
+  "train_right": 825372,
+  "target_s1": 43948,
+  "target_right": 205327
+ },
+ "train_pairs": {
+  "n_pairs": 6172827,
+  "pos_rate": 0.09864442985361488,
+  "n_features": 74
+ },
+ "transductive_components": [
+  "p2_translit",
+  "p1_compound",
+  "p3_chargram",
+  "p1_match",
+  "p1_extra"
+ ],
+ "timings_s": {
+  "normalize": 52.11,
+  "block": 433.88,
+  "features:p1_match": 145.46,
+  "features:p1_extra": 142.6,
+  "scorer_fit": 593.7,
+  "score": 32.45
+ },
+ "artifacts_dir": "/tmp/ber_artifacts/runs/20260926-125102_p3_T11_T11_e_val_v1@0.1_e46af8",
+ "metrics": {
+  "f05": 0.99495,
+  "f05_ci95": [
+   0.99457,
+   0.99535
+  ],
+  "n_s1": 43948,
+  "singleton_rate": 0.054,
+  "singleton_acc": 0.9975,
+  "f05_nonsingleton": 0.9948,
+  "pred_empty_rate": 0.055,
+  "pair_precision": 0.99907,
+  "pair_recall": 0.98679,
+  "n_pred_pairs": 149862,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99422
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99544
+   }
+  },
+  "blocking": {
+   "pair_recall": 0.99902,
+   "pair_recall_by_source": {
+    "S2": 0.99947,
+    "S3": 0.99861
+   },
+   "entity_full_recall": 0.99666,
+   "oracle_f05": 0.99974,
+   "cands_per_s1_mean": 34.68,
+   "cands_per_s1_median": 33.0,
+   "cands_per_s1_p95": 44.0,
+   "cands_per_s1_max": 175,
+   "n_pairs": 1524123,
+   "reduction_ratio": 0.999831,
+   "s1_without_candidates": 0
+  },
+  "scorer": {
+   "roc_auc": 0.99999,
+   "avg_precision": 0.99989
+  },
+  "diag_plain_threshold_curve": {
+   "0.3": 0.99394,
+   "0.4": 0.99482,
+   "0.5": 0.99516,
+   "0.6": 0.99509,
+   "0.7": 0.99493,
+   "0.8": 0.99426,
+   "0.9": 0.99256
+  }
+ },
+ "runtime_s": 1606.5
+}

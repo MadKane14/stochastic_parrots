@@ -25,6 +25,10 @@ JOBS = {
                     f"--config {CFG}/T15_e.yaml --config {CFG}/T15_e10.yaml --config {CFG}/T15_e4.yaml --config {CFG}/T15_er.yaml "
                     f"--config {CFG}/T15_base.yaml --out {{out}}/blk_dense_out.md"),
           ("smoke", "cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T15_e.yaml --smoke --task T15")],
+    # T15 speed: the empty-address channel with lower df caps (T15_e at max_df 5000 took 1629 s on full train)
+    "e": [("dense", f"python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30,40,50 --rev-caps 10,20 "
+                    f"--config {CFG}/T15_e_df2000.yaml --config {CFG}/T15_e_df1000.yaml --config {CFG}/T15_base.yaml "
+                    f"--out {{out}}/blk_dense_out.md")],
     "b": [("dense", f"{DENSE} --config {CFG}/T11_eca.yaml --config {CFG}/T11_ca.yaml --misses 60 --out {{out}}/blk_dense_out.md")],
 }
 
