@@ -1,0 +1,13 @@
+# T12b (p1) — T10_e5 + p1_noise with unsup noise-ness (S2S3-vs-S1 name-token df ratio per country group; transductive) (learned noise-token rates from train true pairs: unexplained added / dropped words,
+# and which competing S1 explains an S2/S3 record best). Hypothesis: fewer name-only records lost to a sibling S1 /
+# below threshold → dense CV up over T10_e5.
+inherit: T10_e5.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p1_e5
+    params: {fields: [name, full]}
+  - name: p1_noise
+    params: {unsup: true}
