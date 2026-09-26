@@ -83,6 +83,12 @@ def test_canonical_map():
     right[0] = ["10", "forrest", "ave", "va"]          # a typo must not be learned
     m = learn_canonical_map(left, right, min_support=20, min_precision=0.5)
     assert m == {"ave": "avenue", "va": "virginia", "st": "street"}, m
+    # glued web names are not full forms: "eye" must not map to "eyecare" (= eye + care), long "short" forms rejected
+    left = [["eye", "care", "clinic"], ["pediatric", "dental"]] * 30
+    right = [["eyecare", "clinic"], ["pediatricdental"]] * 30
+    seg = Segmenter(Counter({"eye": 60, "care": 60, "clinic": 60, "pediatric": 60, "dental": 60}), 20)
+    m = learn_canonical_map(left, right, 20, 0.5, 5, lambda w: seg.split(w, 4, 3) is not None)
+    assert m == {}, m
 
 
 def test_junk():

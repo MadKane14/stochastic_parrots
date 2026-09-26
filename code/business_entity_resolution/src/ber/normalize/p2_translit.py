@@ -24,7 +24,8 @@ Adds the same columns as `basic` (name_norm, addr_norm, name_core, addr_digits) 
 4. Runs of >= 2 single Latin letters in names are joined (`p l l c` -> `pllc`, `m s` -> `ms`).
 5. (optional, `canon_map`) Learned abbreviation canonicalization of Latin tokens, per field: tokens a true pair does
    not share are aligned by the same competitive linking, and a link is kept only if one token is an order-preserving
-   abbreviation of the other (`st`->`street`, `pvt`->`private`, `va`->`virginia`); all records map short -> long.
+   abbreviation (<= 5 letters) of the other and the long form is not a concatenation of known words
+   (`st`->`street`, `pvt`->`private`, `va`->`virginia`; not `eye`->`eyecare`); all records map short -> long.
 6. (optional, `junk`) Learned source-noise tokens (frequent on the S2/S3 side of true pairs, almost never in the S1
    partner nor in S1 records) are dropped from name_norm / addr_norm.
 """
@@ -188,13 +189,15 @@ def _is_word(t: str) -> bool:
 
 
 def learn_canonical_map(left: list[list[str]], right: list[list[str]], min_support: int,
-                        min_precision: float) -> dict[str, str]:
+                        min_precision: float, max_short_len: int = 5, is_compound=None) -> dict[str, str]:
     """Abbreviation -> full form map learned from true pairs (S1 tokens `left`, S2/S3 tokens `right`).
 
     Only the tokens a pair does NOT share are candidates (Latin words, >= 2 letters); they are aligned by the same
     Dice + competitive linking as the native map (Arasu et al., VLDB 2009 learn such transformations from matching
-    examples). A link is kept only if one token abbreviates the other (`is_abbrev`); the map always points from the
-    short to the long form, so both sides of any pair end up in the same canonical form. Chains are collapsed."""
+    examples). A link is kept only if one token abbreviates the other (`is_abbrev`), the short form has at most
+    `max_short_len` letters, and the long form is not a concatenation of known words (`is_compound`, e.g. a web name
+    `eyecare` = eye + care, which `eye` would otherwise "abbreviate"). The map points from the short to the long form,
+    so both sides of any pair end up in the same canonical form. Chains are collapsed."""
     ur, ul = [], []
     for L, R in zip(left, right):
         sl, sr = set(L), set(R)
@@ -203,10 +206,10 @@ def learn_canonical_map(left: list[list[str]], right: list[list[str]], min_suppo
     table = learn_token_map(ur, ul, min_support, min_precision)
     out: dict[str, str] = {}
     for r, l in table.items():
-        if is_abbrev(r, l):
-            out.setdefault(r, l)
-        elif is_abbrev(l, r):
-            out.setdefault(l, r)
+        short, long = (r, l) if is_abbrev(r, l) else (l, r) if is_abbrev(l, r) else (None, None)
+        if short is None or len(short) > max_short_len or (is_compound is not None and is_compound(long)):
+            continue
+        out.setdefault(short, long)
 
     def canon(t: str) -> str:
         seen = set()
@@ -287,7 +290,8 @@ class TranslitNormalizer(Normalizer):
                  min_precision: float = 0.5, fold_scripts: bool = True, map_address: bool = True,
                  web_names: bool = True, seg_min_len: int = 8, seg_rare_max: int = 2, seg_word_freq: int = 20,
                  seg_target_vocab: bool = True, join_initials: bool = True, canon_map: bool = False,
-                 canon_min_support: int = 50, canon_min_precision: float = 0.5, junk: bool = False,
+                 canon_min_support: int = 50, canon_min_precision: float = 0.5, canon_max_short_len: int = 5,
+                 junk: bool = False,
                  junk_min_count: int = 1000, junk_max_hit: float = 0.01, junk_max_ratio: float = 0.01):
         if mode not in ("replace", "append"):
             raise ValueError("mode must be 'replace' or 'append'")
@@ -297,6 +301,7 @@ class TranslitNormalizer(Normalizer):
         self.seg_min_len, self.seg_rare_max, self.seg_word_freq = int(seg_min_len), int(seg_rare_max), int(seg_word_freq)
         self.seg_target_vocab, self.join_initials = bool(seg_target_vocab), bool(join_initials)
         self.canon_map, self.canon_min_support, self.canon_min_precision = bool(canon_map), int(canon_min_support), float(canon_min_precision)
+        self.canon_max_short_len = int(canon_max_short_len)
         self.junk, self.junk_min_count = bool(junk), int(junk_min_count)
         self.junk_max_hit, self.junk_max_ratio = float(junk_max_hit), float(junk_max_ratio)
         self.name_map: dict[str, str] = {}
@@ -362,7 +367,9 @@ class TranslitNormalizer(Normalizer):
                 left = [prepped[i].split() for i in s_rows]
                 right = [self._map_native(prepped[i], table, fb).split() for i in c_rows]
                 if self.canon_map:
-                    cmap = learn_canonical_map(left, right, self.canon_min_support, self.canon_min_precision)
+                    seg = Segmenter(Counter(t for v in prepped for t in v.split()), self.seg_word_freq)
+                    cmap = learn_canonical_map(left, right, self.canon_min_support, self.canon_min_precision,
+                                               self.canon_max_short_len, lambda w: seg.split(w, 4, 3) is not None)
                     self.canon[key] = cmap
                     self.stats[f"{key}_canon_size"] = len(cmap)
                     left = [[cmap.get(t, t) for t in L] for L in left]

@@ -26,7 +26,7 @@ sys.path.insert(0, str(REPO / "exploration/p2"))
 from translit_map_report import prep, read  # noqa: E402
 from ber.config import env  # noqa: E402
 from ber.data import unit_hash  # noqa: E402
-from ber.normalize.p2_translit import _is_native, learn_canonical_map, learn_junk, learn_token_map  # noqa: E402
+from ber.normalize.p2_translit import Segmenter, _is_native, learn_canonical_map, learn_junk, learn_token_map  # noqa: E402
 
 QFRAC = 0.1
 
@@ -85,7 +85,9 @@ def main():
         R = [x.split() for x in take(c_rows[f_idx])]
         nat = learn_token_map([[w for w in r if _is_native(w)] for r in R], [[w for w in l if w.isascii()] for l in L], 3, 0.5)
         R = [[nat.get(w, w) for w in r] for r in R]
-        cmap = learn_canonical_map(L, R, a.canon_min_support, a.canon_min_precision)
+        seg = Segmenter(Counter(w for x in L + R for w in x), 20)          # same compound check as the normalizer
+        cmap = learn_canonical_map(L, R, a.canon_min_support, a.canon_min_precision, 5,
+                                   lambda w: seg.split(w, 4, 3) is not None)
         Lc = [[cmap.get(w, w) for w in l] for l in L]
         Rc = [[cmap.get(w, w) for w in r] for r in R]
         # document frequencies on a 30% hash sample of all records (ratios are what matter)
