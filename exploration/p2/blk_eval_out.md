@@ -54,3 +54,56 @@ subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=3
 | T04_d | 0.9869 | 0.9956 | 143.125 | 304.0 | 1133 | 0.985 | 0.9881 | 0.9778 | 0.9849 | 0.8833 | 0.9946 |
 
 subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294
+## T10_d — 2026-09-26 09:36 — config=code/business_entity_resolution/configs/exp/p2/T10_d.yaml qfrac=0.1 BER_THREADS=4 host=cdc8568cceb4
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 565.6}; peak RSS 27.2 GB; normalizer stats: {'normalize_s': 651.1, 'name_pairs_with_native': 496440, 'name_map_size': 1344, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T10_d | 0.9869 | 0.9956 | 143.125 | 304.0 | 1133 | 0.985 | 0.9881 | 0.9778 | 0.9849 | 0.8833 | 0.9946 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294
+
+## T10_e — 2026-09-26 10:04 — config=code/business_entity_resolution/configs/exp/p2/T10_e.yaml qfrac=0.1 BER_THREADS=4 host=cdc8568cceb4
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 627.4}; peak RSS 28.8 GB; normalizer stats: {'normalize_s': 939.0, 'name_pairs_with_native': 496440, 'name_map_size': 1344, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'name_canon_size': 127, 'addr_canon_size': 706, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348, 'name_canon_applied': True, 'addr_canon_applied': True}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T10_e | 0.988 | 0.996 | 143.4321 | 308.0 | 1206 | 0.9844 | 0.9904 | 0.9775 | 0.9878 | 0.8785 | 0.9953 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294
+
+## T10_f — 2026-09-26 10:35 — config=code/business_entity_resolution/configs/exp/p2/T10_f.yaml qfrac=0.1 BER_THREADS=4 host=cdc8568cceb4
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 627.7}; peak RSS 29.0 GB; normalizer stats: {'normalize_s': 1123.0, 'name_pairs_with_native': 496440, 'name_map_size': 1344, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'name_canon_size': 127, 'name_junk': ['5ervice', '5ervices', 'aka', 'ass0ciates', 'authority', 'c0m', 'com', 'dba', 'doing', 'dr', 'fka', 'formerly', 'known', 'lnc', 'lndia', 'mr', 'nee', 'shri', 'smt', 'sri', 'www', 'ఇన్', 'కన్', 'పీ', 'మెంట్', 'ಇನ್', 'ಇನ್ವೆಸ್ಟ್', 'ಕನ್', 'ನ್ಯಾಷನಲ್', 'ಪಿ'], 'addr_canon_size': 706, 'addr_junk': ['ccity', 'cdp', 'ciity', 'citty', 'ciy', 'ciyt', 'ctiy', 'divreportingcircle', 'dl', 'icty', 'null', 'od', 'ownship', 'plto', 'pmb', 'region', 'twentieth', 'wb'], 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348, 'name_canon_applied': True, 'addr_canon_applied': True}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T10_f | 0.988 | 0.996 | 143.4314 | 308.0 | 1206 | 0.9845 | 0.9904 | 0.9775 | 0.9879 | 0.8794 | 0.9953 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294
+## T10_e_fix — 2026-09-26 11:46 — config=code/business_entity_resolution/configs/exp/p2/T10_e.yaml qfrac=0.1 BER_THREADS=4 host=f86cf5620bf3
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 526.7}; peak RSS 28.6 GB; normalizer stats: {'normalize_s': 1036.0, 'name_pairs_with_native': 496440, 'name_map_size': 1344, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'name_canon_size': 82, 'addr_canon_size': 357, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348, 'name_canon_applied': True, 'addr_canon_applied': True}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T10_e_fix | 0.988 | 0.996 | 143.4374 | 308.0 | 1206 | 0.9845 | 0.9903 | 0.9778 | 0.9877 | 0.8791 | 0.9954 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294
+
+## T10_f_fix — 2026-09-26 12:17 — config=code/business_entity_resolution/configs/exp/p2/T10_f.yaml qfrac=0.1 BER_THREADS=4 host=f86cf5620bf3
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 559.1}; peak RSS 28.3 GB; normalizer stats: {'normalize_s': 1207.3, 'name_pairs_with_native': 496440, 'name_map_size': 1344, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'name_canon_size': 82, 'name_junk': ['5ervice', '5ervices', 'aka', 'ass0ciates', 'authority', 'c0m', 'com', 'dba', 'doing', 'dr', 'fka', 'formerly', 'known', 'lnc', 'lndia', 'mr', 'nee', 'shri', 'smt', 'sri', 'www', 'ఇన్', 'కన్', 'పీ', 'మెంట్', 'ಇನ್', 'ಇನ್ವೆಸ್ಟ್', 'ಕನ್', 'ನ್ಯಾಷನಲ್', 'ಪಿ'], 'addr_canon_size': 357, 'addr_junk': ['ccity', 'cdp', 'ciity', 'citty', 'ciy', 'ciyt', 'ctiy', 'divreportingcircle', 'dl', 'icty', 'keralam', 'null', 'od', 'ownship', 'plto', 'pmb', 'region', 'twentieth', 'wb'], 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348, 'name_canon_applied': True, 'addr_canon_applied': True}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T10_f_fix | 0.9881 | 0.996 | 143.4344 | 309.0 | 1206 | 0.9846 | 0.9904 | 0.9778 | 0.9878 | 0.8799 | 0.9954 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294

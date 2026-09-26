@@ -1,0 +1,111 @@
+{
+ "run": "20260926-124436_densecv_India_T08_sub_74b39e",
+ "config_path": "code/business_entity_resolution/configs/exp/p1/T08_sub.yaml",
+ "config": {
+  "paths": {
+   "data_dir": "/tmp/data/dataset",
+   "artifacts_dir": "/tmp/art"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "basic",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ]
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.7,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "face0ff",
+  "dirty": false
+ },
+ "fold_seed": 777,
+ "feature_cache": "pairs_566bc48be864f98f.parquet",
+ "metrics": {
+  "group": "India",
+  "f05": 0.97601,
+  "by_fold": {
+   "0": 0.9759,
+   "1": 0.97613
+  },
+  "singleton_acc": 0.9879,
+  "f05_nonsingleton": 0.97531,
+  "n_s1": 883188,
+  "n_pairs": 29575804,
+  "cands_per_s1": {
+   "mean": 33.49,
+   "p95": 44.0,
+   "max": 316
+  },
+  "pair_precision": 0.99704,
+  "pair_recall": 0.94125,
+  "blocking_pair_recall": 0.96043,
+  "oracle_f05": 0.98496,
+  "f05_frozen_metric": 0.97601,
+  "threshold_curve": {
+   "0.5": 0.97503,
+   "0.6": 0.97579,
+   "0.7": 0.97601,
+   "0.8": 0.97577
+  }
+ },
+ "runtime_s": 12701,
+ "peak_rss_gb": 21.6
+}
