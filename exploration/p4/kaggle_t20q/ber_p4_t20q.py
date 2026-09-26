@@ -77,9 +77,17 @@ else:
     ft_ok = sh(f"python exploration/p4/e5_finetune.py --split full --out {AM}/ft_full --n 400000", "ft_full", cwd=REPO, env=ft) == 0
 C = "code/business_entity_resolution/configs/exp"
 runs = [("pre", f"{C}/p1/T13_sub4.yaml")] + ([("ft", f"{C}/p4/T20_ft.yaml")] if ft_ok else [])
-for tag, cfg in runs:
-    sh(f"python exploration/p4/dense_cv_group_q.py -c {cfg} --group India --qfrac 0.5 --tag t20{tag}", f"dcv_{tag}", cwd=REPO, env=off)
-    sh(f"mkdir -p {W}/p4_out && cp -r exploration/p2/dense_cv {W}/p4_out/ && cp exploration/p2/dense_cv_out.md {W}/p4_out/; free -g",
-       "collect", cwd=REPO, env=off)
+# memory fallback: if a 50% run is killed (exit 137), redo BOTH configs at 30% so the comparison stays paired
+for q in (0.5, 0.3):
+    rcs = []
+    for tag, cfg in runs:
+        rcs.append(sh(f"python exploration/p4/dense_cv_group_q.py -c {cfg} --group India --qfrac {q} --tag t20{tag}",
+                      f"dcv_{tag}_q{q}", cwd=REPO, env=off))
+        sh(f"mkdir -p {W}/p4_out && cp -r exploration/p2/dense_cv {W}/p4_out/ && cp exploration/p2/dense_cv_out.md {W}/p4_out/; free -g",
+           "collect", cwd=REPO, env=off)
+        if rcs[-1] != 0:
+            break
+    if all(r == 0 for r in rcs) and len(rcs) == len(runs):
+        break
 if ft_ok:   # keep the checkpoint (fp16, ~235 MB) for the lead / final package
     sh(f"mkdir -p {M} && cp -r {AM}/ft_full {M}/ft_full", "save_model", cwd=REPO, env=off)
