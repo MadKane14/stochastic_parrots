@@ -86,28 +86,26 @@ def build_pairs(cfg: dict, art: Path):
                                         _component_fp(pipe.normalizer)]).encode()).hexdigest()[:16]
     cdir = art / "dense_cv"
     cdir.mkdir(parents=True, exist_ok=True)
-    parts, names = [], [f"base_{base_key}"]
-    bpath = cdir / f"base_{base_key}.parquet"
-    if not bpath.exists():
+    names = [f"base_{base_key}"]
+    paths = [cdir / f"base_{base_key}.parquet"]
+    if not paths[0].exists():
         blk = pairs[[c for c in pairs.columns if c.startswith("blk_")]].astype(np.float32)
         pd.concat([pd.DataFrame({"s1_id": li.astype(np.int32), "ri": ri.astype(np.int32), "label": label},
-                                index=pairs.index), blk], axis=1).to_parquet(bpath)
-    parts.append(pd.read_parquet(bpath))
-    for fs in pipe.featuresets:
+                                index=pairs.index), blk], axis=1).to_parquet(paths[0])
+    for fs in pipe.featuresets:   # compute + write missing feature sets first (they need `pairs`)
         fkey = hashlib.sha256(f"{base_key}|{_component_fp(fs)}".encode()).hexdigest()[:16]
         fpath = cdir / f"feat_{fs.registry_name}_{fkey}.parquet"
-        names.append(fpath.stem)
+        names.append(fpath.stem); paths.append(fpath)
         if fpath.exists():
-            log.info("loaded cached features %s", fpath.name)
+            log.info("cached features %s", fpath.name)
         else:
             t = time.time()
             fs.transform(train, pairs).reset_index(drop=True).to_parquet(fpath)
             log.info("features %s %.0fs (peak %.1f GB)", fs.registry_name, time.time() - t, peak_gb())
-        parts.append(pd.read_parquet(fpath))
-    df = pd.concat([x.reset_index(drop=True) for x in parts], axis=1, copy=False)
-    del parts
+    del pairs                     # free the 70M+ string pairs BEFORE loading every feature file
+    import gc; gc.collect()
+    df = pd.concat([pd.read_parquet(p_).reset_index(drop=True) for p_ in paths], axis=1, copy=False)
     fpath = Path("+".join(names))
-    del pairs
     s1_rows = np.flatnonzero((recs["source"] == 1).to_numpy())
     ntrue = np.zeros(n, np.int32)
     np.add.at(ntrue, idx.get_indexer(list(gt)), [len(v) for v in gt.values()])
