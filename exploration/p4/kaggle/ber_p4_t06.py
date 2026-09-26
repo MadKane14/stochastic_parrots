@@ -44,6 +44,9 @@ pkg = REPO / "code" / "business_entity_resolution"
 sh("nvidia-smi; nproc; free -g; df -h /tmp /kaggle/working; python --version", "setup")
 if sh(f"pip install -q -r {pkg}/requirements-gpu.txt", "pip") != 0:
     sh(f"pip install -q -r {pkg}/requirements.txt transformers==4.57.1", "pip")   # keep the image's torch
+# the image's torchvision/torchaudio are built for its own torch and break `import transformers` under the pinned
+# torch (RuntimeError: operator torchvision::nms does not exist) -> remove them (the pipeline uses neither)
+sh("pip uninstall -y -q torchvision torchaudio", "pip")
 sh("pip freeze | grep -iE '^(numpy|pandas|scipy|scikit-learn|lightgbm|pyarrow|torch|transformers|tokenizers)=='", "pip")
 
 env = dict(os.environ, BER_MEMBER="p4", BER_DATA_DIR=data_dir, BER_ARTIFACTS="/tmp/ber_artifacts",
@@ -54,7 +57,8 @@ sh(f"{run} check", "check", cwd=pkg, env=env)
 sh("python tests/test_metrics.py", "check", cwd=pkg, env=env)
 smoke_ok = sh(f"{run} run -c configs/exp/p4/T06_e5.yaml --smoke --task T06", "smoke", cwd=pkg, env=env) == 0
 env_off = dict(env, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")   # weights are cached now: run offline
-sh(f"{run} run -c configs/exp/p4/T06_base.yaml --task T06 --split val_v1@0.1,xc_India@0.1", "T06_base", cwd=pkg, env=env_off)
+if os.environ.get("P4_RUN_BASE", "0") == "1":   # base runs of commit 7b02ab4 done in kernel v1
+    sh(f"{run} run -c configs/exp/p4/T06_base.yaml --task T06 --split val_v1@0.1,xc_India@0.1", "T06_base", cwd=pkg, env=env_off)
 if smoke_ok:
     sh(f"{run} run -c configs/exp/p4/T06_e5.yaml --task T06 --split val_v1@0.1,xc_India@0.1", "T06_e5", cwd=pkg, env=env_off)
 sh(f"python exploration/p4/e5_throughput.py --n 200000 --out {W}/e5_throughput_out.md", "throughput", cwd=REPO, env=env_off)

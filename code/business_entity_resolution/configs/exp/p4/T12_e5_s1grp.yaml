@@ -1,0 +1,4 @@
+# T12 (p4) ablation: T12_e5 without the per-S2/S3-record E5 rank/gap (keeps cosines + per-S1 rank/gap, = T06's e5g).
+inherit: T12_e5.yaml
+scorer:
+  params: {drop_features: ['^f_p4_e5_.*_rec_(gap|rank)$']}

@@ -1,0 +1,16 @@
+$ du -sh /tmp/ber_artifacts/*; ls -R /kaggle/working/results
+1.5G	/tmp/ber_artifacts/cache
+2.7G	/tmp/ber_artifacts/emb
+179M	/tmp/ber_artifacts/runs
+/kaggle/working/results:
+p4
+
+/kaggle/working/results/p4:
+20260925-204838_p4_T06_T06_e5_val_v1@0.1_b35e9f.json
+20260925-210945_p4_T06_T06_e5_xc_India@0.1_b35e9f.json
+20260925-212455_p4_T06_T06_e5g_val_v1@0.1_8eacdf.json
+20260925-213417_p4_T06_T06_e5g_xc_India@0.1_8eacdf.json
+smoke
+
+/kaggle/working/results/p4/smoke:
+20260925-204144_p4_T06_T06_e5_val_v1@0.1_b35e9f_smoke.json

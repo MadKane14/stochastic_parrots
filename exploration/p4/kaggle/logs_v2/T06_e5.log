@@ -1,0 +1,26 @@
+$ python src/run.py run -c configs/exp/p4/T06_e5.yaml --task T06 --split val_v1@0.1,xc_India@0.1
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+[p4_e5] name: embedded 837,582 new texts in 95.3s (8,792/s); 16,864 from cache
+[p4_e5] addr: embedded 882,417 new texts in 127.5s (6,920/s); 9,214 from cache
+[p4_e5] full: embedded 987,630 new texts in 196.0s (5,038/s); 9,803 from cache
+[p4_e5] name: embedded 201,708 new texts in 20.9s (9,641/s); 18,869 from cache
+[p4_e5] addr: embedded 218,724 new texts in 31.7s (6,896/s); 3,611 from cache
+[p4_e5] full: embedded 245,556 new texts in 48.3s (5,080/s); 2,607 from cache
+[val_v1@0.1] 20260925-204838_p4_T06_T06_e5_val_v1@0.1_b35e9f
+  F0.5=0.9862 CI95=[0.98559, 0.98688]  singleton_acc=0.9798  pairP=0.99416 pairR=0.97198
+  blocking: oracle_F0.5=0.9986 pair_recall=0.99583 cands/s1=33.53  scorer={'roc_auc': 0.99974, 'avg_precision': 0.99686}
+  by_country={"India": {"n": 17619, "f05": 0.98221}, "US": {"n": 26329, "f05": 0.98892}}  runtime=1264.2s 
+  results: /kaggle/working/results/p4/20260925-204838_p4_T06_T06_e5_val_v1@0.1_b35e9f.json
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+[p4_e5] name: embedded 10 new texts in 1.4s (7/s); 644,165 from cache
+[p4_e5] addr: embedded 3 new texts in 0.0s (249/s); 660,795 from cache
+[p4_e5] full: embedded 11 new texts in 0.0s (949/s); 746,337 from cache
+[p4_e5] name: embedded 12 new texts in 0.0s (852/s); 416,541 from cache
+[p4_e5] addr: embedded 11 new texts in 0.0s (939/s); 451,949 from cache
+[p4_e5] full: embedded 16 new texts in 0.0s (997/s); 499,073 from cache
+[xc_India@0.1] 20260925-210945_p4_T06_T06_e5_xc_India@0.1_b35e9f
+  F0.5=0.9413 CI95=[0.9402, 0.9423]  singleton_acc=0.8742  pairP=0.97057 pairR=0.90924
+  blocking: oracle_F0.5=0.9942 pair_recall=0.98371 cands/s1=33.37  scorer={'roc_auc': 0.9816, 'avg_precision': 0.95611}
+  by_country={"India": {"n": 88632, "f05": 0.94127}}  runtime=739.1s 
+  results: /kaggle/working/results/p4/20260925-210945_p4_T06_T06_e5_xc_India@0.1_b35e9f.json

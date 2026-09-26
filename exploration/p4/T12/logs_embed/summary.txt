@@ -1,0 +1,14 @@
+07:59:39 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+07:59:39 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+08:01:47 rc=0     128s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+08:01:49 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+08:01:57 rc=0       8s  check: python src/run.py check
+08:04:19 rc=0     142s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; [load_part(os.environ['BER_DATA_DIR'], p, cache_dir='/tmp/ber_artifacts/cache') for p in ('train','test')]"
+08:05:00 rc=0      41s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+08:42:30 rc=0 embed_name (parallel, wall 2250s so far)
+09:32:47 rc=0 embed_full (parallel, wall 5267s so far)
+09:32:47 rc=0       0s  embed_done: du -sh /tmp/ber_artifacts/emb/*/*; free -g
+09:46:11 rc=0     804s  smoke: python src/run.py run -c configs/exp/p4/T12_e5.yaml --smoke --task T12
+09:56:36 rc=137     625s  val_T12_e5: python src/run.py run -c configs/exp/p4/T12_e5.yaml --task T12 --split val_v1@0.1
+10:12:56 rc=0     980s  val_T08_sub: python src/run.py run -c configs/exp/p1/T08_sub.yaml --task T12 --split val_v1@0.1
+10:12:56 rc=0       0s  done: free -g; ls -R /kaggle/working | head -50

@@ -1,0 +1,8 @@
+$ python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/exp/p2/T04_b.yaml --qfrac 0.1 --label T04_b --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/T04_b_q0.1.json
+normalized 12,527,040 records in 753s; stats {'normalize_s': 753.3, 'name_pairs_with_native': 496440, 'name_map_size': 937, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348}}
+loaded 10,540,382 records, 220,163 S1 queries (846s, peak 13.9 GB)
+2026-09-26 00:50:44,723 ber.blocking.p1_compound tokenize 50s
+2026-09-26 00:51:39,514 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 25620824 features (29.5/record), built in 54s
+2026-09-26 00:53:56,706 ber.blocking.p1_compound group 0 forward top-30: 137s
+2026-09-26 00:56:07,374 ber.blocking.p1_compound group 0 reverse top-3: 131s
+Killed

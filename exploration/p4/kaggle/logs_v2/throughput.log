@@ -1,0 +1,16 @@
+$ python exploration/p4/e5_throughput.py --n 200000 --out /kaggle/working/e5_throughput_out.md
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+## e5_throughput — 2026-09-25 21:23
+model `intfloat/multilingual-e5-small`, params 117,653,760, device cuda (Tesla T4), torch 2.8.0+cu128, batch 512, max_length 64
+records in all train+test source files: 24,229,173; sample: 200,046
+
+| field | texts | seconds | texts/s | projected hours for all records |
+|---|---|---|---|---|
+| name | 200,046 | 20.8 | 9,605 | 0.70 |
+| addr | 195,085 | 29.5 | 6,613 | 1.02 |
+| full | 200,046 | 39.4 | 5,080 | 1.32 |
+
+peak GPU memory 0.52 GiB
+(projection = all records, no dedup; unique texts are fewer, so this is an upper bound)
+

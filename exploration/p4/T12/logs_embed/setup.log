@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+b8cc510 p4 T12: memory-lean p4_e5 (chunked cosines from cache rows, read-only caches, numpy rank/gap per S1 and per S2/S3 record), T12 configs + ablations, e5_embed_all precompute, Kaggle T12 kernel, phoenix dense-CV command sheet
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-7251ad97-0349-9c78-4675-cced30ff09a1)
+GPU 1: Tesla T4 (UUID: GPU-32eea37b-0686-7732-0c90-b1d23781712f)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

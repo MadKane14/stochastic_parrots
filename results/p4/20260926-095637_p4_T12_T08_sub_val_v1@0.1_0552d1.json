@@ -1,0 +1,187 @@
+{
+ "run_id": "20260926-095637_p4_T12_T08_sub_val_v1@0.1_0552d1",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "p4",
+ "task": "T12",
+ "note": "",
+ "mode": "val",
+ "split": "val_v1@0.1",
+ "smoke": false,
+ "sample_frac": 0.1,
+ "created": "2026-09-26T09:56:37",
+ "config_path": "configs/exp/p1/T08_sub.yaml",
+ "overrides": [],
+ "config_hash": "0552d17b9748",
+ "config": {
+  "paths": {
+   "data_dir": "/kaggle/input/datasets/anishtoshniwal006/ber-data-p4",
+   "artifacts_dir": "/tmp/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "basic",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ]
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.7,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "b8cc5101c5ba",
+  "branch": "w/p4",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true,
+  "split_fingerprint": "113f95b9afa25a9c",
+  "split_fingerprint_ok": true
+ },
+ "machine": {
+  "host": "d5d526f2f566",
+  "python": "3.12.13",
+  "platform": "Linux-6.12.90+-x86_64-with-glibc2.35",
+  "gpu": "Tesla T4; Tesla T4"
+ },
+ "sizes": {
+  "train_s1": 176870,
+  "train_right": 825372,
+  "target_s1": 43948,
+  "target_right": 205327
+ },
+ "train_pairs": {
+  "n_pairs": 5959024,
+  "pos_rate": 0.10163476435067219,
+  "n_features": 72
+ },
+ "transductive_components": [
+  "p1_compound",
+  "p1_match",
+  "p1_extra"
+ ],
+ "timings_s": {
+  "normalize": 10.34,
+  "block": 52.66,
+  "features:p1_match": 107.86,
+  "features:p1_extra": 107.54,
+  "scorer_fit": 518.56,
+  "score": 39.73
+ },
+ "artifacts_dir": "/tmp/ber_artifacts/runs/20260926-095637_p4_T12_T08_sub_val_v1@0.1_0552d1",
+ "metrics": {
+  "f05": 0.99396,
+  "f05_ci95": [
+   0.9935,
+   0.99436
+  ],
+  "n_s1": 43948,
+  "singleton_rate": 0.054,
+  "singleton_acc": 0.9975,
+  "f05_nonsingleton": 0.99376,
+  "pred_empty_rate": 0.0553,
+  "pair_precision": 0.99905,
+  "pair_recall": 0.98411,
+  "n_pred_pairs": 149458,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99207
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99522
+   }
+  },
+  "blocking": {
+   "pair_recall": 0.99583,
+   "pair_recall_by_source": {
+    "S2": 0.99594,
+    "S3": 0.99572
+   },
+   "entity_full_recall": 0.98677,
+   "oracle_f05": 0.99858,
+   "cands_per_s1_mean": 33.53,
+   "cands_per_s1_median": 32.0,
+   "cands_per_s1_p95": 43.0,
+   "cands_per_s1_max": 170,
+   "n_pairs": 1473511,
+   "reduction_ratio": 0.999837,
+   "s1_without_candidates": 0
+  },
+  "scorer": {
+   "roc_auc": 0.99999,
+   "avg_precision": 0.99989
+  },
+  "diag_plain_threshold_curve": {
+   "0.3": 0.9933,
+   "0.4": 0.99414,
+   "0.5": 0.99424,
+   "0.6": 0.99431,
+   "0.7": 0.99391,
+   "0.8": 0.99337,
+   "0.9": 0.99188
+  }
+ },
+ "runtime_s": 971.2
+}

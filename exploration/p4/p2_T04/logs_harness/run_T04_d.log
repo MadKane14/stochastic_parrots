@@ -1,0 +1,11 @@
+$ python src/run.py run -c configs/exp/p2/T04_d.yaml --task T04 --split val_v1@0.1,xc_India@0.1 --note "p2 T04 run on p4 Kaggle (planner/lead: p4 compute for p2)"
+[val_v1@0.1] 20260925-232249_p4_T04_T04_d_val_v1@0.1_6e0f3d
+  F0.5=0.9879 CI95=[0.98732, 0.98853]  singleton_acc=0.9781  pairP=0.99405 pairR=0.97658
+  blocking: oracle_F0.5=0.9996 pair_recall=0.99848 cands/s1=33.48  scorer={'roc_auc': 0.99963, 'avg_precision': 0.99624}
+  by_country={"India": {"n": 17619, "f05": 0.98708}, "US": {"n": 26329, "f05": 0.98846}}  runtime=542.1s 
+  results: /kaggle/working/results/p4/20260925-232249_p4_T04_T04_d_val_v1@0.1_6e0f3d.json
+[xc_India@0.1] 20260925-233153_p4_T04_T04_d_xc_India@0.1_6e0f3d
+  F0.5=0.9279 CI95=[0.92684, 0.92895]  singleton_acc=0.8919  pairP=0.97349 pairR=0.87196
+  blocking: oracle_F0.5=0.9947 pair_recall=0.98498 cands/s1=33.35  scorer={'roc_auc': 0.98964, 'avg_precision': 0.95884}
+  by_country={"India": {"n": 88632, "f05": 0.92789}}  runtime=547.6s 
+  results: /kaggle/working/results/p4/20260925-233153_p4_T04_T04_d_xc_India@0.1_6e0f3d.json

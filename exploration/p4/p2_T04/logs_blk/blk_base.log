@@ -1,0 +1,22 @@
+$ python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/best.yaml --qfrac 0.1 --label base --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/base_q0.1.json
+normalized 12,527,040 records in 372s; stats {'normalize_s': 372.4}
+loaded 10,540,382 records, 220,163 S1 queries (514s, peak 11.8 GB)
+2026-09-25 23:10:53,736 ber.blocking.p1_compound tokenize 49s
+2026-09-25 23:11:55,215 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 26713898 features (30.0/record), built in 61s
+2026-09-25 23:13:42,834 ber.blocking.p1_compound group 0 forward top-30: 108s
+2026-09-25 23:15:20,878 ber.blocking.p1_compound group 0 reverse top-3: 98s
+2026-09-25 23:16:22,331 ber.blocking.p1_compound group 1: 88077 S1 x 4133346 right, 16183311 features (57.9/record), built in 61s
+2026-09-25 23:18:16,854 ber.blocking.p1_compound group 1 forward top-30: 115s
+2026-09-25 23:20:03,558 ber.blocking.p1_compound group 1 reverse top-3: 107s
+blocker b0_p1_compound: 31,414,155 pairs in 610s (peak 27.4 GB)
+
+## base — 2026-09-25 23:20 — config=code/business_entity_resolution/configs/best.yaml qfrac=0.1 BER_THREADS=4 host=ba426b9118d2
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 609.6}; peak RSS 27.4 GB; normalizer stats: {'normalize_s': 372.4}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| base | 0.9805 | 0.9932 | 142.6859 | 301.0 | 1126 | 0.9731 | 0.9856 | 0.9183 | 0.9502 | 0.8809 | 0.9937 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294
