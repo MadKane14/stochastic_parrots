@@ -17,6 +17,8 @@ JOBS = {
           ("smoke", "cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T11_e.yaml --smoke --task T11"),
           ("val", "cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T11_e.yaml --task T11")],
     # the expensive name-gram + address channel, alone and with the empty-address channel
+    # variants of the empty-address channel (deeper reverse list; short addresses too)
+    "c": [("dense", f"{DENSE} --config {CFG}/T11_e10.yaml --config {CFG}/T11_e4.yaml --config {CFG}/T11_e.yaml --out {{out}}/blk_dense_out.md")],
     "b": [("dense", f"{DENSE} --config {CFG}/T11_eca.yaml --config {CFG}/T11_ca.yaml --misses 60 --out {{out}}/blk_dense_out.md")],
 }
 
