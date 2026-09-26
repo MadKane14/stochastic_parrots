@@ -1,0 +1,215 @@
+{
+ "run_id": "20260926-201615_p1_T13_T13_sub4_test_fb141a",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "p1",
+ "task": "T13",
+ "note": "",
+ "mode": "test",
+ "split": "test",
+ "smoke": false,
+ "sample_frac": 1.0,
+ "created": "2026-09-26T20:16:15",
+ "config_path": "configs/exp/p1/T13_sub4.yaml",
+ "overrides": [],
+ "config_hash": "fb141a4bdd88",
+ "config": {
+  "paths": {
+   "data_dir": "/scratch2/madhur.kankane/ber_data/dataset",
+   "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p2_translit",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_e5",
+    "params": {
+     "fields": [
+      "name",
+      "full"
+     ]
+    }
+   },
+   {
+    "name": "p1_noise",
+    "params": {
+     "unsup": true
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.7,
+    "exclusive_right": true
+   }
+  },
+  "prune": {
+   "scorer": {
+    "name": "p1_lgbm",
+    "params": {
+     "max_rows": 15000000,
+     "max_iter": 60,
+     "learning_rate": 0.2,
+     "num_leaves": 31,
+     "early_stopping": 10
+    }
+   },
+   "features": [
+    "blk_0_score",
+    "blk_0_rank",
+    "f_p1_name_tset",
+    "f_p1_addr_tset",
+    "f_p1_idf_n_jacc",
+    "f_p1_idf_w_jacc",
+    "f_p1_num_shared",
+    "f_p1_num_first_eq",
+    "f_p1_grp_s1_key_rank",
+    "f_p1_grp_rec_key_rank",
+    "f_p1_grp_s1_key_margin",
+    "f_p1_grp_rec_key_margin"
+   ],
+   "min_score": 0.005,
+   "max_per_s1": 10
+  }
+ },
+ "git": {
+  "commit": "33377f26925d",
+  "branch": "main",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true
+ },
+ "machine": {
+  "host": "phoenix.rrcx.tk",
+  "python": "3.11.16",
+  "platform": "Linux-6.8.0-76060800daily20240311-generic-x86_64-with-glibc2.35",
+  "gpu": "NVIDIA RTX A4000; NVIDIA RTX A4000; NVIDIA RTX A4000"
+ },
+ "sizes": {
+  "train_s1": 2206821,
+  "train_right": 10320219,
+  "target_s1": 1732544,
+  "target_right": 9969589
+ },
+ "train_pairs": {
+  "n_pairs": 73491032,
+  "pos_rate": 0.10177135626561891,
+  "n_features": 99
+ },
+ "transductive_components": [
+  "p2_translit",
+  "p1_compound",
+  "p1_match",
+  "p1_extra",
+  "p1_noise"
+ ],
+ "timings_s": {
+  "normalize": 364.26,
+  "block": 1574.97,
+  "features:p1_match": 727.33,
+  "features:p1_extra": 877.65,
+  "features:p1_e5": 865.06,
+  "features:p1_noise": 284.49,
+  "prune_fit": 21.12,
+  "scorer_fit": 372.72,
+  "prune": 25.02,
+  "score": 62.29
+ },
+ "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts/runs/20260926-201615_p1_T13_T13_sub4_test_fb141a",
+ "submission": {
+  "dir": "/scratch2/madhur.kankane/ber_artifacts/submissions/20260926-201615_p1_T13_T13_sub4_test_fb141a",
+  "our_validator_issues": [],
+  "official_validator": "PASS\nML Challenge 2026 \u2014 submission validator\n  test dir: /scratch2/madhur.kankane/ber_data/dataset/test\n  required S1 entities: 1732544\n  matching_results.tsv: 1732544 rows (100567 empty, 1631977 non-empty).\n  candidate_pairs.tsv: 1732544 rows (1114 empty, 1731430 non-empty).\n\nWARNING: ID-existence check is OFF (the default) \u2014 not checking that matched/candidate IDs exist in the test set. Every other rule is still checked. Re-run with --check-ids to enable it (needs test_source2/3.tsv; uses more memory). A nonexistent ID only lowers your score, never rejects your submission.\nPASS \u2014 no blocking issues found. Safe to submit.\n"
+ },
+ "test_stats": {
+  "n_s1": 1732544,
+  "by_country": {
+   "France": {
+    "n": 259452,
+    "pred_empty_rate": 0.054,
+    "matches_per_s1": 3.365,
+    "cands_per_s1": 6.92
+   },
+   "India": {
+    "n": 809986,
+    "pred_empty_rate": 0.0594,
+    "matches_per_s1": 3.334,
+    "cands_per_s1": 6.52
+   },
+   "US": {
+    "n": 663106,
+    "pred_empty_rate": 0.058,
+    "matches_per_s1": 3.358,
+    "cands_per_s1": 6.15
+   }
+  }
+ },
+ "runtime_s": 5487.4
+}
