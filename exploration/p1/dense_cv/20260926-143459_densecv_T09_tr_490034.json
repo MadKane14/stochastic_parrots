@@ -1,0 +1,121 @@
+{
+ "run": "20260926-143459_densecv_T09_tr_490034",
+ "config_path": "code/business_entity_resolution/configs/exp/p1/T09_tr.yaml",
+ "overrides": [],
+ "config": {
+  "paths": {
+   "data_dir": "/scratch2/madhur.kankane/ber_data/dataset",
+   "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p2_translit",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.7,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "bc0c2bb",
+  "dirty": false
+ },
+ "fold_seed": 777,
+ "feature_cache": "pairs_18e829fc96f46160.parquet",
+ "metrics": {
+  "f05": 0.98279,
+  "by_country": {
+   "India": 0.9826,
+   "US": 0.98292
+  },
+  "by_fold": {
+   "0": 0.98274,
+   "1": 0.98284
+  },
+  "folds": "2 x S1 hash (seed 777)",
+  "singleton_acc": 0.9866,
+  "f05_nonsingleton": 0.98257,
+  "n_s1": 2206821,
+  "n_pairs": 73491032,
+  "pair_precision": 0.99682,
+  "pair_recall": 0.95729,
+  "blocking_pair_recall": 0.97917,
+  "oracle_f05": 0.99277,
+  "f05_frozen_metric": 0.98279,
+  "threshold_curve": {
+   "0.3": 0.97825,
+   "0.4": 0.9804,
+   "0.5": 0.98181,
+   "0.6": 0.98253,
+   "0.7": 0.98279,
+   "0.8": 0.98259,
+   "0.9": 0.98125
+  }
+ },
+ "runtime_s": 3597,
+ "peak_rss_gb": 51.1
+}
