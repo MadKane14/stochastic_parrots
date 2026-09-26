@@ -61,6 +61,12 @@ off = dict(env, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
 
 # T20 (round 5, p2's task; run on p4's Kaggle at the account owner's request so p2 does not run it locally).
 # 1) ft_full = v1 recipe on ALL train pairs; 2) dense_cv_group --group India: T13_sub4 (pretrained) vs T20_ft (ft_full).
+# P100 fallback (T4 queue was stuck): PyPI's torch 2.8.0 is the CUDA 12.8 build, which dropped Pascal (sm_60) ->
+# same torch version from the CUDA 12.6 index on a P100.
+sh("nvidia-smi -L | grep -q P100 && pip install -q --force-reinstall torch==2.8.0 "
+   "--index-url https://download.pytorch.org/whl/cu126 && pip uninstall -y -q torchvision torchaudio; "
+   "python -c \"import torch; print(torch.__version__, torch.cuda.get_device_name(0), torch.ones(2, device='cuda').sum().item())\"",
+   "gpu_check", env=env)
 AM = Path("/tmp/ber_artifacts/models")
 M = W / "models"
 ft = dict(off, HF_HUB_OFFLINE="0", TRANSFORMERS_OFFLINE="0")   # base weights cached; allow tokenizer files
