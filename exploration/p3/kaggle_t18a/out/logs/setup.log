@@ -1,0 +1,10 @@
+$ nproc; free -g; nvidia-smi -L 2>/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         8.0T  6.9T  1.1T  87% /
+/dev/loop2       20G  144K   20G   1% /kaggle/working
+Python 3.12.13
+6f84029 p3 T18: t18d OOM-killed after features (30.9M pairs, 25.9 GB before concat); runner retries once with warm caches; GPU embedding job logs
