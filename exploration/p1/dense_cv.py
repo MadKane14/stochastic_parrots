@@ -105,7 +105,29 @@ def build_pairs(cfg: dict, art: Path):
             log.info("features %s %.0fs (peak %.1f GB)", fs.registry_name, time.time() - t, peak_gb())
     del pairs                     # free the 70M+ string pairs BEFORE loading every feature file
     import gc; gc.collect()
-    df = pd.concat([pd.read_parquet(p_).reset_index(drop=True) for p_ in paths], axis=1, copy=False)
+    # Assemble without pd.concat (which holds every part twice): one preallocated float16 matrix, filled column by
+    # column from one cached file at a time; ids / label stay separate integer columns.
+    import pyarrow.parquet as pq
+    base = pd.read_parquet(paths[0])
+    blk_cols = [c for c in base.columns if c.startswith("blk_")]
+    feat_cols = [c for p_ in paths[1:] for c in pq.read_schema(p_).names if not c.startswith("__")]
+    cols = blk_cols + feat_cols
+    arr = np.empty((len(base), len(cols)), dtype=np.float16)
+    for j, c in enumerate(blk_cols):
+        arr[:, j] = base[c].to_numpy(np.float32)
+    j = len(blk_cols)
+    for p_ in paths[1:]:
+        t = pq.read_table(p_)
+        for c in t.column_names:
+            if not c.startswith("__"):
+                arr[:, j] = t.column(c).to_numpy(zero_copy_only=False)
+                j += 1
+        del t
+    assert j == len(cols)
+    df = pd.DataFrame(arr, columns=cols, copy=False)
+    for pos, c in enumerate(("s1_id", "ri", "label")):
+        df.insert(pos, c, base[c].to_numpy())
+    del base
     fpath = Path("+".join(names))
     s1_rows = np.flatnonzero((recs["source"] == 1).to_numpy())
     ntrue = np.zeros(n, np.int32)
