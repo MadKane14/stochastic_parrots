@@ -1,0 +1,22 @@
+$ python exploration/p2/blk_eval_p2.py --config code/business_entity_resolution/configs/exp/p2/T04_a.yaml --qfrac 0.1 --label T04_a --out /kaggle/working/blk_eval_out.md --json /kaggle/working/blk_eval_json/T04_a_q0.1.json
+normalized 12,527,040 records in 704s; stats {'normalize_s': 703.6, 'name_pairs_with_native': 496440, 'name_map_size': 937, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348}}
+loaded 10,540,382 records, 220,163 S1 queries (777s, peak 13.2 GB)
+2026-09-25 23:34:25,238 ber.blocking.p1_compound tokenize 46s
+2026-09-25 23:35:16,185 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 25620824 features (29.5/record), built in 50s
+2026-09-25 23:36:56,079 ber.blocking.p1_compound group 0 forward top-30: 100s
+2026-09-25 23:38:30,197 ber.blocking.p1_compound group 0 reverse top-3: 94s
+2026-09-25 23:39:37,018 ber.blocking.p1_compound group 1: 88077 S1 x 4133346 right, 14860148 features (57.9/record), built in 67s
+2026-09-25 23:41:36,462 ber.blocking.p1_compound group 1 forward top-30: 119s
+2026-09-25 23:43:30,405 ber.blocking.p1_compound group 1 reverse top-3: 114s
+blocker b0_p1_compound: 31,510,758 pairs in 602s (peak 28.1 GB)
+
+## T04_a — 2026-09-25 23:43 — config=code/business_entity_resolution/configs/exp/p2/T04_a.yaml qfrac=0.1 BER_THREADS=4 host=ba426b9118d2
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 601.8}; peak RSS 28.1 GB; normalizer stats: {'normalize_s': 703.6, 'name_pairs_with_native': 496440, 'name_map_size': 937, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T04_a | 0.9869 | 0.9956 | 143.1247 | 304.0 | 1133 | 0.9849 | 0.9881 | 0.9775 | 0.9849 | 0.8832 | 0.9946 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294
