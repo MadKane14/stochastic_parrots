@@ -1,0 +1,14 @@
+# T11 (p1) — T09_tr (no E5) + learned pruning stage (organizer update: smaller candidate sets rank higher). A cheap stage-1
+# LightGBM (60 rounds, 12 cheap features) keeps, per S1, candidates with score >= 0.005 (at most 10); the final
+# model, decider and candidate_pairs.tsv see only survivors. Dense-CV study (exploration/p1/prune_eval_out.md):
+# 33.4 -> 6.2 cands/S1 at -0.0002 F0.5.
+inherit: T09_tr.yaml
+prune:
+  scorer:
+    name: p1_lgbm
+    params: {max_rows: 15000000, max_iter: 60, learning_rate: 0.2, num_leaves: 31, early_stopping: 10}
+  features: [blk_0_score, blk_0_rank, f_p1_name_tset, f_p1_addr_tset, f_p1_idf_n_jacc, f_p1_idf_w_jacc,
+             f_p1_num_shared, f_p1_num_first_eq, f_p1_grp_s1_key_rank, f_p1_grp_rec_key_rank,
+             f_p1_grp_s1_key_margin, f_p1_grp_rec_key_margin]
+  min_score: 0.005
+  max_per_s1: 10
