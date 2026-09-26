@@ -79,10 +79,11 @@ def training_triples(ds, n_max: int, seed: int) -> pd.DataFrame:
     return pd.DataFrame({"a": a, "p": p, "n": n}), n_hard
 
 
-def blocker_triples(train, frac: float, seed: int, config: str) -> tuple[pd.DataFrame, int]:
+def blocker_triples(train, frac: float, seed: int, config: str, mix: float = 0.0) -> tuple[pd.DataFrame, int]:
     """v2 negatives: run the team blocker (configs/best.yaml) on a `frac` sample of the train side and use, for each S1
     entity with >= 1 match, one random true match and one of its 3 highest-ranked NON-matching candidates (the real
-    confusions). Rows index the SAMPLE's records (returned via .attrs['records'])."""
+    confusions). With `mix` > 0, that share of anchors gets the v1 negative instead (same-address / random record of
+    the same sample). Rows index the SAMPLE's records (returned via .attrs['records'])."""
     from ber.config import load_config
     from ber.eval.splits import subsample
     from ber.pipeline import Pipeline
@@ -106,14 +107,22 @@ def blocker_triples(train, frac: float, seed: int, config: str) -> tuple[pd.Data
         cands = neg[s]
         A.append(row[s]); P.append(row[sorted(m)[rng.integers(len(m))]]); N.append(row[cands[rng.integers(len(cands))]])
     tri = pd.DataFrame({"a": A, "p": P, "n": N})
+    n_blk = len(tri)
+    if mix > 0:
+        v1, _ = training_triples(sub, len(sub.gt), seed + 7)          # same sample -> same record rows
+        v1n = pd.Series(v1["n"].to_numpy(), index=v1["a"].to_numpy())
+        swap = (rng.random(len(tri)) < mix) & tri["a"].isin(v1n.index).to_numpy()
+        tri.loc[swap, "n"] = v1n.reindex(tri.loc[swap, "a"]).to_numpy()
+        n_blk = int((~swap).sum())
     tri.attrs["records"] = recs
-    print(f"blocker triples: {len(tri):,} from a {frac} sample ({len(sub.s1):,} S1, {len(c):,} candidates)", flush=True)
-    return tri, len(tri)
+    print(f"blocker triples: {len(tri):,} from a {frac} sample ({len(sub.s1):,} S1, {len(c):,} candidates); "
+          f"{n_blk:,} blocker negatives, {len(tri) - n_blk:,} v1 negatives", flush=True)
+    return tri, n_blk
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", default="val_v1", help="val_v1 | xc_<Country> | full")
+    ap.add_argument("--split", default="val_v1", help="val_v1 | xc_<Country> | full, optionally +fold2:<k> (only S1 of cross-fitting fold k, see p4_e5cf)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--model", default="intfloat/multilingual-e5-small")
     ap.add_argument("--n", type=int, default=400_000, help="S1 entities (one pair each)")
@@ -122,6 +131,7 @@ def main():
     ap.add_argument("--tau", type=float, default=0.05)
     ap.add_argument("--max-length", type=int, default=64)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--mix", type=float, default=0.0, help="blocker mode: share of anchors that get the v1 negative")
     ap.add_argument("--neg", default="address", choices=["address", "blocker"],
                     help="address = v1 (same-address / random negatives); blocker = v2 (top blocker non-matches)")
     ap.add_argument("--neg-frac", type=float, default=0.25, help="v2: train-side sample fraction that is blocked")
@@ -133,10 +143,18 @@ def main():
     torch.manual_seed(a.seed)
     t0 = time.time()
     full = load_part(os.environ["BER_DATA_DIR"], "train", cache_dir=Path(os.environ["BER_ARTIFACTS"]) / "cache")
-    train = full if a.split == "full" else make_split(full, a.split)[0]
+    base, _, fold = a.split.partition("+fold2:")
+    train = full if base == "full" else make_split(full, base)[0]
+    if fold:   # cross-fitting: keep the labels of fold-k S1 entities only (all records stay as negatives)
+        from ber.features.p4_e5cf import cf_fold
+        ids = list(train.gt)
+        keep = cf_fold(ids) == int(fold)
+        train = train.__class__(train.name, train.records, {s: (train.gt[s] if k else frozenset()) for s, k in zip(ids, keep)},
+                                train.meta)
+        print(f"cross-fitting fold {fold}: {int(keep.sum()):,} of {len(ids):,} S1 keep their labels", flush=True)
     del full
     if a.neg == "blocker":
-        tri, n_hard = blocker_triples(train, a.neg_frac, a.seed, a.blk_config)
+        tri, n_hard = blocker_triples(train, a.neg_frac, a.seed, a.blk_config, a.mix)
         recs = tri.attrs.pop("records")
         tri = tri.iloc[np.random.default_rng(a.seed).permutation(len(tri))[:a.n]].reset_index(drop=True)
     else:
@@ -199,7 +217,7 @@ def main():
     model.eval().half().save_pretrained(out)
     tok.save_pretrained(out)
     stats = {"split": a.split, "neg": a.neg, "neg_frac": a.neg_frac if a.neg == "blocker" else None,
-             "epochs": a.epochs, "base_model": a.model, "n_triples": int(len(tri)), "n_hard_negatives": int(n_hard),
+             "epochs": a.epochs, "mix": a.mix, "base_model": a.model, "n_triples": int(len(tri)), "n_hard_negatives": int(n_hard),
              "steps": steps, "batch": a.batch, "lr": a.lr, "tau": a.tau, "max_length": a.max_length, "seed": a.seed,
              "train_seconds": round(time.time() - t1, 1), "pairs_used": used, "loss_log": log,
              "gpu": torch.cuda.get_device_name(0), "torch": torch.__version__}

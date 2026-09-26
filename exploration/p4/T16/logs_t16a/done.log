@@ -1,0 +1,6 @@
+$ free -g; du -sh /kaggle/working/models/*
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          17           0          13          30
+Swap:              0           0           0
+246M	/kaggle/working/models/v2b_xc_India
+246M	/kaggle/working/models/v3mix_xc_India

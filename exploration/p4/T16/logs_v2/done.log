@@ -1,0 +1,60 @@
+$ free -g; du -sh /kaggle/working/models/*; ls -R /kaggle/working | head -60
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          19           0          11          30
+Swap:              0           0           0
+246M	/kaggle/working/models/ft2_val_v1
+246M	/kaggle/working/models/ft2_xc_India
+/kaggle/working:
+e5_ft2_eval_val_v1.json
+e5_ft2_eval_xc_India.json
+e5_ft_eval_out.md
+logs
+models
+results
+summary.txt
+
+/kaggle/working/logs:
+cands.log
+check.log
+done.log
+eval_val_v1.log
+eval_xc_India.log
+ft2_val_v1.log
+ft2_xc_India.log
+harness_ft2_val_v1.log
+harness_ft2_xc_India.log
+hf.log
+pip.log
+rawcache.log
+setup.log
+
+/kaggle/working/models:
+ft2_val_v1
+ft2_xc_India
+
+/kaggle/working/models/ft2_val_v1:
+config.json
+model.safetensors
+p4_finetune_stats.json
+sentencepiece.bpe.model
+special_tokens_map.json
+tokenizer_config.json
+tokenizer.json
+
+/kaggle/working/models/ft2_xc_India:
+config.json
+model.safetensors
+p4_finetune_stats.json
+sentencepiece.bpe.model
+special_tokens_map.json
+tokenizer_config.json
+tokenizer.json
+
+/kaggle/working/results:
+p4
+
+/kaggle/working/results/p4:
+20260926-102521_p4_T12_T06_base_val_v1@0.1_5b1ef7.json
+20260926-103610_p4_T12_T06_base_xc_India@0.1_5b1ef7.json
+20260926-111205_p4_T12_T06_e5g_xc_India@0.1_fb3dbd.json
+20260926-115831_p4_T12_T06_e5g_val_v1@0.1_644ae8.json

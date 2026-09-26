@@ -1,0 +1,22 @@
+{
+  "id": "anishtoshniwal006/ber-p4-t16a",
+  "title": "ber-p4-t16a",
+  "code_file": "ber_p4_t16a.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "machine_shape": "",
+  "dataset_sources": [
+    "anishtoshniwal006/ber-data-p4",
+    "anishtoshniwal006/ber-p4-code"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [
+    "anishtoshniwal006/ber-p4-t12ft",
+    "anishtoshniwal006/ber-p4-t12ft2"
+  ],
+  "model_sources": []
+}

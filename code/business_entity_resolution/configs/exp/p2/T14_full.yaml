@@ -1,0 +1,14 @@
+# T14 (p2 branch) — the whole team stack, one run: p2 normalizer v1 (p2_translit D, via p1/T09_tr) → p1_compound
+# blocker + p3 empty-address channel (p3_chargram, p3/T11_e) → p1_match + p1_extra + p4_e5 features → p1_lgbm →
+# p1_assign (thr 0.7). p3 variant chosen a priori: T11_e (p3's main T11 hypothesis, ~2-3 extra cands/S1; T11_ca adds
+# ~15 cands/S1, penalised by the organizers' candidate-size rule and too big for 31 GB with E5 vectors in RAM).
+# model: intfloat/multilingual-e5-small, licence: MIT, params: 117,653,760 (p4's count at load)
+inherit: ../p3/T11_e.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p4_e5
+    params: {model: intfloat/multilingual-e5-small, fields: [name, full], max_length: 64, batch_size: 512,
+             group_feats: true, group_sides: [s1, rec]}

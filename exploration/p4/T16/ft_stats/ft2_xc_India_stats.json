@@ -1,0 +1,93 @@
+{
+ "split": "xc_India",
+ "neg": "blocker",
+ "neg_frac": 0.25,
+ "epochs": 1,
+ "base_model": "intfloat/multilingual-e5-small",
+ "n_triples": 312184,
+ "n_hard_negatives": 312184,
+ "steps": 1625,
+ "batch": 192,
+ "lr": 2e-05,
+ "tau": 0.05,
+ "max_length": 64,
+ "seed": 0,
+ "train_seconds": 515.6,
+ "pairs_used": 312000,
+ "loss_log": [
+  {
+   "step": 0,
+   "loss": 3.6473
+  },
+  {
+   "step": 100,
+   "loss": 0.3107
+  },
+  {
+   "step": 200,
+   "loss": 0.3816
+  },
+  {
+   "step": 300,
+   "loss": 0.2595
+  },
+  {
+   "step": 400,
+   "loss": 0.2689
+  },
+  {
+   "step": 500,
+   "loss": 0.3394
+  },
+  {
+   "step": 600,
+   "loss": 0.2322
+  },
+  {
+   "step": 700,
+   "loss": 0.2294
+  },
+  {
+   "step": 800,
+   "loss": 0.1983
+  },
+  {
+   "step": 900,
+   "loss": 0.2191
+  },
+  {
+   "step": 1000,
+   "loss": 0.3857
+  },
+  {
+   "step": 1100,
+   "loss": 0.2318
+  },
+  {
+   "step": 1200,
+   "loss": 0.2111
+  },
+  {
+   "step": 1300,
+   "loss": 0.3041
+  },
+  {
+   "step": 1400,
+   "loss": 0.2604
+  },
+  {
+   "step": 1500,
+   "loss": 0.2189
+  },
+  {
+   "step": 1600,
+   "loss": 0.217
+  },
+  {
+   "step": 1624,
+   "loss": 0.3416
+  }
+ ],
+ "gpu": "Tesla T4",
+ "torch": "2.8.0+cu128"
+}

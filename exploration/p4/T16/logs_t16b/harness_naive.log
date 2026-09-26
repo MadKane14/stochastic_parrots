@@ -1,0 +1,8 @@
+$ python src/run.py run -c configs/exp/p4/T16_val_p1e5.yaml --task T16 --split val_v1@0.1 --set features.1.params.model=/kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft/models/ft_val_v1 --note 'naive fine-tuned E5 (v1, whole train side)'
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] /kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft/models/ft_val_v1 on cuda (torch.float16), params=117,653,760, dim=384
+[val_v1@0.1] 20260926-131920_p4_T16_T16_val_p1e5_val_v1@0.1_967e57
+  F0.5=0.9904 CI95=[0.98983, 0.99088]  singleton_acc=0.9793  pairP=0.99343 pairR=0.9876
+  blocking: oracle_F0.5=0.9986 pair_recall=0.99583 cands/s1=33.53  scorer={'roc_auc': 0.99991, 'avg_precision': 0.99699}
+  by_country={"India": {"n": 17619, "f05": 0.98873}, "US": {"n": 26329, "f05": 0.99147}}  runtime=900.3s 
+  results: /kaggle/working/results/p4/20260926-131920_p4_T16_T16_val_p1e5_val_v1@0.1_967e57.json
