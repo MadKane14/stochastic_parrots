@@ -33,6 +33,12 @@ JOBS = {
     "f": [("dense", f"python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30,40,50 --rev-caps 10,20 "
                     f"--config {CFG}/T15_ena.yaml --config {CFG}/T15_ena5.yaml --misses 60 --out {{out}}/blk_dense_out.md"),
           ("smoke", "cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T15_ena.yaml --smoke --task T15")],
+    # T15 final: the shipped config end to end (real rev caps + cap 40 -> real blocking times), two next-step
+    # variants, then a pipeline smoke of the prune stage fed with every blocker's columns (no E5 on Kaggle)
+    "g": [("dense", f"python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30 "
+                    f"--config {CFG}/T15_final_t09.yaml --config {CFG}/T15_final_e10.yaml "
+                    f"--config {CFG}/T15_final_na1000.yaml --misses 60 --out {{out}}/blk_dense_out.md"),
+          ("smoke", "cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T15_final_t09_prune.yaml --smoke --task T15")],
     "b": [("dense", f"{DENSE} --config {CFG}/T11_eca.yaml --config {CFG}/T11_ca.yaml --misses 60 --out {{out}}/blk_dense_out.md")],
 }
 

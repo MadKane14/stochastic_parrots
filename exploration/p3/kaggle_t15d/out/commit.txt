@@ -1,0 +1,1 @@
+4d5bb21 p3 T15: p3_compound_rc (p1_compound + per-S1 reverse-flood cap, provenance), p3_chargram rev_cap + provenance, blk_dense --rev-caps grid, T15 configs, Kaggle job d

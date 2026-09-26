@@ -1,0 +1,6 @@
+$ cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T15_e.yaml --smoke --task T15
+[val_v1@0.1 SMOKE] 20260926-153451_p3_T15_T15_e_val_v1@0.1_332ff3_smoke
+  F0.5=0.9972 CI95=[0.99628, 0.99805]  singleton_acc=0.9957  pairP=0.99899 pairR=0.9942
+  blocking: oracle_F0.5=0.9999 pair_recall=0.99973 cands/s1=34.01  scorer={'roc_auc': 0.99999, 'avg_precision': 0.99993}
+  by_country={"India": {"n": 1766, "f05": 0.99707}, "US": {"n": 2566, "f05": 0.99736}}  runtime=284.7s 
+  results: /kaggle/working/results/p3/smoke/20260926-153451_p3_T15_T15_e_val_v1@0.1_332ff3_smoke.json
