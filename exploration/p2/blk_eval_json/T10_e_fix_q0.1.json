@@ -1,0 +1,46 @@
+{
+ "label": "T10_e_fix",
+ "config": "code/business_entity_resolution/configs/exp/p2/T10_e.yaml",
+ "qfrac": 0.1,
+ "metrics": {
+  "pair_recall": 0.988,
+  "oracle_f05": 0.996,
+  "cands_mean": 143.4374,
+  "cands_p95": 308.0,
+  "cands_max": 1206,
+  "recall_India": 0.9845,
+  "recall_US": 0.9903,
+  "recall_nonlatin_name": 0.9778,
+  "n_nonlatin_name": 54800,
+  "recall_web_name": 0.9877,
+  "n_web_name": 39208,
+  "recall_empty_addr": 0.8791,
+  "n_empty_addr": 33557,
+  "recall_letter_run_name": 0.9954,
+  "n_letter_run_name": 26294
+ },
+ "timings_s": {
+  "b0_p1_compound": 526.7
+ },
+ "peak_rss_gb": 28.6,
+ "normalizer_stats": {
+  "normalize_s": 1036.0,
+  "name_pairs_with_native": 496440,
+  "name_map_size": 1344,
+  "addr_pairs_with_native": 622695,
+  "addr_map_size": 17,
+  "name_canon_size": 82,
+  "addr_canon_size": 357,
+  "transform": {
+   "web_rows": 404083,
+   "name_native_rows": 752869,
+   "addr_native_rows": 953299,
+   "segmented_rows": 567581,
+   "initials_rows": 517348,
+   "name_canon_applied": true,
+   "addr_canon_applied": true
+  }
+ },
+ "host": "f86cf5620bf3",
+ "time": "2026-09-26 11:46"
+}

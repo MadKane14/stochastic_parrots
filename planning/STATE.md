@@ -53,6 +53,8 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 2 | Sat | ~09:00 | 20260926-063526_p1_T09_T08_sub_test_724a04 | T08_sub / c1b9f99 | 0.97885 | **0.969** | validator PASS (--check-ids); expected-F on test 0.981 vs 0.961 for #1 (`exploration/p1/expected_f_out.md`) |
 | 3 | – | not uploaded | 20260926-171638_p1_T13_T10_e5_test_08f49f | T10_e5 / 4e6d871 | 0.98313 | _pending_ | validator PASS (--check-ids); T09 (+p2_translit) + pretrained E5 |
 | 4 | Sat | ~22:00 | 20260926-201615_p1_T13_T13_sub4_test_fb141a | T13_sub4 / 1d9e21b | 0.98405 (T12_noise2) | **0.978** | + p1_noise + learned pruning: ~6.5 cands/S1 (was ~35); validator PASS |
+| 5 | Sat | _to upload_ | 20260926-221844_p1_T13_T13_sub5_ft_test_19770e | T13_sub5_ft / 04cf1fc | – | _pending_ | #4 + E5 fine-tuned on all train pairs (p4 v1); PASS |
+| 6 | Sat | _to upload_ | blend_sub4_sub5 (exploration/p1/blend_runs.py) | mean of #4 and #5 probabilities | – | _pending_ | same candidates; corr 0.998; PASS |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
