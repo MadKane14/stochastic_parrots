@@ -1,0 +1,15 @@
+# T15 (p3) — T15_e (empty-address channel) + p3_nameaddr: (name token x address word) keys catch pairs whose name
+# matches and street/city words match while the house number is truncated/changed (`equinox llc | 6600 valley road
+# newburgh` <> `660 valley rd newburgh indiana`), the largest miss class left in the T11_e missed-pairs sample
+# (exploration/p3/kaggle_t11a/out/blk_dense_out.md). Hypothesis: +0.002-0.004 recall at <= +5 cands/S1.
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p3_compound_rc       # transductive (as p1_compound)
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: null}
+    - name: p3_chargram          # empty-address channel (= T11_e); transductive
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 5000}
+    - name: p3_nameaddr          # transductive: IDF/df caps computed on the records being blocked
+      params: {name_field: name_core, addr_field: addr_norm, name_cap: 4, addr_cap: 10, k: 10, k_rev: 1, max_df: 300}

@@ -29,6 +29,10 @@ JOBS = {
     "e": [("dense", f"python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30,40,50 --rev-caps 10,20 "
                     f"--config {CFG}/T15_e_df2000.yaml --config {CFG}/T15_e_df1000.yaml --config {CFG}/T15_base.yaml "
                     f"--out {{out}}/blk_dense_out.md")],
+    # T15 name-token x address-word channel on top of the empty-address channel (k 10 and 5)
+    "f": [("dense", f"python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30,40,50 --rev-caps 10,20 "
+                    f"--config {CFG}/T15_ena.yaml --config {CFG}/T15_ena5.yaml --misses 60 --out {{out}}/blk_dense_out.md"),
+          ("smoke", "cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T15_ena.yaml --smoke --task T15")],
     "b": [("dense", f"{DENSE} --config {CFG}/T11_eca.yaml --config {CFG}/T11_ca.yaml --misses 60 --out {{out}}/blk_dense_out.md")],
 }
 
