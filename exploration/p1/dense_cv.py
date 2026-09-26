@@ -127,11 +127,27 @@ def oof_scores(df: pd.DataFrame, cfg: dict, folds: int = 2, s1_country: np.ndarr
         fold_of_u = np.array([int(unit_hash(str(x), FOLD_SEED) * folds) for x in u], dtype=np.int8)
         fold = fold_of_u[np.searchsorted(u, df["s1_id"].to_numpy())]
     oof = np.zeros(len(df), np.float64)
+    s1 = df["s1_id"].to_numpy()
     for k in range(folds):
         t = time.time()
         sc = build("scorer", cfg["scorer"])
-        sc.fit(None, df.loc[fold != k])                  # s1_id = S1 row code: the scorer samples whole S1 groups
-        oof[fold == k] = sc.score(None, df.loc[fold == k])
+        # Memory: apply the scorer's own S1-group sampling BEFORE copying rows (p1_lgbm keeps S1 groups with
+        # unit_hash(s1, 1000+seed) < max_rows / n_rows and validates on hash < that * valid_frac). Only the sampled
+        # rows are copied; valid_frac is rescaled so the scorer selects exactly the same train / valid rows.
+        tr_rows = np.flatnonzero(fold != k)
+        max_rows = getattr(sc, "max_rows", None)
+        if max_rows and len(tr_rows) > max_rows:
+            frac = max_rows / len(tr_rows)
+            u = np.unique(s1[tr_rows])
+            h = np.array([unit_hash(x, 1000 + sc.seed) for x in u.tolist()])
+            keep_u = u[h < frac]
+            tr_rows = tr_rows[np.isin(s1[tr_rows], keep_u)]
+            sc.valid_frac = sc.valid_frac * frac
+        sc.fit(None, df.iloc[tr_rows])                   # s1_id = S1 row code: the scorer samples whole S1 groups
+        te_rows = np.flatnonzero(fold == k)
+        for c0 in range(0, len(te_rows), 5_000_000):     # score in slices: never copy the whole fold
+            part = te_rows[c0:c0 + 5_000_000]
+            oof[part] = sc.score(None, df.iloc[part])
         log.info("fold %d: fit+score %.0fs (best_iteration %s, peak %.1f GB)", k, time.time() - t,
                  getattr(sc, "best_iteration", None), peak_gb())
     return oof, fold
