@@ -105,7 +105,29 @@ def build_pairs(cfg: dict, art: Path):
             log.info("features %s %.0fs (peak %.1f GB)", fs.registry_name, time.time() - t, peak_gb())
     del pairs                     # free the 70M+ string pairs BEFORE loading every feature file
     import gc; gc.collect()
-    df = pd.concat([pd.read_parquet(p_).reset_index(drop=True) for p_ in paths], axis=1, copy=False)
+    # Assemble without pd.concat (which holds every part twice): one preallocated float16 matrix, filled column by
+    # column from one cached file at a time; ids / label stay separate integer columns.
+    import pyarrow.parquet as pq
+    base = pd.read_parquet(paths[0])
+    blk_cols = [c for c in base.columns if c.startswith("blk_")]
+    feat_cols = [c for p_ in paths[1:] for c in pq.read_schema(p_).names if not c.startswith("__")]
+    cols = blk_cols + feat_cols
+    arr = np.empty((len(base), len(cols)), dtype=np.float16)
+    for j, c in enumerate(blk_cols):
+        arr[:, j] = base[c].to_numpy(np.float32)
+    j = len(blk_cols)
+    for p_ in paths[1:]:
+        t = pq.read_table(p_)
+        for c in t.column_names:
+            if not c.startswith("__"):
+                arr[:, j] = t.column(c).to_numpy(zero_copy_only=False)
+                j += 1
+        del t
+    assert j == len(cols)
+    df = pd.DataFrame(arr, columns=cols, copy=False)
+    for pos, c in enumerate(("s1_id", "ri", "label")):
+        df.insert(pos, c, base[c].to_numpy())
+    del base
     fpath = Path("+".join(names))
     s1_rows = np.flatnonzero((recs["source"] == 1).to_numpy())
     ntrue = np.zeros(n, np.int32)
@@ -127,11 +149,27 @@ def oof_scores(df: pd.DataFrame, cfg: dict, folds: int = 2, s1_country: np.ndarr
         fold_of_u = np.array([int(unit_hash(str(x), FOLD_SEED) * folds) for x in u], dtype=np.int8)
         fold = fold_of_u[np.searchsorted(u, df["s1_id"].to_numpy())]
     oof = np.zeros(len(df), np.float64)
+    s1 = df["s1_id"].to_numpy()
     for k in range(folds):
         t = time.time()
         sc = build("scorer", cfg["scorer"])
-        sc.fit(None, df.loc[fold != k])                  # s1_id = S1 row code: the scorer samples whole S1 groups
-        oof[fold == k] = sc.score(None, df.loc[fold == k])
+        # Memory: apply the scorer's own S1-group sampling BEFORE copying rows (p1_lgbm keeps S1 groups with
+        # unit_hash(s1, 1000+seed) < max_rows / n_rows and validates on hash < that * valid_frac). Only the sampled
+        # rows are copied; valid_frac is rescaled so the scorer selects exactly the same train / valid rows.
+        tr_rows = np.flatnonzero(fold != k)
+        max_rows = getattr(sc, "max_rows", None)
+        if max_rows and len(tr_rows) > max_rows:
+            frac = max_rows / len(tr_rows)
+            u = np.unique(s1[tr_rows])
+            h = np.array([unit_hash(x, 1000 + sc.seed) for x in u.tolist()])
+            keep_u = u[h < frac]
+            tr_rows = tr_rows[np.isin(s1[tr_rows], keep_u)]
+            sc.valid_frac = sc.valid_frac * frac
+        sc.fit(None, df.iloc[tr_rows])                   # s1_id = S1 row code: the scorer samples whole S1 groups
+        te_rows = np.flatnonzero(fold == k)
+        for c0 in range(0, len(te_rows), 5_000_000):     # score in slices: never copy the whole fold
+            part = te_rows[c0:c0 + 5_000_000]
+            oof[part] = sc.score(None, df.iloc[part])
         log.info("fold %d: fit+score %.0fs (best_iteration %s, peak %.1f GB)", k, time.time() - t,
                  getattr(sc, "best_iteration", None), peak_gb())
     return oof, fold
