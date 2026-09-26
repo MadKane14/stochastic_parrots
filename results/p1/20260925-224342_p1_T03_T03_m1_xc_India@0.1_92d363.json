@@ -1,0 +1,173 @@
+{
+ "run_id": "20260925-224342_p1_T03_T03_m1_xc_India@0.1_92d363",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "p1",
+ "task": "T03",
+ "note": "",
+ "mode": "val",
+ "split": "xc_India@0.1",
+ "smoke": false,
+ "sample_frac": 0.1,
+ "created": "2026-09-25T22:43:43",
+ "config_path": "configs/exp/p1/T03_m1.yaml",
+ "overrides": [],
+ "config_hash": "92d363709dbc",
+ "config": {
+  "paths": {
+   "data_dir": "/scratch2/madhur.kankane/ber_data/dataset",
+   "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "basic",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ]
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {}
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 300,
+    "learning_rate": 0.08,
+    "max_rows": 20000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.5,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "3734c4dfb1be",
+  "branch": "main",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true,
+  "split_fingerprint": "70135e119b82ca4a",
+  "split_fingerprint_ok": true
+ },
+ "machine": {
+  "host": "phoenix.rrcx.tk",
+  "python": "3.11.16",
+  "platform": "Linux-6.8.0-76060800daily20240311-generic-x86_64-with-glibc2.35",
+  "gpu": "NVIDIA RTX A4000; NVIDIA RTX A4000; NVIDIA RTX A4000"
+ },
+ "sizes": {
+  "train_s1": 132186,
+  "train_right": 617137,
+  "target_s1": 88632,
+  "target_right": 413562
+ },
+ "train_pairs": {
+  "n_pairs": 4478749,
+  "pos_rate": 0.10134593387573182,
+  "n_features": 50
+ },
+ "transductive_components": [
+  "p1_compound",
+  "p1_match"
+ ],
+ "timings_s": {
+  "normalize": 14.44,
+  "block": 76.49,
+  "features:p1_match": 31.06,
+  "scorer_fit": 17.7,
+  "score": 1.49
+ },
+ "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts/runs/20260925-224342_p1_T03_T03_m1_xc_India@0.1_92d363",
+ "metrics": {
+  "f05": 0.95681,
+  "f05_ci95": [
+   0.95593,
+   0.95768
+  ],
+  "n_s1": 88632,
+  "singleton_rate": 0.056,
+  "singleton_acc": 0.9087,
+  "f05_nonsingleton": 0.95966,
+  "pred_empty_rate": 0.0583,
+  "pair_precision": 0.97952,
+  "pair_recall": 0.93286,
+  "n_pred_pairs": 291710,
+  "by_country": {
+   "India": {
+    "n": 88632,
+    "f05": 0.95681
+   }
+  },
+  "blocking": {
+   "pair_recall": 0.98371,
+   "pair_recall_by_source": {
+    "S2": 0.98392,
+    "S3": 0.98352
+   },
+   "entity_full_recall": 0.95229,
+   "oracle_f05": 0.99421,
+   "cands_per_s1_mean": 33.37,
+   "cands_per_s1_median": 32.0,
+   "cands_per_s1_p95": 43.0,
+   "cands_per_s1_max": 160,
+   "n_pairs": 2958074,
+   "reduction_ratio": 0.999919,
+   "s1_without_candidates": 0
+  },
+  "scorer": {
+   "roc_auc": 0.99916,
+   "avg_precision": 0.99362
+  },
+  "diag_plain_threshold_curve": {
+   "0.3": 0.95385,
+   "0.4": 0.95587,
+   "0.5": 0.9565,
+   "0.6": 0.95656,
+   "0.7": 0.95596,
+   "0.8": 0.95455,
+   "0.9": 0.94939
+  }
+ },
+ "runtime_s": 208.9
+}

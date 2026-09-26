@@ -1,0 +1,11 @@
+# T10 (p1) — T09_tr + multilingual E5 cosine features (p1_e5 = p4's p4_e5 on memory-mapped per-dataset matrices,
+# with rank/gap within S1 and within record). model: intfloat/multilingual-e5-small, licence: MIT, params: 117,653,760.
+# Hypothesis (p4 T06: xc_India@0.1 +0.023): dense CV AND dense LOCO rise over T09_tr, LOCO (unseen country) most.
+inherit: T09_tr.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p1_e5
+    params: {fields: [name, full]}

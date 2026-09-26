@@ -1,0 +1,114 @@
+{
+ "run": "20260926-052258_densecv_T08_g_fafd84_loco",
+ "config_path": "code/business_entity_resolution/configs/exp/p1/T08_g.yaml",
+ "overrides": [],
+ "config": {
+  "paths": {
+   "data_dir": "/scratch2/madhur.kankane/ber_data/dataset",
+   "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "basic",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ]
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 300,
+    "learning_rate": 0.08,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.5,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "9973e9e",
+  "dirty": false
+ },
+ "fold_seed": 777,
+ "feature_cache": "pairs_1fe7419b3cadc238.parquet",
+ "metrics": {
+  "f05": 0.92322,
+  "by_country": {
+   "India": 0.89671,
+   "US": 0.94091
+  },
+  "by_fold": {
+   "0": 0.94091,
+   "1": 0.89671
+  },
+  "folds": "leave-one-country-out",
+  "singleton_acc": 0.7969,
+  "f05_nonsingleton": 0.93069,
+  "n_s1": 2206821,
+  "n_pairs": 73636138,
+  "pair_precision": 0.95437,
+  "pair_recall": 0.90403,
+  "blocking_pair_recall": 0.96991,
+  "oracle_f05": 0.98922,
+  "f05_frozen_metric": 0.92322,
+  "threshold_curve": {
+   "0.3": 0.91538,
+   "0.4": 0.92047,
+   "0.5": 0.92322,
+   "0.6": 0.92449,
+   "0.7": 0.92411,
+   "0.8": 0.92157,
+   "0.9": 0.91381
+  }
+ },
+ "runtime_s": 1768,
+ "peak_rss_gb": 61.0
+}
