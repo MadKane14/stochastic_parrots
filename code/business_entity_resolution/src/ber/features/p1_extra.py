@@ -144,6 +144,7 @@ class ExtraFeatures(FeatureSet):
                 arr = np.empty((len(pairs), len(names)), dtype=self.dtype)
             for j, v in enumerate(f.values()):
                 arr[s:s + len(v), j] = np.minimum(v, 6e4)   # float16-safe
+        self._t, self._key = None, None   # free the token tables (rebuilt per dataset anyway)
         if arr is None:
             return pd.DataFrame(index=pairs.index)
         return pd.DataFrame(arr, index=pairs.index, columns=names, copy=False)

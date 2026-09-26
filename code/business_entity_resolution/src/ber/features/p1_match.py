@@ -241,6 +241,7 @@ class MatchFeatures(FeatureSet):
                 arr[:, len(names) + j] = grp[c]
             del grp
             names = names + GROUP_COLS
+        self._tables, self._tables_key = None, None   # free ~5 GB of token tables (rebuilt per dataset anyway)
         return pd.DataFrame(arr, index=pairs.index, columns=names, copy=False)
 
     @staticmethod
