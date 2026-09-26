@@ -1,5 +1,10 @@
 # T04 evaluations run for p2 on p4's Kaggle — p4
 
+> **Update Sat 13:50 — superseded as primary evidence.** p2 ran the same pre-registered evaluations on their own Kaggle
+> (`w/p2` commit `0d63813`, `reports/p2/T04.md`). Every number below matches theirs exactly. p2's run_ids are the
+> primary evidence; this report is an **independent replication** on a second machine/account and should not be
+> counted twice. p2's variant B finished (pair recall 0.9869), where mine ran out of memory.
+
 Status: done (variant B's blocking eval: out of memory)
 Verdict: SUPPORTED for p2's T04 hypothesis. Variant A raises full-density pair recall by **+0.0064** (target ≥ +0.005)
 at an unchanged candidate count, and raises harness F0.5 beyond CI95 on val_v1@0.1 and xc_India@0.1.
