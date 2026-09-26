@@ -1,0 +1,42 @@
+{
+ "label": "T04_a",
+ "config": "code/business_entity_resolution/configs/exp/p2/T04_a.yaml",
+ "qfrac": 0.1,
+ "metrics": {
+  "pair_recall": 0.9869,
+  "oracle_f05": 0.9956,
+  "cands_mean": 143.1247,
+  "cands_p95": 304.0,
+  "cands_max": 1133,
+  "recall_India": 0.9849,
+  "recall_US": 0.9881,
+  "recall_nonlatin_name": 0.9775,
+  "n_nonlatin_name": 54800,
+  "recall_web_name": 0.9849,
+  "n_web_name": 39208,
+  "recall_empty_addr": 0.8832,
+  "n_empty_addr": 33557,
+  "recall_letter_run_name": 0.9946,
+  "n_letter_run_name": 26294
+ },
+ "timings_s": {
+  "b0_p1_compound": 602.6
+ },
+ "peak_rss_gb": 27.1,
+ "normalizer_stats": {
+  "normalize_s": 754.9,
+  "name_pairs_with_native": 496440,
+  "name_map_size": 937,
+  "addr_pairs_with_native": 622695,
+  "addr_map_size": 17,
+  "transform": {
+   "web_rows": 404083,
+   "name_native_rows": 752869,
+   "addr_native_rows": 953299,
+   "segmented_rows": 567581,
+   "initials_rows": 517348
+  }
+ },
+ "host": "61843fade55c",
+ "time": "2026-09-25 22:22"
+}

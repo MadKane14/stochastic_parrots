@@ -1,0 +1,21 @@
+normalized 12,527,040 records in 734s; stats {'normalize_s': 733.8, 'name_pairs_with_native': 496440, 'name_map_size': 937, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348}}
+loaded 10,540,382 records, 220,163 S1 queries (876s, peak 13.7 GB)
+2026-09-25 21:36:09,306 ber.blocking.p1_compound tokenize 51s
+2026-09-25 21:37:05,624 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 25620824 features (29.5/record), built in 55s
+2026-09-25 21:38:38,573 ber.blocking.p1_compound group 0 forward top-30: 93s
+2026-09-25 21:40:04,930 ber.blocking.p1_compound group 0 reverse top-3: 86s
+2026-09-25 21:41:06,234 ber.blocking.p1_compound group 1: 88077 S1 x 4133346 right, 15665160 features (57.9/record), built in 61s
+2026-09-25 21:42:55,564 ber.blocking.p1_compound group 1 forward top-30: 109s
+2026-09-25 21:44:42,013 ber.blocking.p1_compound group 1 reverse top-3: 106s
+blocker b0_p1_compound: 31,529,542 pairs in 575s (peak 28.2 GB)
+
+## T04_b — 2026-09-25 21:44 — config=code/business_entity_resolution/configs/exp/p2/T04_b.yaml qfrac=0.1 BER_THREADS=4 host=d34ecfe5ba71
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 574.8}; peak RSS 28.2 GB; normalizer stats: {'normalize_s': 733.8, 'name_pairs_with_native': 496440, 'name_map_size': 937, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T04_b | 0.9869 | 0.9956 | 143.21 | 304.0 | 1133 | 0.9851 | 0.9881 | 0.9767 | 0.985 | 0.8849 | 0.9946 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294

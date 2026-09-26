@@ -1,0 +1,21 @@
+normalized 12,527,040 records in 725s; stats {'normalize_s': 725.3, 'name_pairs_with_native': 496440, 'name_map_size': 1344, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348}}
+loaded 10,540,382 records, 220,163 S1 queries (801s, peak 12.3 GB)
+2026-09-25 22:19:54,557 ber.blocking.p1_compound tokenize 51s
+2026-09-25 22:20:45,194 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 25620824 features (29.5/record), built in 50s
+2026-09-25 22:22:20,121 ber.blocking.p1_compound group 0 forward top-30: 95s
+2026-09-25 22:23:51,772 ber.blocking.p1_compound group 0 reverse top-3: 92s
+2026-09-25 22:24:50,878 ber.blocking.p1_compound group 1: 88077 S1 x 4133346 right, 14859321 features (57.9/record), built in 59s
+2026-09-25 22:26:36,505 ber.blocking.p1_compound group 1 forward top-30: 106s
+2026-09-25 22:28:22,806 ber.blocking.p1_compound group 1 reverse top-3: 106s
+blocker b0_p1_compound: 31,510,824 pairs in 571s (peak 27.2 GB)
+
+## T04_d — 2026-09-25 22:28 — config=code/business_entity_resolution/configs/exp/p2/T04_d.yaml qfrac=0.1 BER_THREADS=4 host=d34ecfe5ba71
+
+- records 10,540,382 (S1 queries 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s): {'b0_p1_compound': 571.0}; peak RSS 27.2 GB; normalizer stats: {'normalize_s': 725.3, 'name_pairs_with_native': 496440, 'name_map_size': 1344, 'addr_pairs_with_native': 622695, 'addr_map_size': 17, 'transform': {'web_rows': 404083, 'name_native_rows': 752869, 'addr_native_rows': 953299, 'segmented_rows': 567581, 'initials_rows': 517348}}
+
+| label | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | recall_nonlatin_name | recall_web_name | recall_empty_addr | recall_letter_run_name |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| T04_d | 0.9869 | 0.9956 | 143.125 | 304.0 | 1133 | 0.985 | 0.9881 | 0.9778 | 0.9849 | 0.8833 | 0.9946 |
+
+subgroup sizes (true pairs): nonlatin_name=54,800, web_name=39,208, empty_addr=33,557, letter_run_name=26,294

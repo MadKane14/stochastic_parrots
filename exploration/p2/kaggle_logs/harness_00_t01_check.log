@@ -1,0 +1,17 @@
+python 3.12.13  (/usr/bin/python3)
+  MISMATCH numpy 2.0.2 (pinned 2.2.6)
+  OK  pandas 2.3.3 (pinned 2.3.3)
+  MISMATCH scipy 1.16.3 (pinned 1.15.2)
+  MISMATCH scikit-learn 1.6.1 (pinned 1.7.2)
+  OK  rapidfuzz 3.14.1 (pinned 3.14.1)
+  OK  lightgbm 4.6.0 (pinned 4.6.0)
+  MISMATCH pyarrow 24.0.0 (pinned 21.0.0)
+  OK  PyYAML 6.0.3 (pinned 6.0.3)
+BER_MEMBER = p2
+BER_DATA_DIR = /tmp/data/dataset
+BER_ARTIFACTS = /tmp/art
+data/train: ['train_ground_truth.tsv', 'train_source1.tsv', 'train_source2.tsv', 'train_source3.tsv']
+data/test: NOT FOUND
+components: {"normalizer": ["basic", "p2_translit"], "blocker": ["p1_compound", "p1_idf_overlap", "tfidf_knn"], "features": ["string_sims"], "scorer": ["hgb", "lgbm", "weighted_mean"], "decider": ["threshold"]}
+eval hash 57af2f140244d7b2  lock: 57af2f140244d7b2
+machine: {'host': '49fed37b9276', 'python': '3.12.13', 'platform': 'Linux-6.12.90+-x86_64-with-glibc2.35', 'gpu': None}
