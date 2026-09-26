@@ -1,0 +1,130 @@
+{
+ "run": "20260926-161049_densecv_T10_e5_08f49f",
+ "config_path": "code/business_entity_resolution/configs/exp/p1/T10_e5.yaml",
+ "overrides": [],
+ "config": {
+  "paths": {
+   "data_dir": "/scratch2/madhur.kankane/ber_data/dataset",
+   "artifacts_dir": "/scratch2/madhur.kankane/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p2_translit",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_e5",
+    "params": {
+     "fields": [
+      "name",
+      "full"
+     ]
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.7,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "4e6d871",
+  "dirty": false
+ },
+ "fold_seed": 777,
+ "feature_cache": "base_3f450e922357b5b5+feat_p1_match_f099afa6a62ea44b+feat_p1_extra_9930499f90259459+feat_p1_e5_dc0ba0b9177fc382",
+ "metrics": {
+  "f05": 0.98313,
+  "by_country": {
+   "India": 0.98294,
+   "US": 0.98326
+  },
+  "by_fold": {
+   "0": 0.98312,
+   "1": 0.98315
+  },
+  "folds": "2 x S1 hash (seed 777)",
+  "singleton_acc": 0.9879,
+  "f05_nonsingleton": 0.98285,
+  "n_s1": 2206821,
+  "n_pairs": 73491032,
+  "pair_precision": 0.99692,
+  "pair_recall": 0.95796,
+  "blocking_pair_recall": 0.97917,
+  "oracle_f05": 0.99277,
+  "f05_frozen_metric": 0.98313,
+  "threshold_curve": {
+   "0.3": 0.9786,
+   "0.4": 0.98052,
+   "0.5": 0.98195,
+   "0.6": 0.98282,
+   "0.7": 0.98313,
+   "0.8": 0.98292,
+   "0.9": 0.98167
+  }
+ },
+ "runtime_s": 1998,
+ "peak_rss_gb": 62.2
+}
