@@ -1,0 +1,152 @@
+$ python exploration/p3/blk_union.py --config code/business_entity_resolution/configs/best.yaml --qfrac 0.1 --caps 40,50,60 --out /kaggle/working/blk_eval_out.md
+normalized 12,527,040 records in 235s
+loaded 10,540,382 records (287s, peak 17.6 GB)
+2026-09-25 21:28:09,905 ber.blocking.p1_compound tokenize 30s
+2026-09-25 21:28:43,295 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 26713898 features (30.0/record), built in 33s
+2026-09-25 21:29:48,924 ber.blocking.p1_compound group 0 forward top-30: 66s
+2026-09-25 21:30:52,378 ber.blocking.p1_compound group 0 reverse top-3: 63s
+2026-09-25 21:31:32,639 ber.blocking.p1_compound group 1: 88077 S1 x 4133346 right, 16183311 features (57.9/record), built in 40s
+2026-09-25 21:32:43,382 ber.blocking.p1_compound group 1 forward top-30: 71s
+2026-09-25 21:33:54,520 ber.blocking.p1_compound group 1 reverse top-3: 71s
+blocker 0: 31,414,155 pairs in 381s, peak 30.0 GB -> /tmp/ber_artifacts/p3_blk/p1_compound_6b675cc30aad.npz
+{'candidates': 'b0_p1_compound', 'pair_recall': 0.9805, 'oracle_f05': 0.9932, 'cands_mean': 142.6859, 'cands_p95': 301.0, 'cands_max': 1126.0, 'recall_India': 0.9731, 'recall_US': 0.9856}
+{'candidates': 'union cap 40', 'pair_recall': 0.9689, 'oracle_f05': 0.9889, 'cands_mean': 39.9734, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9582, 'recall_US': 0.976}
+{'candidates': 'union cap 50', 'pair_recall': 0.9715, 'oracle_f05': 0.9899, 'cands_mean': 49.8189, 'cands_p95': 50.0, 'cands_max': 50.0, 'recall_India': 0.9613, 'recall_US': 0.9784}
+{'candidates': 'union cap 60', 'pair_recall': 0.9734, 'oracle_f05': 0.9906, 'cands_mean': 59.3613, 'cands_p95': 60.0, 'cands_max': 60.0, 'recall_India': 0.9636, 'recall_US': 0.98}
+
+## Run 2026-09-25 21:36 — config=code/business_entity_resolution/configs/best.yaml qfrac=0.1 BER_THREADS=4 (exploration/p3/blk_union.py)
+
+- blockers: `p1_compound {"k": 30, "k_rev": 3, "max_df": 1000}`
+- records 10,540,382 (S1 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s) / peak RSS (GB) per blocker process: b0_p1_compound=381s/30.0GB; cache files: p1_compound_6b675cc30aad.npz
+- test projection of blocking time (forward scales with #S1 queries; x 7.9): ~2992s (upper bound at qfrac < 1)
+
+| candidates | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US |
+|---|---|---|---|---|---|---|---|
+| b0_p1_compound | 0.9805 | 0.9932 | 142.6859 | 301.0 | 1126.0 | 0.9731 | 0.9856 |
+| union cap 40 | 0.9689 | 0.9889 | 39.9734 | 40.0 | 40.0 | 0.9582 | 0.976 |
+| union cap 50 | 0.9715 | 0.9899 | 49.8189 | 50.0 | 50.0 | 0.9613 | 0.9784 |
+| union cap 60 | 0.9734 | 0.9906 | 59.3613 | 60.0 | 60.0 | 0.9636 | 0.98 |
+eval 115s
+$ python exploration/p3/blk_union.py --config code/business_entity_resolution/configs/exp/p3/T05_cg_name.yaml --qfrac 0.1 --caps 40,50,60 --out /kaggle/working/blk_eval_out.md
+blocker 0 (p1_compound): cached p1_compound_6b675cc30aad.npz
+loaded 10,540,382 records (76s, peak 17.1 GB)
+2026-09-25 21:38:09,956 ber.blocking.p3_chargram group 0: 132086 S1 x 6186873 right, 5.5 indexed features/S1, built in 30s
+2026-09-25 21:38:10,517 ber.blocking.p3_chargram   product: 8.84e+08 postings, 89 chunks
+2026-09-25 21:39:41,064 ber.blocking.p3_chargram group 0 forward top-10: 1211970 pairs, 91s
+2026-09-25 21:39:41,448 ber.blocking.p3_chargram   product: 8.84e+08 postings, 89 chunks
+2026-09-25 21:41:05,073 ber.blocking.p3_chargram group 0 reverse top-1: 5755054 pairs, 84s
+2026-09-25 21:41:26,182 ber.blocking.p3_chargram group 1: 88077 S1 x 4133346 right, 5.5 indexed features/S1, built in 21s
+2026-09-25 21:41:26,640 ber.blocking.p3_chargram   product: 5.19e+08 postings, 52 chunks
+2026-09-25 21:42:18,035 ber.blocking.p3_chargram group 1 forward top-10: 844150 pairs, 52s
+2026-09-25 21:42:18,348 ber.blocking.p3_chargram   product: 5.19e+08 postings, 52 chunks
+2026-09-25 21:43:04,559 ber.blocking.p3_chargram group 1 reverse top-1: 3314756 pairs, 47s
+blocker 1: 10,027,043 pairs in 327s, peak 22.2 GB -> /tmp/ber_artifacts/p3_blk/p3_chargram_0c6a034b4399.npz
+{'candidates': 'b0_p1_compound', 'pair_recall': 0.9805, 'oracle_f05': 0.9932, 'cands_mean': 142.6859, 'cands_p95': 301.0, 'cands_max': 1126.0, 'recall_India': 0.9731, 'recall_US': 0.9856}
+{'candidates': 'b1_p3_chargram', 'pair_recall': 0.5603, 'oracle_f05': 0.6657, 'cands_mean': 45.5437, 'cands_p95': 165.0, 'cands_max': 2093.0, 'recall_India': 0.5218, 'recall_US': 0.5861}
+{'candidates': 'union', 'pair_recall': 0.9834, 'oracle_f05': 0.9941, 'cands_mean': 180.7666, 'cands_p95': 383.0, 'cands_max': 2208.0, 'recall_India': 0.9759, 'recall_US': 0.9885}
+{'candidates': 'union cap 40', 'pair_recall': 0.9694, 'oracle_f05': 0.989, 'cands_mean': 39.9972, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9576, 'recall_US': 0.9773}
+{'candidates': 'union cap 50 (config)', 'pair_recall': 0.9727, 'oracle_f05': 0.9902, 'cands_mean': 49.9695, 'cands_p95': 50.0, 'cands_max': 50.0, 'recall_India': 0.9617, 'recall_US': 0.98}
+{'candidates': 'union cap 60', 'pair_recall': 0.9749, 'oracle_f05': 0.991, 'cands_mean': 59.85, 'cands_p95': 60.0, 'cands_max': 60.0, 'recall_India': 0.9644, 'recall_US': 0.9819}
+
+## Run 2026-09-25 21:45 — config=code/business_entity_resolution/configs/exp/p3/T05_cg_name.yaml qfrac=0.1 BER_THREADS=4 (exploration/p3/blk_union.py)
+
+- blockers: `p1_compound {"k": 30, "k_rev": 3, "max_df": 1000}`; `p3_chargram {"field": "name_norm", "ngrams": [3, 4], "k": 10, "k_rev": 1, "max_df": 3000}`
+- records 10,540,382 (S1 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s) / peak RSS (GB) per blocker process: b0_p1_compound=381s/30.0GB, b1_p3_chargram=327s/22.2GB; cache files: p1_compound_6b675cc30aad.npz, p3_chargram_0c6a034b4399.npz
+- test projection of blocking time (forward scales with #S1 queries; x 7.9): ~5560s (upper bound at qfrac < 1)
+
+| candidates | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US |
+|---|---|---|---|---|---|---|---|
+| b0_p1_compound | 0.9805 | 0.9932 | 142.6859 | 301.0 | 1126.0 | 0.9731 | 0.9856 |
+| b1_p3_chargram | 0.5603 | 0.6657 | 45.5437 | 165.0 | 2093.0 | 0.5218 | 0.5861 |
+| union | 0.9834 | 0.9941 | 180.7666 | 383.0 | 2208.0 | 0.9759 | 0.9885 |
+| union cap 40 | 0.9694 | 0.989 | 39.9972 | 40.0 | 40.0 | 0.9576 | 0.9773 |
+| union cap 50 (config) | 0.9727 | 0.9902 | 49.9695 | 50.0 | 50.0 | 0.9617 | 0.98 |
+| union cap 60 | 0.9749 | 0.991 | 59.85 | 60.0 | 60.0 | 0.9644 | 0.9819 |
+eval 132s
+$ python exploration/p3/blk_union.py --config code/business_entity_resolution/configs/exp/p3/T05_cg_addr.yaml --qfrac 0.1 --caps 40,50,60 --out /kaggle/working/blk_eval_out.md
+blocker 0 (p1_compound): cached p1_compound_6b675cc30aad.npz
+loaded 10,540,382 records (85s, peak 16.6 GB)
+2026-09-25 21:47:51,813 ber.blocking.p3_chargram group 0: 132086 S1 x 6186873 right, 7.3 indexed features/S1, built in 54s
+2026-09-25 21:47:52,520 ber.blocking.p3_chargram   product: 1.09e+09 postings, 109 chunks
+2026-09-25 21:49:53,650 ber.blocking.p3_chargram group 0 forward top-15: 1971116 pairs, 122s
+2026-09-25 21:49:54,130 ber.blocking.p3_chargram   product: 1.09e+09 postings, 109 chunks
+2026-09-25 21:51:49,797 ber.blocking.p3_chargram group 0 reverse top-1: 6125791 pairs, 116s
+2026-09-25 21:52:12,988 ber.blocking.p3_chargram group 1: 88077 S1 x 4133346 right, 8.1 indexed features/S1, built in 23s
+2026-09-25 21:52:13,644 ber.blocking.p3_chargram   product: 6.94e+08 postings, 70 chunks
+2026-09-25 21:53:25,851 ber.blocking.p3_chargram group 1 forward top-15: 1316067 pairs, 73s
+2026-09-25 21:53:26,213 ber.blocking.p3_chargram   product: 6.94e+08 postings, 70 chunks
+2026-09-25 21:54:36,828 ber.blocking.p3_chargram group 1 reverse top-1: 3953875 pairs, 71s
+blocker 1: 11,547,305 pairs in 461s, peak 24.8 GB -> /tmp/ber_artifacts/p3_blk/p3_chargram_283c91445c4e.npz
+{'candidates': 'b0_p1_compound', 'pair_recall': 0.9805, 'oracle_f05': 0.9932, 'cands_mean': 142.6859, 'cands_p95': 301.0, 'cands_max': 1126.0, 'recall_India': 0.9731, 'recall_US': 0.9856}
+{'candidates': 'b1_p3_chargram', 'pair_recall': 0.8745, 'oracle_f05': 0.9351, 'cands_mean': 52.4489, 'cands_p95': 162.0, 'cands_max': 2032.0, 'recall_India': 0.8552, 'recall_US': 0.8874}
+{'candidates': 'union', 'pair_recall': 0.985, 'oracle_f05': 0.9947, 'cands_mean': 181.4517, 'cands_p95': 385.0, 'cands_max': 2274.0, 'recall_India': 0.977, 'recall_US': 0.9903}
+{'candidates': 'union cap 40', 'pair_recall': 0.973, 'oracle_f05': 0.9903, 'cands_mean': 39.9983, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9591, 'recall_US': 0.9823}
+{'candidates': 'union cap 50 (config)', 'pair_recall': 0.9756, 'oracle_f05': 0.9913, 'cands_mean': 49.9777, 'cands_p95': 50.0, 'cands_max': 50.0, 'recall_India': 0.9628, 'recall_US': 0.9842}
+{'candidates': 'union cap 60', 'pair_recall': 0.9775, 'oracle_f05': 0.992, 'cands_mean': 59.8819, 'cands_p95': 60.0, 'cands_max': 60.0, 'recall_India': 0.9655, 'recall_US': 0.9856}
+
+## Run 2026-09-25 21:57 — config=code/business_entity_resolution/configs/exp/p3/T05_cg_addr.yaml qfrac=0.1 BER_THREADS=4 (exploration/p3/blk_union.py)
+
+- blockers: `p1_compound {"k": 30, "k_rev": 3, "max_df": 1000}`; `p3_chargram {"field": "name_norm", "ngrams": [3, 4], "addr_field": "addr_norm", "addr_weight": 1.0, "k": 15, "k_rev": 1, "max_df": 3000}`
+- records 10,540,382 (S1 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s) / peak RSS (GB) per blocker process: b0_p1_compound=381s/30.0GB, b1_p3_chargram=461s/24.8GB; cache files: p1_compound_6b675cc30aad.npz, p3_chargram_283c91445c4e.npz
+- test projection of blocking time (forward scales with #S1 queries; x 7.9): ~6616s (upper bound at qfrac < 1)
+
+| candidates | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US |
+|---|---|---|---|---|---|---|---|
+| b0_p1_compound | 0.9805 | 0.9932 | 142.6859 | 301.0 | 1126.0 | 0.9731 | 0.9856 |
+| b1_p3_chargram | 0.8745 | 0.9351 | 52.4489 | 162.0 | 2032.0 | 0.8552 | 0.8874 |
+| union | 0.985 | 0.9947 | 181.4517 | 385.0 | 2274.0 | 0.977 | 0.9903 |
+| union cap 40 | 0.973 | 0.9903 | 39.9983 | 40.0 | 40.0 | 0.9591 | 0.9823 |
+| union cap 50 (config) | 0.9756 | 0.9913 | 49.9777 | 50.0 | 50.0 | 0.9628 | 0.9842 |
+| union cap 60 | 0.9775 | 0.992 | 59.8819 | 60.0 | 60.0 | 0.9655 | 0.9856 |
+eval 133s
+$ python exploration/p3/blk_union.py --config code/business_entity_resolution/configs/exp/p3/T05_cg_core.yaml --qfrac 0.1 --caps 40,50,60 --out /kaggle/working/blk_eval_out.md
+blocker 0 (p1_compound): cached p1_compound_6b675cc30aad.npz
+loaded 10,540,382 records (89s, peak 17.0 GB)
+2026-09-25 21:59:05,517 ber.blocking.p3_chargram group 0: 132086 S1 x 6186873 right, 5.5 indexed features/S1, built in 29s
+2026-09-25 21:59:06,036 ber.blocking.p3_chargram   product: 8.75e+08 postings, 88 chunks
+2026-09-25 22:00:31,918 ber.blocking.p3_chargram group 0 forward top-10: 1208948 pairs, 86s
+2026-09-25 22:00:32,298 ber.blocking.p3_chargram   product: 8.75e+08 postings, 88 chunks
+2026-09-25 22:01:55,927 ber.blocking.p3_chargram group 0 reverse top-1: 5728220 pairs, 84s
+2026-09-25 22:02:10,636 ber.blocking.p3_chargram group 1: 88077 S1 x 4133346 right, 5.4 indexed features/S1, built in 15s
+2026-09-25 22:02:11,084 ber.blocking.p3_chargram   product: 5.08e+08 postings, 51 chunks
+2026-09-25 22:02:58,502 ber.blocking.p3_chargram group 1 forward top-10: 849000 pairs, 48s
+2026-09-25 22:02:58,791 ber.blocking.p3_chargram   product: 5.08e+08 postings, 51 chunks
+2026-09-25 22:03:41,615 ber.blocking.p3_chargram group 1 reverse top-1: 3319141 pairs, 43s
+blocker 1: 10,017,035 pairs in 307s, peak 20.2 GB -> /tmp/ber_artifacts/p3_blk/p3_chargram_da6e4432d99b.npz
+{'candidates': 'b0_p1_compound', 'pair_recall': 0.9805, 'oracle_f05': 0.9932, 'cands_mean': 142.6859, 'cands_p95': 301.0, 'cands_max': 1126.0, 'recall_India': 0.9731, 'recall_US': 0.9856}
+{'candidates': 'b1_p3_chargram', 'pair_recall': 0.5631, 'oracle_f05': 0.6621, 'cands_mean': 45.4983, 'cands_p95': 168.0, 'cands_max': 2086.0, 'recall_India': 0.5268, 'recall_US': 0.5873}
+{'candidates': 'union', 'pair_recall': 0.9835, 'oracle_f05': 0.9941, 'cands_mean': 180.6312, 'cands_p95': 384.0, 'cands_max': 2201.0, 'recall_India': 0.976, 'recall_US': 0.9885}
+{'candidates': 'union cap 40', 'pair_recall': 0.9692, 'oracle_f05': 0.9889, 'cands_mean': 39.9972, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9572, 'recall_US': 0.9772}
+{'candidates': 'union cap 50 (config)', 'pair_recall': 0.9725, 'oracle_f05': 0.9901, 'cands_mean': 49.969, 'cands_p95': 50.0, 'cands_max': 50.0, 'recall_India': 0.9613, 'recall_US': 0.98}
+{'candidates': 'union cap 60', 'pair_recall': 0.9748, 'oracle_f05': 0.9909, 'cands_mean': 59.8458, 'cands_p95': 60.0, 'cands_max': 60.0, 'recall_India': 0.9642, 'recall_US': 0.9819}
+
+## Run 2026-09-25 22:06 — config=code/business_entity_resolution/configs/exp/p3/T05_cg_core.yaml qfrac=0.1 BER_THREADS=4 (exploration/p3/blk_union.py)
+
+- blockers: `p1_compound {"k": 30, "k_rev": 3, "max_df": 1000}`; `p3_chargram {"field": "name_core", "ngrams": [3, 4], "k": 10, "k_rev": 1, "max_df": 3000}`
+- records 10,540,382 (S1 220,163, right 10,320,219); GT pairs 762,339
+- blocking time (s) / peak RSS (GB) per blocker process: b0_p1_compound=381s/30.0GB, b1_p3_chargram=307s/20.2GB; cache files: p1_compound_6b675cc30aad.npz, p3_chargram_da6e4432d99b.npz
+- test projection of blocking time (forward scales with #S1 queries; x 7.9): ~5404s (upper bound at qfrac < 1)
+
+| candidates | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US |
+|---|---|---|---|---|---|---|---|
+| b0_p1_compound | 0.9805 | 0.9932 | 142.6859 | 301.0 | 1126.0 | 0.9731 | 0.9856 |
+| b1_p3_chargram | 0.5631 | 0.6621 | 45.4983 | 168.0 | 2086.0 | 0.5268 | 0.5873 |
+| union | 0.9835 | 0.9941 | 180.6312 | 384.0 | 2201.0 | 0.976 | 0.9885 |
+| union cap 40 | 0.9692 | 0.9889 | 39.9972 | 40.0 | 40.0 | 0.9572 | 0.9772 |
+| union cap 50 (config) | 0.9725 | 0.9901 | 49.969 | 50.0 | 50.0 | 0.9613 | 0.98 |
+| union cap 60 | 0.9748 | 0.9909 | 59.8458 | 60.0 | 60.0 | 0.9642 | 0.9819 |
+eval 142s
+$ ls -la /tmp/ber_artifacts/p3_blk; free -g
+total 738368
+drwxr-xr-x 2 root root      4096 Sep 25 22:03 .
+drwxr-xr-x 5 root root      4096 Sep 25 21:34 ..
+-rw-r--r-- 1 root root 376971104 Sep 25 21:34 p1_compound_6b675cc30aad.npz
+-rw-r--r-- 1 root root 120325760 Sep 25 21:43 p3_chargram_0c6a034b4399.npz
+-rw-r--r-- 1 root root 138568904 Sep 25 21:54 p3_chargram_283c91445c4e.npz
+-rw-r--r-- 1 root root 120205664 Sep 25 22:03 p3_chargram_da6e4432d99b.npz
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          24           0           6          30
+Swap:              0           0           0

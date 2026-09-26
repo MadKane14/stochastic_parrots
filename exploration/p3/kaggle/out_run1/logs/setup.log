@@ -1,0 +1,15 @@
+$ git clone -b w/p3 /kaggle/input/datasets/grootji/ber-p3-code/p3.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+bb793db p3 T05: p3_chargram blocker (char 3/4-gram IDF cosine of de-spaced name, fwd + rev top-k), T05 configs, blk_union eval (per-blocker processes + max_candidates emulation), gram df profile, Kaggle runner
+$ nproc; free -g; cat /sys/fs/cgroup/memory.max 2>/dev/null; df -h /tmp /kaggle/working; python --version; lscpu | grep -E 'Model name|^CPU\(s\)'
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+32212254720
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         8.0T  6.9T  1.1T  87% /
+/dev/loop2       20G  136K   20G   1% /kaggle/working
+Python 3.12.13
+CPU(s):                                  4
+Model name:                              AMD EPYC 7B12
