@@ -1,0 +1,11 @@
+# T15 (p3) — reverse-only empty-address channel (k 0, k_rev 10): the forward slots (k=2 per S1) cost ~2 cands/S1 on
+# every S1, the reverse slots ~0.03 x k_rev; checks how much recall the forward slots buy (organizer rule, D13).
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p3_compound_rc       # transductive (as p1_compound)
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: null}
+    - name: p3_chargram          # transductive: IDF/df caps computed on the records being blocked
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 0, k_rev: 10,
+               max_df: 5000}
