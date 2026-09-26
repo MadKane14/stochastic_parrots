@@ -1,0 +1,22 @@
+$ python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India
+2026-09-26 19:30:35,198 dense_cv normalize 221s
+2026-09-26 19:31:09,352 ber.blocking.p3_revcap tokenize 25s
+2026-09-26 19:32:14,171 ber.blocking.p3_revcap group 0: 883188 S1 x 4133346 right, 15100321 features (57.9/record), built in 64s
+2026-09-26 19:41:32,532 ber.blocking.p3_revcap group 0 forward top-30: 558s
+2026-09-26 19:50:01,640 ber.blocking.p3_revcap group 0 reverse top-3: 509s
+2026-09-26 19:50:11,150 ber.blocking.p3_revcap rev_cap 10: kept 2274734 of 2946400 reverse-only pairs
+2026-09-26 19:52:55,135 ber.blocking.p3_chargram group 0: 883188 S1 x 122794 right, 17.2 indexed features/S1, built in 23s
+2026-09-26 19:52:55,479 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 19:56:21,186 ber.blocking.p3_chargram group 0 forward top-2: 1766376 pairs, 206s
+2026-09-26 19:56:21,683 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 19:59:54,757 ber.blocking.p3_chargram group 0 reverse top-5: 613965 pairs, 214s
+2026-09-26 20:03:04,178 ber.blocking.p3_nameaddr group 0: 883188 S1 x 4133346 right, 12388506 keys, 12.0 indexed keys/S1, built in 59s
+2026-09-26 20:03:06,805 ber.blocking.p3_chargram   product: 3.23e+08 postings, 33 chunks
+2026-09-26 20:04:01,694 ber.blocking.p3_nameaddr group 0 forward top-5: 4397367 pairs, 58s
+2026-09-26 20:04:03,139 ber.blocking.p3_chargram   product: 3.23e+08 postings, 33 chunks
+2026-09-26 20:04:56,077 ber.blocking.p3_nameaddr group 0 reverse top-1: 3785365 pairs, 54s
+2026-09-26 20:09:21,981 dense_cv block 2327s: 30893033 pairs
+2026-09-26 20:24:40,860 dense_cv features p1_match 876s (peak 25.9 GB)
+2026-09-26 20:35:49,035 dense_cv features p1_extra 668s (peak 25.9 GB)
+2026-09-26 20:40:04,861 dense_cv features p1_noise 256s (peak 25.9 GB)
+Killed

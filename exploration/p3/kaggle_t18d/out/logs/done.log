@@ -1,0 +1,6 @@
+$ free -g; du -sh /tmp/ber_artifacts/* 2>/dev/null
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          30           0           0          30
+Swap:              0           0           0
+2.2G	/tmp/ber_artifacts/cache
+3.0G	/tmp/ber_artifacts/dense_cv

@@ -94,7 +94,10 @@ def main():
 
 def run_dense(job, sh, out):
     art = os.environ["BER_ARTIFACTS"]
-    sh(f"python exploration/p3/dense_cv_group_prune.py -c {CFG[job]} --group {GROUP}", "dense")
+    cmd = f"python exploration/p3/dense_cv_group_prune.py -c {CFG[job]} --group {GROUP}"
+    rc = sh(cmd, "dense")
+    if rc == 137:   # OOM-killed (30 GiB, no swap): the normalized records, candidates and every feature set are cached
+        rc = sh(cmd, "dense_retry")   # on disk by then, so a warm second process skips the fragmenting feature step
     for pat in ("exploration/p2/dense_cv/*.json", "exploration/p2/dense_cv_out.md", "exploration/p3/dense_cv/*.json",
                 "exploration/p3/dense_cv_out.md"):
         for p in glob.glob(str(REPO / pat)):

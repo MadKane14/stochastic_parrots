@@ -1,0 +1,7 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+2026-09-26 19:37:31,547 ber.features.p1_e5 p1_e5 name: 1000000/3679921 unique texts embedded (8922/s)
+2026-09-26 19:39:32,375 ber.features.p1_e5 p1_e5 name: 2000000/3679921 unique texts embedded (8587/s)
+2026-09-26 19:41:35,605 ber.features.p1_e5 p1_e5 name: 3000000/3679921 unique texts embedded (8424/s)
+2026-09-26 19:42:58,636 ber.features.p1_e5 p1_e5 name: 3679921/3679921 unique texts embedded (8379/s)
+train[India] name: (5016534, 384) float16 in 495s -> /tmp/ber_artifacts/emb_mm/intfloat__multilingual-e5-small_ml64/5fa17c64c01ae2bf_name.npy
