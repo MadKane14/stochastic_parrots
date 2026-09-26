@@ -48,6 +48,7 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | # | day | time | test run_id | config/commit | dense CV | public LB F0.5 | note |
 |---|---|---|---|---|---|---|---|
 | 1 | Fri | ~00:40 | 20260925-233233_p1_T03_T03_sub_test_d4f44c | T03_sub / 94bb5d8 | 0.96961 | **0.9487** | val_v1@0.1 said 0.9917; top of LB 0.9884 |
+| 2 | Sat | _to upload_ | 20260926-063526_p1_T09_T08_sub_test_724a04 | T08_sub / c1b9f99 | 0.97885 | _pending_ | validator PASS (--check-ids); expected-F on test 0.981 vs 0.961 for #1 (`exploration/p1/expected_f_out.md`) |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
