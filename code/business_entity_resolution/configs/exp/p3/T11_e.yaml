@@ -1,0 +1,14 @@
+# T11 (p3) — empty-address channel. Hypothesis: right records with an empty address (3.3% of S2/S3, eda_out Q5) are
+# 22% of the compound blocker's full-density misses (I-12) because p1_compound normalises each S1 over its long
+# address, so a name-only record reaches its S1 only with a diluted cosine and loses the top-k race. A name-only
+# bag (words + word pairs + char 3/4-grams of the de-spaced name) over S1 vs ONLY the address-less right records,
+# S1 normalised over its name, lifts recall on that subset at +~1-3 cands/S1 and is cheap (small index).
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p1_compound          # = T09_tr
+      params: {k: 30, k_rev: 3, max_df: 1000}
+    - name: p3_chargram          # transductive: IDF/df caps computed on the records being blocked
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 5000}
