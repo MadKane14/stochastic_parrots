@@ -1,0 +1,6 @@
+$ du -sh /tmp/ber_artifacts/emb/*/*; free -g
+18G	/tmp/ber_artifacts/emb/intfloat__multilingual-e5-small/full_ml64
+13G	/tmp/ber_artifacts/emb/intfloat__multilingual-e5-small/name_ml64
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          11           0          19          30
+Swap:              0           0           0

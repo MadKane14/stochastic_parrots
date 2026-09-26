@@ -1,0 +1,14 @@
+$ python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T12 --split val_v1@0.1 --set features.1.params.model=/kaggle/working/models/ft_val_v1 --note 'e5 fine-tuned on val_v1 train side'
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] /kaggle/working/models/ft_val_v1 on cuda (torch.float16), params=117,653,760, dim=384
+[p4_e5] name: embedded 854,446 new texts in 94.3s (9,057/s); 0 from cache
+[p4_e5] addr: embedded 891,631 new texts in 130.1s (6,854/s); 1 from cache
+[p4_e5] full: embedded 997,433 new texts in 198.4s (5,028/s); 0 from cache
+[p4_e5] name: embedded 204,697 new texts in 20.8s (9,819/s); 15,880 from cache
+[p4_e5] addr: embedded 221,162 new texts in 32.2s (6,861/s); 1,174 from cache
+[p4_e5] full: embedded 248,163 new texts in 50.0s (4,965/s); 0 from cache
+[val_v1@0.1] 20260926-091517_p4_T12_T06_e5g_val_v1@0.1_890c4a
+  F0.5=0.9899 CI95=[0.98934, 0.99045]  singleton_acc=0.9819  pairP=0.99493 pairR=0.98226
+  blocking: oracle_F0.5=0.9986 pair_recall=0.99583 cands/s1=33.53  scorer={'roc_auc': 0.99987, 'avg_precision': 0.99863}
+  by_country={"India": {"n": 17619, "f05": 0.98759}, "US": {"n": 26329, "f05": 0.99148}}  runtime=1044.3s 
+  results: /kaggle/working/results/p4/20260926-091517_p4_T12_T06_e5g_val_v1@0.1_890c4a.json

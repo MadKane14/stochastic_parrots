@@ -1,0 +1,30 @@
+{
+ "model": "intfloat/multilingual-e5-small",
+ "max_length": 64,
+ "batch_size": 512,
+ "runs": [
+  {
+   "part": "train",
+   "field": "full",
+   "records": 12527040,
+   "unique_nonempty": 12471296,
+   "embedded": 12471296,
+   "seconds": 2601.9,
+   "texts_per_s": 4793.1,
+   "gpu": "Tesla T4",
+   "cache_bytes": 9677732222
+  },
+  {
+   "part": "test",
+   "field": "full",
+   "records": 11702133,
+   "unique_nonempty": 11652356,
+   "embedded": 11652252,
+   "seconds": 2400.1,
+   "texts_per_s": 4854.9,
+   "gpu": "Tesla T4",
+   "cache_bytes": 18719885798
+  }
+ ],
+ "params": 117653760
+}

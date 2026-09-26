@@ -1,0 +1,15 @@
+08:29:28 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+08:29:28 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+08:31:46 rc=0     138s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+08:31:47 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+08:31:56 rc=0       9s  check: python src/run.py check
+08:33:20 rc=0      84s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+08:34:02 rc=0      41s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+08:54:45 rc=0    1244s  cands: python src/run.py run -c configs/exp/p4/T06_base.yaml --task T12 --split val_v1@0.1,xc_India@0.1
+09:11:39 rc=0    1014s  ft_val_v1: python exploration/p4/e5_finetune.py --split val_v1 --out /kaggle/working/models/ft_val_v1 --n 400000
+09:15:16 rc=0     217s  eval_val_v1: python exploration/p4/e5_ft_eval.py --pairs /tmp/ber_artifacts/runs/20260926-083402_p4_T12_T06_base_val_v1@0.1_5b1ef7/scored_pairs.parquet --label val_v1@0.1 --models intfloat/multilingual-e5-small /kaggle/working/models/ft_val_v1 --out /kaggle/working/e5_ft_eval_out.md --json /kaggle/working/e5_ft_eval_val_v1.json
+09:32:45 rc=0    1049s  harness_ft_val_v1: python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T12 --split val_v1@0.1 --set features.1.params.model=/kaggle/working/models/ft_val_v1 --note 'e5 fine-tuned on val_v1 train side'
+09:47:00 rc=0     855s  ft_xc_India: python exploration/p4/e5_finetune.py --split xc_India --out /kaggle/working/models/ft_xc_India --n 400000
+09:53:50 rc=0     410s  eval_xc_India: python exploration/p4/e5_ft_eval.py --pairs /tmp/ber_artifacts/runs/20260926-084436_p4_T12_T06_base_xc_India@0.1_5b1ef7/scored_pairs.parquet --label xc_India@0.1 --models intfloat/multilingual-e5-small /kaggle/working/models/ft_xc_India --out /kaggle/working/e5_ft_eval_out.md --json /kaggle/working/e5_ft_eval_xc_India.json
+10:11:04 rc=0    1034s  harness_ft_xc_India: python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T12 --split xc_India@0.1 --set features.1.params.model=/kaggle/working/models/ft_xc_India --note 'e5 fine-tuned on xc_India train side'
+10:11:04 rc=0       0s  done: free -g; du -sh /kaggle/working/models/*; ls -R /kaggle/working | head -60

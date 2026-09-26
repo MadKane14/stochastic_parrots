@@ -1,0 +1,6 @@
+$ python src/run.py run -c configs/exp/p1/T08_sub.yaml --task T12 --split val_v1@0.1
+[val_v1@0.1] 20260926-095637_p4_T12_T08_sub_val_v1@0.1_0552d1
+  F0.5=0.9940 CI95=[0.9935, 0.99436]  singleton_acc=0.9975  pairP=0.99905 pairR=0.98411
+  blocking: oracle_F0.5=0.9986 pair_recall=0.99583 cands/s1=33.53  scorer={'roc_auc': 0.99999, 'avg_precision': 0.99989}
+  by_country={"India": {"n": 17619, "f05": 0.99207}, "US": {"n": 26329, "f05": 0.99522}}  runtime=971.2s 
+  results: /kaggle/working/results/p4/20260926-095637_p4_T12_T08_sub_val_v1@0.1_0552d1.json
