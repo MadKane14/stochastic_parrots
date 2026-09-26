@@ -1,6 +1,6 @@
 # STATE — single source of truth for "where are we" (planner drafts, lead commits)
 
-_Last updated: Fri 25 Sep 21:30 IST (round 2 — eval locked, scalable blocker on main; submission #1 in progress)_
+_Last updated: Sat 26 Sep 07:00 IST (round 3 — LB #1 = 0.9487; dense CV adopted; submission #2 candidate running)_
 
 ## Team
 | handle | person | machine / GPU | branch | current focus |
@@ -29,21 +29,26 @@ _Last updated: Fri 25 Sep 21:30 IST (round 2 — eval locked, scalable blocker o
 - Public LB context (Fri ~15:00): top 0.984, 5th ≈ 0.980.
 
 ## Current best pipeline
-- Config: `configs/best.yaml` = basic normalize → **`p1_compound` blocker (k=30, k_rev=3, max_df=1000)** → string_sims →
-  HGB → threshold 0.5 + exclusive right.
+- **Decision metrics (D9):** dense CV (out-of-fold over the full train set, test-like density) and dense LOCO
+  (leave-one-country-out, unseen-country proxy) — `exploration/p1/dense_cv.py [--loco]`. val_v1@0.1 = plumbing only.
+- Candidate for submission #2: `configs/exp/p1/T08_sub.yaml` = basic normalize → p1_compound (k=30, k_rev=3,
+  max_df=1000) → p1_match + p1_extra (`idf_group: country`) → p1_lgbm (uncapped) → p1_assign (one owner, thr 0.7).
 
-| split | F0.5 | CI95 | oracle F0.5 | cands/S1 | run_id |
-|---|---|---|---|---|---|
-| val_v1@0.1 | 0.9843 | [0.98361, 0.98496] | 0.9986 | 33.53 | 20260925-205725_p1_T02_T02_cmp_val_v1@0.1_35fb75 |
-| val_v1 | _not run (memory, see T03)_ | | | | |
-| xc_India@0.1 | _pending (T03)_ | | | | |
+| config | dense CV F0.5 | India / US | dense LOCO | evidence |
+|---|---|---|---|---|
+| T03_sub (= submission #1) | 0.96961 | 0.9575 / 0.9777 | 0.90504 | `exploration/p1/dense_cv/20260926-022106_densecv_T03_sub_d4f44c.json`, `…031622_…_loco.json` |
+| T07_lgb (uncapped LightGBM) | 0.97152 | 0.9605 / 0.9789 | 0.90493 | `…030301_densecv_T07_lgb_e2e7f4.json`, `…040322_…_loco.json` |
+| T08_g (group IDF + romanized skeletons + number distance) | 0.97679 | 0.9723 / 0.9798 | 0.92322 | `…T08_g_fafd84.json`, `…T08_g_fafd84_loco.json` |
+| **T08_sub** (T08_g + uncapped + thr 0.7) | **0.97885** | 0.9747 / 0.9816 | — | `…063458_densecv_T08_sub_724a04.json` |
 
-Full-density blocking (full train, `exploration/p1/blk_eval_out.md`, run 20:51): pair recall 0.9699, oracle F0.5 0.9892,
-33.4 cands/S1 (p95 43, max 377); ≈ 12 min per full dataset with 4 workers, peak 37 GB.
+Full-density blocking (best.yaml blocker): pair recall 0.970, oracle F0.5 0.989 — blocking misses are the largest
+remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_analysis.md`).
 
 ## Leaderboard submissions
-| # | day | time | test run_id | config/commit | val_v1 F0.5 | public LB F0.5 | note |
+| # | day | time | test run_id | config/commit | dense CV | public LB F0.5 | note |
 |---|---|---|---|---|---|---|---|
+| 1 | Fri | ~00:40 | 20260925-233233_p1_T03_T03_sub_test_d4f44c | T03_sub / 94bb5d8 | 0.96961 | **0.9487** | val_v1@0.1 said 0.9917; top of LB 0.9884 |
+| 2 | Sat | _to upload_ | 20260926-063526_p1_T09_T08_sub_test_724a04 | T08_sub / c1b9f99 | 0.97885 | _pending_ | validator PASS (--check-ids); expected-F on test 0.981 vs 0.961 for #1 (`exploration/p1/expected_f_out.md`) |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
@@ -57,5 +62,14 @@ Full-density blocking (full train, `exploration/p1/blk_eval_out.md`, run 20:51):
 - D7: requirements pin `scipy==1.15.2` (1.15.3 is not on conda-forge); conda-forge install documented in requirements.txt.
 - D8: the full `val_v1` split does not fit in 64 GB with the current pipeline (all train pairs are featurized) → p1 T03
   adds fit-sampling (sample of train S1, all S2/S3 kept). Until then: `val_v1@0.1`, `xc_*@0.1`.
+- D9: dense CV + dense LOCO are the decision metrics for matcher/decider/features (exploration/p1/dense_cv.py; lead-approved
+  exception to "numbers only from results JSONs": the frozen harness cannot evaluate at test density). Each run writes a
+  JSON with commit/config; cite the run name. Needs ~55–60 GB RAM.
+- D10: p1_match/p1_extra are transductive (IDF from the processed records, now within country-string groups), like the blocker.
+- D11: stage-2 stacking and expected-F0.5 set selection were tested and dropped (≤ +0.0001, I-21).
+- D12: GitHub auth on phoenix failed at 06:10 (`git fetch`: "Repository not found / Authentication failed") — lead to re-login before pushing.
+- D13: **Organizer update (Sat): smaller candidate sets per S1 rank higher in the final evaluation** (`docs/organizer_updates.md`).
+  Current: ~35 cands/S1 on test (max ~380 from the reverse direction). Every blocking/pruning result must report cands/S1
+  (mean, p95, max) next to recall; a learned pruning stage before the final matcher is the planned way to shrink it.
 - Open organizer questions: see QUESTIONS.md.
 - video-slides.pdf in the claude.ai project is image-only; the planner could not read it.

@@ -1,0 +1,11 @@
+# T08 (p1) — submission #2 candidate: T08_g features (IDF within equal-country-string groups, boilerplate-free core
+# tokens, romanized skeletons, house-number edit distance) + uncapped LightGBM (lr 0.05, early stopping ≤ 3000
+# rounds) + threshold 0.7 (dense-CV optimum; test has more distractors per S1 than train → not lower).
+# Dense CV (exploration/p1/dense_cv/): T08_g 0.97679 @0.5 / 0.97779 @0.7; LOCO 0.92322; sub#1 config 0.96961.
+inherit: T08_g.yaml
+scorer:
+  name: p1_lgbm
+  params: {max_rows: 15000000, max_iter: 3000, learning_rate: 0.05}
+decider:
+  name: p1_assign
+  params: {threshold: 0.7, exclusive_right: true}

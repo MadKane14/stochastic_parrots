@@ -1,0 +1,4 @@
+# T08 (p1) ablation — drop group sizes / blocker rank (depend on each country's candidate density).
+inherit: T03_sub.yaml
+scorer:
+  params: {drop_features: ['_size$', '^blk_0_rank$']}

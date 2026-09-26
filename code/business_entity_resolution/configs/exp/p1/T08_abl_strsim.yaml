@@ -1,0 +1,4 @@
+# T08 (p1) ablation — drop raw rapidfuzz string similarities (dominated by country-specific boilerplate).
+inherit: T03_sub.yaml
+scorer:
+  params: {drop_features: ['f_p1_(name|addr)_(ratio|tset|tsort|partial|jw|ns_ratio|ns_partial)$']}

@@ -1,0 +1,13 @@
+# T03 (p1) — matcher v1. Hypothesis: address-number, IDF-overlap/mismatch and group-relative features (within each
+# S1 and within each S2/S3 record) + LightGBM (no is_unbalance) + one-owner assignment beat the string-sim HGB
+# baseline (val_v1@0.1 0.9843, run 20260925-205725_p1_T02_T02_cmp_val_v1@0.1_35fb75) and hold on xc_India@0.1.
+inherit: ../../best.yaml
+features:
+  - name: p1_match          # transductive IDF (records of the processed dataset, no labels)
+    params: {}
+scorer:
+  name: p1_lgbm
+  params: {max_rows: 20000000}
+decider:
+  name: p1_assign
+  params: {threshold: 0.5, exclusive_right: true}
