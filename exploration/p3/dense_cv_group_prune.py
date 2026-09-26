@@ -39,6 +39,43 @@ CAP: dict = {}
 _build_pairs, _oof_scores = dcv.build_pairs, dcv.oof_scores
 
 
+# ---- memory hygiene only (results unchanged): the 30 GiB Kaggle box OOM-killed the 3-blocker run right when the
+# feature caches are concatenated (t18d, exploration/p3/kaggle_t18d/out). (1) the blockers' module-level token caches
+# (~GBs for 5M records) are cleared once blocking is done; (2) build_pairs' gc.collect() before the concat also
+# returns freed heap to the OS (glibc malloc_trim), so the freed string pairs do not stay reserved.
+import ctypes  # noqa: E402
+import gc  # noqa: E402
+import importlib  # noqa: E402
+
+from ber.pipeline import Pipeline  # noqa: E402
+
+_collect = gc.collect
+
+
+def _collect_trim(*args, **kw):
+    r = _collect(*args, **kw)
+    try:
+        ctypes.CDLL("libc.so.6").malloc_trim(0)
+    except (OSError, AttributeError):
+        pass
+    return r
+
+
+_orig_block = Pipeline._block
+
+
+def _block_then_free(self, ds):
+    out = _orig_block(self, ds)
+    for mod, attr in (("ber.blocking.p1_compound", "_TOK_CACHE"), ("ber.blocking.p1_idf_overlap", "_TOKEN_CACHE"),
+                      ("ber.blocking.p3_chargram", "_CACHE"), ("ber.blocking.p3_nameaddr", "_CACHE")):
+        try:
+            getattr(importlib.import_module(mod), attr).clear()
+        except (ImportError, AttributeError):
+            pass
+    _collect_trim()
+    return out
+
+
 def _capture_build(cfg, art):
     df, meta = _build_pairs(cfg, art)
     CAP.update(df=df, meta=meta, cfg=cfg)
@@ -106,6 +143,7 @@ def main():
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
     dcv.build_pairs, dcv.oof_scores = _capture_build, _capture_oof
+    gc.collect, Pipeline._block = _collect_trim, _block_then_free
     t0 = time.time()
     dcg.main()                                     # p2's script, unchanged (parses the same sys.argv)
     p2_json = max((REPO / "exploration/p2/dense_cv").glob(f"*_densecv_{a.group}_{Path(a.config).stem}_*.json"),

@@ -1,1 +1,1 @@
-c11d354 p3 T18: CPU fallback pair without p1_e5 (GPU queue stalled): T18_base_noe5 vs T18_p3_noe5, Kaggle jobs c/d
+6f84029 p3 T18: t18d OOM-killed after features (30.9M pairs, 25.9 GB before concat); runner retries once with warm caches; GPU embedding job logs
