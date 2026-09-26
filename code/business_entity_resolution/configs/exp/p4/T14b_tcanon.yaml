@@ -1,0 +1,10 @@
+# T14b (p4 for p2) — T12_noise2 (dense CV 0.98405) with the normalizer p2_translit -> p4_tcanon: the same p2 v1
+# normalization + label-free, target-fitted address canonicalization per country-string group (mined abbreviations
+# incl. r->rue / st->saint, side-skew junk tokens like N°). transductive (no labels). Evidence: reports/p4/T14b_for_p2.md.
+# Hypothesis: dense CV >= T12_noise2 and dense LOCO up (India fold: the map is mined on India's own records without
+# labels, like France at test time). New normalizer -> new blocking + feature caches.
+inherit: ../p1/T12_noise2.yaml
+normalize:
+  name: p4_tcanon
+  params: {legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp], mode: replace,
+           min_support: 3, min_precision: 0.5, fold_scripts: false, map_address: true, web_names: true, join_initials: true}
