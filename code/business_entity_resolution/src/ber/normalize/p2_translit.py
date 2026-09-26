@@ -22,6 +22,11 @@ Adds the same columns as `basic` (name_norm, addr_norm, name_core, addr_digits) 
    letters (`cequee1ement`, `agr0`) becomes its 1->l / 0->o variant only if that is a known word or segments into
    known words.
 4. Runs of >= 2 single Latin letters in names are joined (`p l l c` -> `pllc`, `m s` -> `ms`).
+5. (optional, `canon_map`) Learned abbreviation canonicalization of Latin tokens, per field: tokens a true pair does
+   not share are aligned by the same competitive linking, and a link is kept only if one token is an order-preserving
+   abbreviation of the other (`st`->`street`, `pvt`->`private`, `va`->`virginia`); all records map short -> long.
+6. (optional, `junk`) Learned source-noise tokens (frequent on the S2/S3 side of true pairs, almost never in the S1
+   partner nor in S1 records) are dropped from name_norm / addr_norm.
 """
 from __future__ import annotations
 
@@ -169,6 +174,68 @@ def learn_token_map(native_side: list[list[str]], latin_side: list[list[str]], m
     return dict(zip(np.asarray(uniq_n)[ln[ok]].tolist(), np.asarray(uniq_l)[ll[ok]].tolist()))
 
 
+def is_abbrev(short: str, long: str) -> bool:
+    """`short` is an order-preserving abbreviation of `long`: same first letter, strictly shorter, and its letters occur
+    in `long` in order (st/street, pvt/private, ltd/limited, va/virginia, rd/road). Blocks unrelated words and typos."""
+    if not short or len(short) >= len(long) or short[0] != long[0]:
+        return False
+    it = iter(long)
+    return all(c in it for c in short)
+
+
+def _is_word(t: str) -> bool:
+    return len(t) >= 2 and t.isascii() and t.isalpha()
+
+
+def learn_canonical_map(left: list[list[str]], right: list[list[str]], min_support: int,
+                        min_precision: float) -> dict[str, str]:
+    """Abbreviation -> full form map learned from true pairs (S1 tokens `left`, S2/S3 tokens `right`).
+
+    Only the tokens a pair does NOT share are candidates (Latin words, >= 2 letters); they are aligned by the same
+    Dice + competitive linking as the native map (Arasu et al., VLDB 2009 learn such transformations from matching
+    examples). A link is kept only if one token abbreviates the other (`is_abbrev`); the map always points from the
+    short to the long form, so both sides of any pair end up in the same canonical form. Chains are collapsed."""
+    ur, ul = [], []
+    for L, R in zip(left, right):
+        sl, sr = set(L), set(R)
+        ur.append([t for t in R if t not in sl and _is_word(t)])
+        ul.append([t for t in L if t not in sr and _is_word(t)])
+    table = learn_token_map(ur, ul, min_support, min_precision)
+    out: dict[str, str] = {}
+    for r, l in table.items():
+        if is_abbrev(r, l):
+            out.setdefault(r, l)
+        elif is_abbrev(l, r):
+            out.setdefault(l, r)
+
+    def canon(t: str) -> str:
+        seen = set()
+        while t in out and t not in seen:
+            seen.add(t)
+            t = out[t]
+        return t
+    return {k: canon(k) for k in out if canon(k) != k}
+
+
+def learn_junk(left: list[list[str]], right: list[list[str]], df_left: Counter, df_right: Counter,
+               min_count: int, max_hit: float, max_ratio: float) -> dict[str, dict]:
+    """Source-specific noise tokens: frequent on the S2/S3 side of true pairs (>= min_count pairs), almost never present
+    in the S1 partner (hit rate <= max_hit) and almost absent from S1 records overall (S1 df <= max_ratio * S2/S3 df).
+    They add weight to IDF norms without ever matching. Returns {token: stats}."""
+    c, h = Counter(), Counter()
+    for L, R in zip(left, right):
+        sl = set(L)
+        for t in set(R):
+            c[t] += 1
+            if t in sl:
+                h[t] += 1
+    junk = {}
+    for t, n in c.items():
+        if n >= min_count and not t.isdigit() and h[t] <= max_hit * n and df_left.get(t, 0) <= max_ratio * df_right.get(t, 1):
+            junk[t] = {"pairs": n, "hit_rate": round(h[t] / n, 4), "s1_df": df_left.get(t, 0), "right_df": df_right.get(t, 0)}
+    return junk
+
+
 class Segmenter:
     """Unigram Viterbi word segmentation of concatenated Latin tokens (e.g. `supremepackaging`)."""
 
@@ -219,7 +286,9 @@ class TranslitNormalizer(Normalizer):
     def __init__(self, legal_tokens: list[str] | None = None, mode: str = "replace", min_support: int = 3,
                  min_precision: float = 0.5, fold_scripts: bool = True, map_address: bool = True,
                  web_names: bool = True, seg_min_len: int = 8, seg_rare_max: int = 2, seg_word_freq: int = 20,
-                 seg_target_vocab: bool = True, join_initials: bool = True):
+                 seg_target_vocab: bool = True, join_initials: bool = True, canon_map: bool = False,
+                 canon_min_support: int = 50, canon_min_precision: float = 0.5, junk: bool = False,
+                 junk_min_count: int = 1000, junk_max_hit: float = 0.01, junk_max_ratio: float = 0.01):
         if mode not in ("replace", "append"):
             raise ValueError("mode must be 'replace' or 'append'")
         self.legal = set(legal_tokens or [])
@@ -227,8 +296,13 @@ class TranslitNormalizer(Normalizer):
         self.fold_scripts, self.map_address, self.web_names = bool(fold_scripts), bool(map_address), bool(web_names)
         self.seg_min_len, self.seg_rare_max, self.seg_word_freq = int(seg_min_len), int(seg_rare_max), int(seg_word_freq)
         self.seg_target_vocab, self.join_initials = bool(seg_target_vocab), bool(join_initials)
+        self.canon_map, self.canon_min_support, self.canon_min_precision = bool(canon_map), int(canon_min_support), float(canon_min_precision)
+        self.junk, self.junk_min_count = bool(junk), int(junk_min_count)
+        self.junk_max_hit, self.junk_max_ratio = float(junk_max_hit), float(junk_max_ratio)
         self.name_map: dict[str, str] = {}
         self.addr_map: dict[str, str] = {}
+        self.canon: dict[str, dict[str, str]] = {"name": {}, "addr": {}}
+        self.junk_tokens: dict[str, set[str]] = {"name": set(), "addr": set()}
         self.fit_counts: Counter = Counter()
         self.stats: dict = {}
 
@@ -280,6 +354,27 @@ class TranslitNormalizer(Normalizer):
         self.name_map = self._learn(recs["business_name"], s_rows, c_rows, "name")
         if self.map_address:
             self.addr_map = self._learn(recs["business_address"], s_rows, c_rows, "addr")
+        if self.canon_map or self.junk:
+            is_s1 = (recs["source"] == 1).to_numpy()
+            for key, col, table, fb in (("name", "business_name", self.name_map, self.addr_map),
+                                        ("addr", "business_address", self.addr_map, self.name_map)):
+                prepped = self._prep(recs, col).to_numpy()
+                left = [prepped[i].split() for i in s_rows]
+                right = [self._map_native(prepped[i], table, fb).split() for i in c_rows]
+                if self.canon_map:
+                    cmap = learn_canonical_map(left, right, self.canon_min_support, self.canon_min_precision)
+                    self.canon[key] = cmap
+                    self.stats[f"{key}_canon_size"] = len(cmap)
+                    left = [[cmap.get(t, t) for t in L] for L in left]
+                    right = [[cmap.get(t, t) for t in R] for R in right]
+                if self.junk:
+                    df_l, df_r = Counter(), Counter()
+                    for v, s1 in zip(prepped, is_s1):
+                        (df_l if s1 else df_r).update(set(v.split()))
+                    jk = learn_junk(left, right, df_l, df_r, self.junk_min_count, self.junk_max_hit, self.junk_max_ratio)
+                    self.junk_tokens[key] = set(jk)
+                    self.stats[f"{key}_junk"] = sorted(jk)[:100]
+                del left, right, prepped
         return self
 
     # ---------------- transform ----------------
@@ -317,6 +412,12 @@ class TranslitNormalizer(Normalizer):
             if parts:
                 return " ".join(parts)
         return t
+
+    @staticmethod
+    def _canonical(v: str, cmap: dict[str, str], junk: set[str]) -> str:
+        """Abbreviations -> learned full form; learned junk tokens dropped (the string is kept if nothing would remain)."""
+        toks = [cmap.get(t, t) for t in v.split() if t not in junk]
+        return " ".join(toks) if toks else v
 
     @staticmethod
     def _seg_limits(web: bool) -> tuple[int, int]:
@@ -365,6 +466,11 @@ class TranslitNormalizer(Normalizer):
             m = name.str.contains(_SINGLE_RUN_ANY)
             name.loc[m] = name[m].str.replace(_SINGLE_RUN, lambda mo: mo.group(1).replace(" ", ""), regex=True)
             n_changed["initials_rows"] = int(m.sum())
+        for key, series in (("name", name), ("addr", addr)):
+            cmap, junk = self.canon[key], self.junk_tokens[key]
+            if cmap or junk:
+                series[:] = [self._canonical(v, cmap, junk) for v in series]
+                n_changed[f"{key}_canon_applied"] = True
         self.stats["transform"] = n_changed
         _PREP_CACHE.clear()
         out["name_norm"] = name

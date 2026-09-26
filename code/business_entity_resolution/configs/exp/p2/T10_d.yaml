@@ -1,0 +1,8 @@
+# T10 (p2) — T04 winner (variant D) on top of p1's T08_sub. Hypothesis (TASKS T10): learned native->Latin map + web-name
+# cleanup in name_norm/addr_norm lets the blocker AND p1_match/p1_extra see cross-script / web-name pairs →
+# full-density blocking recall up and dense CV up (India most). Only the normalizer differs from T08_sub.
+inherit: ../p1/T08_sub.yaml
+normalize:
+  name: p2_translit
+  params: {legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp], mode: replace, min_support: 3, min_precision: 0.5, fold_scripts: false,
+           map_address: true, web_names: true, join_initials: true}
