@@ -1,0 +1,13 @@
+# T16b (p4) — honest hash-fold dense CV for FINE-TUNED E5: T10_e5 with p1_e5 replaced by p4_e5cf (cross-fitted).
+# ft_h0 / ft_h1 = e5-small fine-tuned on the train pairs of cross-fitting fold 0 / 1 (S1-id hash, p4_e5cf.cf_fold)
+# with exploration/p4/e5_finetune.py --split full+fold2:<k>; each pair is embedded by the model that never saw its S1.
+# Compare with T10_e5 (pretrained, dense CV 0.98313) on dense CV (both folds) and LOCO.
+# model: intfloat/multilingual-e5-small (fine-tuned x2), licence: MIT, params: 117,653,760 each
+inherit: ../p1/T10_e5.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p4_e5cf
+    params: {models: ["${BER_ARTIFACTS}/models/ft_h0", "${BER_ARTIFACTS}/models/ft_h1"], fields: [name, full]}
