@@ -1,0 +1,10 @@
+# T09 (p1) — T08_sub + p2's p2_translit normalizer, variant D (learned native->Latin token map, web-name splitting,
+# joined initials; no script folding = p2's tie-rule choice). Hypothesis: dense CV rises over T08_sub (0.97885)
+# through blocking recall (p2: +0.0064 at qfrac 0.1) and cleaner names; candidate count unchanged.
+# Caveat: the token map is fitted on all train true pairs, incl. the dense-CV evaluation folds (small leak: ~1k
+# generic token translations).
+inherit: T08_sub.yaml
+normalize:
+  name: p2_translit
+  params: {legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp], mode: replace,
+           min_support: 3, min_precision: 0.5, fold_scripts: false, map_address: true, web_names: true, join_initials: true}

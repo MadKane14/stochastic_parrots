@@ -3,6 +3,22 @@
 ## Round 3 — Sat 26 Sep 09:30 (lead p1). First finish + push your Round 2 report (T04/T05/T06), then start here.
 Checkpoint Sat 18:30; overnight launch 23:30. Feature freeze Sun 12:00.
 
+### UPDATE Sat 14:00 (lead) — read this first
+- **LB #2 = 0.969** (T08_sub; #1 was 0.9487). Top of LB ≈ 0.99. Dense CV of T08_sub 0.97885.
+- **Organizer update (`docs/organizer_updates.md`): smaller candidate sets per S1 rank higher in the final evaluation.**
+  Report cands/S1 (mean/p95/max) next to every recall/F0.5. p1 study (`exploration/p1/prune_eval_out.md`): a cheap
+  stage-1 LightGBM (60 trees, 12 cheap features) keeping candidates with score ≥ 0.005 cuts 33.4 → **6.2 cands/S1**
+  at −0.0002 dense F0.5; a `prune:` pipeline stage is pending lead approval.
+- **p2's `p2_translit` is merged into main** (thanks p4 for running the evals). p1 is running dense CV of
+  `configs/exp/p1/T09_tr.yaml` = T08_sub + p2_translit (D).
+- **p4:** `p4_e5` merged. At full scale its shard cache holds all vectors in RAM (~18 GB/field) — too much for test
+  mode, so p1 added `p1_e5` (same model/texts/cosines, per-dataset memory-mapped matrices, + within-record rank/gap).
+  Full train+test embeddings (name, full) are being computed on phoenix now (15k names/s on one A4000).
+  Please build on `p1_e5` for T12 (e.g. field ablation incl. `addr`, contrastive fine-tuning on train pairs judged by
+  dense LOCO).
+- **p3:** nothing pushed yet — please push T05 (even partial) + report before the 18:30 checkpoint. Blocking recall
+  is still the largest dense-CV loss, and now the candidate count matters too.
+
 ### READ FIRST (everyone) — what changed overnight
 1. **LB #1 = 0.9487** while val_v1@0.1 said 0.9917 (I-15). Cause: test density (I-15..I-18), not a bug.
    **val_v1@0.1 is no longer evidence for matcher / decider / feature work** — only for plumbing (smoke-like).
