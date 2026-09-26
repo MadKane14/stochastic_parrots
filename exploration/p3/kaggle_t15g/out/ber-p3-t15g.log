@@ -1,0 +1,13 @@
+[{"stream_name":"stderr","time":1.243214976,"data":"Cloning into '/tmp/repo'...\n"}
+,{"stream_name":"stdout","time":7930.507623299,"data":"17:10:36 rc=0    7895s  dense: python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30 --config code/business_entity_resolution/configs/exp/p3/T15_final_t09.yaml --config code/business_entity_resolution/configs/exp/p3/T15_final_e10.yaml --config code/business_entity_resolution/configs/exp/p3/T15_final_na1000.yaml --misses 60 --out /kaggle/working/blk_dense_out.md\n"}
+,{"stream_name":"stdout","time":8221.051337418,"data":"17:15:26 rc=0     291s  smoke: cd code/business_entity_resolution \u0026\u0026 python src/run.py run -c configs/exp/p3/T15_final_t09_prune.yaml --smoke --task T15\n"}
+,{"stream_name":"stdout","time":8221.179388214,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":8221.179446518,"data":"Mem:              31           0          23           0           7          30\n"}
+,{"stream_name":"stdout","time":8221.179453943,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stderr","time":8224.049847132,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":8224.04991793,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":8224.43525592,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":8224.435295832,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":8225.311259628,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":8227.121992819,"data":"[NbConvertApp] Writing 278926 bytes to __results__.html\n"}
+]
