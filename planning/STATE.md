@@ -68,5 +68,8 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 - D10: p1_match/p1_extra are transductive (IDF from the processed records, now within country-string groups), like the blocker.
 - D11: stage-2 stacking and expected-F0.5 set selection were tested and dropped (≤ +0.0001, I-21).
 - D12: GitHub auth on phoenix failed at 06:10 (`git fetch`: "Repository not found / Authentication failed") — lead to re-login before pushing.
+- D13: **Organizer update (Sat): smaller candidate sets per S1 rank higher in the final evaluation** (`docs/organizer_updates.md`).
+  Current: ~35 cands/S1 on test (max ~380 from the reverse direction). Every blocking/pruning result must report cands/S1
+  (mean, p95, max) next to recall; a learned pruning stage before the final matcher is the planned way to shrink it.
 - Open organizer questions: see QUESTIONS.md.
 - video-slides.pdf in the claude.ai project is image-only; the planner could not read it.
