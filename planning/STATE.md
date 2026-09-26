@@ -1,6 +1,6 @@
 # STATE — single source of truth for "where are we" (planner drafts, lead commits)
 
-_Last updated: Sat 26 Sep 14:40 IST (round 3 — LB #2 = 0.969; p2_translit merged → dense CV 0.9828; E5 run in progress)_
+_Last updated: Sat 26 Sep 17:30 IST (round 4 — all branches merged; T10_e5 dense CV 0.9831; submission #3 running)_
 
 ## Team
 | handle | person | machine / GPU | branch | current focus |
@@ -40,7 +40,8 @@ _Last updated: Sat 26 Sep 14:40 IST (round 3 — LB #2 = 0.969; p2_translit merg
 | T07_lgb (uncapped LightGBM) | 0.97152 | 0.9605 / 0.9789 | 0.90493 | `…030301_densecv_T07_lgb_e2e7f4.json`, `…040322_…_loco.json` |
 | T08_g (group IDF + romanized skeletons + number distance) | 0.97679 | 0.9723 / 0.9798 | 0.92322 | `…T08_g_fafd84.json`, `…T08_g_fafd84_loco.json` |
 | T08_sub (T08_g + uncapped + thr 0.7) | 0.97885 | 0.9747 / 0.9816 | — | `…063458_densecv_T08_sub_724a04.json` |
-| **T09_tr** (T08_sub + p2_translit D; blocking recall 0.970 → 0.979) | **0.98279** | 0.9826 / 0.9829 | — | `…143459_densecv_T09_tr_490034.json` |
+| T09_tr (T08_sub + p2_translit D; blocking recall 0.970 → 0.979) | 0.98279 | 0.9826 / 0.9829 | — | `…143459_densecv_T09_tr_490034.json` |
+| **T10_e5** (T09_tr + pretrained E5 `p1_e5` name/full) | **0.98313** | 0.9829 / 0.9833 | — | `…161049_densecv_T10_e5_08f49f.json` |
 
 Full-density blocking (best.yaml blocker): pair recall 0.970, oracle F0.5 0.989 — blocking misses are the largest
 remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_analysis.md`).
