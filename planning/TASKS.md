@@ -1,5 +1,30 @@
 # TASKS — workers: do only the tasks with your handle in the CURRENT round
 
+## Round 5 — Sat 22:30 → Sun 08:00 (lead p1). LB #4 = **0.978** (dense CV 0.98405). Top-10 ≈ 0.99.
+Tonight: #5 (= #4 + fine-tuned E5 `ft_full`) and #6 (probability average of #4 and #5) are uploaded by the lead.
+Phoenix overnight runs the FULL dense CV of the final stack. Your Kaggle machines validate the two big levers on the
+**India group** in parallel with p2's `exploration/p2/dense_cv_group.py` (≈ 21 GB, exact for the India group).
+**Deliver by Sun 08:00**: a short report + the dense_cv_group JSONs (both folds, cands/S1, peak GB). Fetch main first.
+
+### T18 — p3: does T15_final blocking lift the matcher? (India group)
+`dense_cv_group.py` on `configs/exp/p3/T15_sub5.yaml` (T13_sub4 + T15_final blocking, prune sees blk_1/blk_2) vs
+`configs/exp/p1/T13_sub4.yaml`, same machine, same commit. Report F0.5, blocking recall, oracle, cands/S1 after
+pruning, total pairs, peak RAM. If memory is tight, report it rather than shrinking the blocker.
+
+### T19 — p4: does label-free target canonicalization (p4_tcanon) help? (India group)
+`dense_cv_group.py` on `configs/exp/p4/T14b_tcanon.yaml` vs its exact baseline (same stack without tcanon), same machine.
+It is transductive — note it in the config and report. Also say how many France S2/S3 addresses it changes (audit).
+
+### T20 — p2: fine-tuned vs pretrained E5 on the full stack (India group)
+`dense_cv_group.py` on `configs/exp/p1/T13_sub4.yaml` with `p1_e5` `model:` = the v1 `ft_full` checkpoint (from p4's Kaggle
+dataset / re-train with `exploration/p4/e5_finetune.py --split full`), vs pretrained. Caveat in the report: ft_full saw
+these pairs (p4 T16 found naive ≈ cross-fitted).
+
+Everyone: no new features after these; Sun 09:30 sync decides the final stack; Sun 12:00 feature freeze.
+
+---
+## Archive
+
 ## Round 4 — Sat 17:30, FINAL NIGHT (lead p1). Push results + a short report by **21:00**; last sync Sun 09:30.
 Sun 12:00 feature freeze · 18:00 code freeze · 21:00 zip + methodology. Top-100 LB ≥ 0.984; we are at 0.969 (#2).
 
@@ -48,8 +73,6 @@ b) Stretch: cross-fitted embeddings (2 models on S1 halves `int(unit_hash(str(ro
 - Learned pruning stage (pending lead approval) → small `candidate_pairs.tsv`; cluster-consistency features;
   merge p2/p3 winners → submission #4 ~22:00; overnight: final config (ft_full embeddings), #5 Sun morning.
 
----
-## Archive
 
 ## Round 3 — Sat 26 Sep 09:30 (lead p1). First finish + push your Round 2 report (T04/T05/T06), then start here.
 Checkpoint Sat 18:30; overnight launch 23:30. Feature freeze Sun 12:00.
