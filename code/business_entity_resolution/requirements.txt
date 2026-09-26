@@ -14,5 +14,8 @@ scipy==1.15.2  # 1.15.3 is not on conda-forge
 scikit-learn==1.7.2
 rapidfuzz==3.14.1
 lightgbm==4.6.0
+torch==2.8.0
+transformers==4.57.1
 pyarrow==21.0.0
 PyYAML==6.0.3
+
