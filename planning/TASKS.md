@@ -23,6 +23,12 @@ b) France audit on TEST inputs only (no labels; record it as unsupervised/transd
    mined from co-occurrence within blocker candidate pairs of the target data) with a small unit test. By 21:00.
 
 ### T15 — p3: blocking recall at small candidate sets (Kaggle CPU)
+**Evidence (p1, 17:45, `exploration/p1/blk_miss_profile_T10.md`, current blocker = T09/T10):** 159k true pairs (2.08%)
+are never proposed = the largest dense-CV loss (0.0078 of 0.017). Right-address EMPTY pairs are missed **14.7%** of the
+time vs **1.5%** otherwise (31% of all misses); addresses of ≤ 3 tokens (street, no number) = 35% of misses; 42% of
+misses belong to S1 entities with ≥ 5 true matches (top-k crowding by sibling records). Prioritise the empty/short-
+address channel (k_rev ≥ 10 only for those records is cheap: they are 3.3% of S2/S3). Candidate count after the
+blocker matters less now (learned pruning keeps ~6/S1), but memory does: keep total pairs ≤ ~80M on full train.
 a) Finish T11 at true density (`blk_dense.py --dense`): empty-address channel variants (T11_e / e10 / e4 / eca) vs
    T11_base; pick the best by recall gain per extra cand/S1. By 20:00 → p1 runs dense CV of the winner.
 b) Organizer rule (smaller candidate sets rank higher): for the chosen blocker union, recall vs per-S1 cap (20/30/40/50)

@@ -100,6 +100,7 @@ def build_pairs(cfg: dict, art: Path):
             log.info("cached features %s", fpath.name)
         else:
             t = time.time()
+            fs.fit(train, pairs)          # label-fitted feature sets (e.g. p1_noise) learn from the train gt here
             fs.transform(train, pairs).reset_index(drop=True).to_parquet(fpath)
             log.info("features %s %.0fs (peak %.1f GB)", fs.registry_name, time.time() - t, peak_gb())
     del pairs                     # free the 70M+ string pairs BEFORE loading every feature file
