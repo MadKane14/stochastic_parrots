@@ -1,0 +1,20 @@
+$ python exploration/p3/gram_df_profile.py --config code/business_entity_resolution/configs/exp/p3/T05_cg_name.yaml --out /kaggle/working/gram_df_profile_out.md
+normalized 12,527,040 records in 237s
+{'ngrams': '3+4', 'group': 'US', 'records': 7510506, 'S1': 1323633, 'distinct grams': 500265, 'grams/S1': np.float64(38.5), 'indexed/S1 @300': np.float64(0.9), 'postings/S1 @300': 100, 'indexed/S1 @1000': np.float64(2.3), 'postings/S1 @1000': 832, 'indexed/S1 @3000': np.float64(4.9), 'postings/S1 @3000': 5060, 'indexed/S1 @10000': np.float64(9.7), 'postings/S1 @10000': 28467, 'indexed/S1 @30000': np.float64(16.4), 'postings/S1 @30000': 130185}
+{'ngrams': '3+4', 'group': 'India', 'records': 5016534, 'S1': 883188, 'distinct grams': 543175, 'grams/S1': np.float64(46.0), 'indexed/S1 @300': np.float64(1.1), 'postings/S1 @300': 111, 'indexed/S1 @1000': np.float64(2.5), 'postings/S1 @1000': 826, 'indexed/S1 @3000': np.float64(4.9), 'postings/S1 @3000': 4435, 'indexed/S1 @10000': np.float64(8.4), 'postings/S1 @10000': 21477, 'indexed/S1 @30000': np.float64(14.3), 'postings/S1 @30000': 106406}
+{'ngrams': '4', 'group': 'US', 'records': 7510506, 'S1': 1323633, 'distinct grams': 460094, 'grams/S1': np.float64(18.8), 'indexed/S1 @300': np.float64(0.8), 'postings/S1 @300': 89, 'indexed/S1 @1000': np.float64(2.0), 'postings/S1 @1000': 711, 'indexed/S1 @3000': np.float64(4.2), 'postings/S1 @3000': 4250, 'indexed/S1 @10000': np.float64(7.7), 'postings/S1 @10000': 20583, 'indexed/S1 @30000': np.float64(11.5), 'postings/S1 @30000': 77907}
+{'ngrams': '4', 'group': 'India', 'records': 5016534, 'S1': 883188, 'distinct grams': 462704, 'grams/S1': np.float64(22.5), 'indexed/S1 @300': np.float64(1.0), 'postings/S1 @300': 96, 'indexed/S1 @1000': np.float64(2.1), 'postings/S1 @1000': 675, 'indexed/S1 @3000': np.float64(3.9), 'postings/S1 @3000': 3335, 'indexed/S1 @10000': np.float64(6.0), 'postings/S1 @10000': 12857, 'indexed/S1 @30000': np.float64(9.1), 'postings/S1 @30000': 55833}
+{'ngrams': '3', 'group': 'US', 'records': 7510506, 'S1': 1323633, 'distinct grams': 40171, 'grams/S1': np.float64(19.8), 'indexed/S1 @300': np.float64(0.1), 'postings/S1 @300': 11, 'indexed/S1 @1000': np.float64(0.3), 'postings/S1 @1000': 120, 'indexed/S1 @3000': np.float64(0.7), 'postings/S1 @3000': 810, 'indexed/S1 @10000': np.float64(2.1), 'postings/S1 @10000': 7883, 'indexed/S1 @30000': np.float64(4.9), 'postings/S1 @30000': 52277}
+{'ngrams': '3', 'group': 'India', 'records': 5016534, 'S1': 883188, 'distinct grams': 80471, 'grams/S1': np.float64(23.5), 'indexed/S1 @300': np.float64(0.1), 'postings/S1 @300': 14, 'indexed/S1 @1000': np.float64(0.4), 'postings/S1 @1000': 150, 'indexed/S1 @3000': np.float64(1.0), 'postings/S1 @3000': 1100, 'indexed/S1 @10000': np.float64(2.4), 'postings/S1 @10000': 8619, 'indexed/S1 @30000': np.float64(5.2), 'postings/S1 @30000': 50572}
+
+## Run 2026-09-25 22:12 — config=code/business_entity_resolution/configs/exp/p3/T05_cg_name.yaml field=name_norm max_len=40 (full train, 20000 sampled S1 per group)
+
+| ngrams | group | records | S1 | distinct grams | grams/S1 | indexed/S1 @300 | postings/S1 @300 | indexed/S1 @1000 | postings/S1 @1000 | indexed/S1 @3000 | postings/S1 @3000 | indexed/S1 @10000 | postings/S1 @10000 | indexed/S1 @30000 | postings/S1 @30000 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 3+4 | US | 7510506 | 1323633 | 500265 | 38.5 | 0.9 | 100 | 2.3 | 832 | 4.9 | 5060 | 9.7 | 28467 | 16.4 | 130185 |
+| 3+4 | India | 5016534 | 883188 | 543175 | 46.0 | 1.1 | 111 | 2.5 | 826 | 4.9 | 4435 | 8.4 | 21477 | 14.3 | 106406 |
+| 4 | US | 7510506 | 1323633 | 460094 | 18.8 | 0.8 | 89 | 2.0 | 711 | 4.2 | 4250 | 7.7 | 20583 | 11.5 | 77907 |
+| 4 | India | 5016534 | 883188 | 462704 | 22.5 | 1.0 | 96 | 2.1 | 675 | 3.9 | 3335 | 6.0 | 12857 | 9.1 | 55833 |
+| 3 | US | 7510506 | 1323633 | 40171 | 19.8 | 0.1 | 11 | 0.3 | 120 | 0.7 | 810 | 2.1 | 7883 | 4.9 | 52277 |
+| 3 | India | 5016534 | 883188 | 80471 | 23.5 | 0.1 | 14 | 0.4 | 150 | 1.0 | 1100 | 2.4 | 8619 | 5.2 | 50572 |
+

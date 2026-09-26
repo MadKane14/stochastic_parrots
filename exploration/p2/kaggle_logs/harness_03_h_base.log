@@ -1,0 +1,10 @@
+[val_v1@0.1] 20260925-212638_p2_T04_best_val_v1@0.1_123681
+  F0.5=0.9843 CI95=[0.9836, 0.98496]  singleton_acc=0.9743  pairP=0.99313 pairR=0.96847
+  blocking: oracle_F0.5=0.9986 pair_recall=0.99583 cands/s1=33.53  scorer={'roc_auc': 0.99963, 'avg_precision': 0.99486}
+  by_country={"India": {"n": 17619, "f05": 0.97779}, "US": {"n": 26329, "f05": 0.98863}}  runtime=785.1s 
+  results: /tmp/repo/results/p2/20260925-212638_p2_T04_best_val_v1@0.1_123681.json
+[xc_India@0.1] 20260925-213946_p2_T04_best_xc_India@0.1_123681
+  F0.5=0.9239 CI95=[0.92278, 0.92509]  singleton_acc=0.8677  pairP=0.96847 pairR=0.87285
+  blocking: oracle_F0.5=0.9942 pair_recall=0.98371 cands/s1=33.37  scorer={'roc_auc': 0.98816, 'avg_precision': 0.93253}
+  by_country={"India": {"n": 88632, "f05": 0.92393}}  runtime=787.9s 
+  results: /tmp/repo/results/p2/20260925-213946_p2_T04_best_xc_India@0.1_123681.json

@@ -1,5 +1,50 @@
 # TASKS — workers: do only the tasks with your handle in the CURRENT round
 
+## Round 4 — Sat 17:30, FINAL NIGHT (lead p1). Push results + a short report by **21:00**; last sync Sun 09:30.
+Sun 12:00 feature freeze · 18:00 code freeze · 21:00 zip + methodology. Top-100 LB ≥ 0.984; we are at 0.969 (#2).
+
+### Where we are (dense CV = decision metric; `exploration/p1/dense_cv/`)
+| config | dense CV | India / US | note |
+|---|---|---|---|
+| T08_sub (= LB #2 0.969) | 0.97885 | 0.9747 / 0.9816 | |
+| T09_tr (+ p2_translit D) | 0.98279 | 0.9826 / 0.9829 | blocking recall 0.970 → 0.979 |
+| T10_e5 (+ pretrained E5 via p1_e5) | 0.98313 | 0.9829 / 0.9833 | submission #3 test run on phoenix now |
+Remaining loss ≈ 0.017: blocking ≈ 0.007 (oracle 0.9928), matcher ≈ 0.010; LB sits ~0.010 below dense CV (France unseen +
+more distractors in test). All branches (p2 face0ff/27acb15/6ca940b, p3 10fec1b, p4 d81aecd) are merged into main.
+**Phoenix is the only ≥ 60 GB machine: send p1 exact commands for anything that needs dense CV / LOCO.**
+
+### T14 — p2: normalization for density + France (Kaggle CPU)
+a) Screen `T10_e` (abbreviation canon) and `T10_f` (+ junk) against `T10_d` at TRUE density with p3's
+   `exploration/p3/blk_dense.py --dense` (fits 30 GB): recall + cands/S1 (mean/p95/max) + subset recalls. By 20:30.
+   p1 runs dense CV only for the winner.
+b) France audit on TEST inputs only (no labels; record it as unsupervised/transductive): which S1↔S2/S3 surface
+   variations in France (`R.`/`RUE`/`R`, `AV`, `BD`, `N°`, hyphenated regions, accents, `SARL`/`S.A.R.L.`) do our
+   learned maps NOT cover (they were learned on US/India pairs)? Propose a label-free fix (e.g. abbreviation pairs
+   mined from co-occurrence within blocker candidate pairs of the target data) with a small unit test. By 21:00.
+
+### T15 — p3: blocking recall at small candidate sets (Kaggle CPU)
+a) Finish T11 at true density (`blk_dense.py --dense`): empty-address channel variants (T11_e / e10 / e4 / eca) vs
+   T11_base; pick the best by recall gain per extra cand/S1. By 20:00 → p1 runs dense CV of the winner.
+b) Organizer rule (smaller candidate sets rank higher): for the chosen blocker union, recall vs per-S1 cap (20/30/40/50)
+   and a cap on the reverse flood (current max ~380). Note: p1 adds a learned pruning stage after features
+   (33 → ~6 cands/S1 at −0.0002 dense F0.5), so blocker caps mainly save compute — report both.
+
+### T16 — p4: fine-tuned E5 (recipe on Kaggle, decision runs on phoenix by p1)
+- Running on phoenix now: your US-only recipe (`ft_xc_India`) → train embeddings → dense LOCO, India fold vs pretrained.
+a) Improve the recipe (v2 blocker hard negatives, epochs, fields); intrinsic eval on held-out candidates on Kaggle;
+   report by 21:00 with the exact `e5_finetune.py` command of the best recipe. If the phoenix LOCO confirms fine-tuning,
+   p1 trains `ft_full` with that command overnight and embeds train + test (~2 h GPU).
+b) Stretch: cross-fitted embeddings (2 models on S1 halves `int(unit_hash(str(row), 777) * 2)`, row = position in
+   `load_part(train).records`) + a `p1_e5` option picking the model by the S1's fold → honest hash-fold dense CV.
+
+### T17 — p1: integration, decisions, submissions
+- Submission #3 (T10_e5) ~18:45 → LOCO T09 / T10 / T10-ftUS (India) → E5 + fine-tuning decision.
+- Learned pruning stage (pending lead approval) → small `candidate_pairs.tsv`; cluster-consistency features;
+  merge p2/p3 winners → submission #4 ~22:00; overnight: final config (ft_full embeddings), #5 Sun morning.
+
+---
+## Archive
+
 ## Round 3 — Sat 26 Sep 09:30 (lead p1). First finish + push your Round 2 report (T04/T05/T06), then start here.
 Checkpoint Sat 18:30; overnight launch 23:30. Feature freeze Sun 12:00.
 
@@ -58,8 +103,6 @@ Checkpoint Sat 18:30; overnight launch 23:30. Feature freeze Sun 12:00.
   per text hash; embed all train + test texts once (GPU overnight if needed).
 - Metric: dense CV + dense LOCO vs the same config without p4_e5. Report throughput and total embedding time.
 
----
-## Archive
 
 ## Round 2 — Fri 25 Sep 21:30 (lead p1 + planner). Reports due **Sat 09:30 sync**; checkpoint at Sat 18:30.
 

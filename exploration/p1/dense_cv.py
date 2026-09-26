@@ -80,24 +80,32 @@ def build_pairs(cfg: dict, art: Path):
     g_c = [c for s in gt for c in gt[s]]
     gt_keys = np.unique(idx.get_indexer(g_s).astype(np.int64) * n + idx.get_indexer(g_c).astype(np.int64))
     label = np.isin(li * n + ri, gt_keys).astype(np.int8)
-    fkey = hashlib.sha256("|".join([pipe._train_fp, *[_component_fp(b) for b in pipe.blockers],
-                                    _component_fp(pipe.normalizer), *[_component_fp(f) for f in pipe.featuresets]])
-                          .encode()).hexdigest()[:16]
-    fpath = art / "dense_cv" / f"pairs_{fkey}.parquet"
-    if fpath.exists():
-        df = pd.read_parquet(fpath)
-        log.info("loaded cached features %s", fpath.name)
-    else:
-        t = time.time()
-        feats = [fs.transform(train, pairs) for fs in pipe.featuresets]
-        log.info("features %.0fs (peak %.1f GB)", time.time() - t, peak_gb())
+    # cache: one parquet with ids/label/blocker columns, plus one parquet PER feature set (adding a feature set
+    # to a config only computes that set)
+    base_key = hashlib.sha256("|".join([pipe._train_fp, *[_component_fp(b) for b in pipe.blockers],
+                                        _component_fp(pipe.normalizer)]).encode()).hexdigest()[:16]
+    cdir = art / "dense_cv"
+    cdir.mkdir(parents=True, exist_ok=True)
+    names = [f"base_{base_key}"]
+    paths = [cdir / f"base_{base_key}.parquet"]
+    if not paths[0].exists():
         blk = pairs[[c for c in pairs.columns if c.startswith("blk_")]].astype(np.float32)
-        df = pd.concat([pd.DataFrame({"s1_id": li.astype(np.int32), "ri": ri.astype(np.int32), "label": label},
-                                     index=pairs.index), blk, *feats], axis=1)
-        del feats
-        fpath.parent.mkdir(parents=True, exist_ok=True)
-        df.to_parquet(fpath)
-    del pairs
+        pd.concat([pd.DataFrame({"s1_id": li.astype(np.int32), "ri": ri.astype(np.int32), "label": label},
+                                index=pairs.index), blk], axis=1).to_parquet(paths[0])
+    for fs in pipe.featuresets:   # compute + write missing feature sets first (they need `pairs`)
+        fkey = hashlib.sha256(f"{base_key}|{_component_fp(fs)}".encode()).hexdigest()[:16]
+        fpath = cdir / f"feat_{fs.registry_name}_{fkey}.parquet"
+        names.append(fpath.stem); paths.append(fpath)
+        if fpath.exists():
+            log.info("cached features %s", fpath.name)
+        else:
+            t = time.time()
+            fs.transform(train, pairs).reset_index(drop=True).to_parquet(fpath)
+            log.info("features %s %.0fs (peak %.1f GB)", fs.registry_name, time.time() - t, peak_gb())
+    del pairs                     # free the 70M+ string pairs BEFORE loading every feature file
+    import gc; gc.collect()
+    df = pd.concat([pd.read_parquet(p_).reset_index(drop=True) for p_ in paths], axis=1, copy=False)
+    fpath = Path("+".join(names))
     s1_rows = np.flatnonzero((recs["source"] == 1).to_numpy())
     ntrue = np.zeros(n, np.int32)
     np.add.at(ntrue, idx.get_indexer(list(gt)), [len(v) for v in gt.values()])

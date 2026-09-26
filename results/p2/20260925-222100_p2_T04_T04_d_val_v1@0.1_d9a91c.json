@@ -1,0 +1,189 @@
+{
+ "run_id": "20260925-222100_p2_T04_T04_d_val_v1@0.1_d9a91c",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "p2",
+ "task": "T04",
+ "note": "",
+ "mode": "val",
+ "split": "val_v1@0.1",
+ "smoke": false,
+ "sample_frac": 0.1,
+ "created": "2026-09-25T22:21:00",
+ "config_path": "configs/exp/p2/T04_d.yaml",
+ "overrides": [],
+ "config_hash": "d9a91cd4bbe9",
+ "config": {
+  "paths": {
+   "data_dir": "/tmp/data/dataset",
+   "artifacts_dir": "/tmp/art"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p2_translit",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "string_sims",
+    "params": {
+     "fields": [
+      "name_norm",
+      "name_core",
+      "addr_norm"
+     ]
+    }
+   }
+  ],
+  "scorer": {
+   "name": "hgb",
+   "params": {
+    "max_iter": 300,
+    "learning_rate": 0.08
+   }
+  },
+  "decider": {
+   "name": "threshold",
+   "params": {
+    "threshold": 0.5,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "645e5b9ff94d",
+  "branch": "w/p2",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true,
+  "split_fingerprint": "113f95b9afa25a9c",
+  "split_fingerprint_ok": true
+ },
+ "machine": {
+  "host": "49fed37b9276",
+  "python": "3.12.13",
+  "platform": "Linux-6.12.90+-x86_64-with-glibc2.35",
+  "gpu": null
+ },
+ "sizes": {
+  "train_s1": 176870,
+  "train_right": 825372,
+  "target_s1": 43948,
+  "target_right": 205327
+ },
+ "train_pairs": {
+  "n_pairs": 5945026,
+  "pos_rate": 0.10225422058709246,
+  "n_features": 30
+ },
+ "transductive_components": [
+  "p2_translit",
+  "p1_compound"
+ ],
+ "timings_s": {
+  "normalize": 47.44,
+  "block": 241.11,
+  "features:string_sims": 241.35,
+  "scorer_fit": 83.26,
+  "score": 5.8
+ },
+ "artifacts_dir": "/tmp/art/runs/20260925-222100_p2_T04_T04_d_val_v1@0.1_d9a91c",
+ "metrics": {
+  "f05": 0.98791,
+  "f05_ci95": [
+   0.98732,
+   0.98853
+  ],
+  "n_s1": 43948,
+  "singleton_rate": 0.054,
+  "singleton_acc": 0.9781,
+  "f05_nonsingleton": 0.98847,
+  "pred_empty_rate": 0.0542,
+  "pair_precision": 0.99405,
+  "pair_recall": 0.97658,
+  "n_pred_pairs": 149060,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.98708
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.98846
+   }
+  },
+  "blocking": {
+   "pair_recall": 0.99848,
+   "pair_recall_by_source": {
+    "S2": 0.99884,
+    "S3": 0.99815
+   },
+   "entity_full_recall": 0.99476,
+   "oracle_f05": 0.9996,
+   "cands_per_s1_mean": 33.48,
+   "cands_per_s1_median": 32.0,
+   "cands_per_s1_p95": 43.0,
+   "cands_per_s1_max": 173,
+   "n_pairs": 1471577,
+   "reduction_ratio": 0.999837,
+   "s1_without_candidates": 0
+  },
+  "scorer": {
+   "roc_auc": 0.99963,
+   "avg_precision": 0.99624
+  },
+  "diag_plain_threshold_curve": {
+   "0.3": 0.9785,
+   "0.4": 0.98097,
+   "0.5": 0.98224,
+   "0.6": 0.98357,
+   "0.7": 0.98325,
+   "0.8": 0.98041,
+   "0.9": 0.97168
+  }
+ },
+ "runtime_s": 822.3
+}

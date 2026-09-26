@@ -1,0 +1,5 @@
+[val_v1@0.1 SMOKE] 20260925-211844_p2_adhoc_base_val_v1@0.1_7a45fd_smoke
+  F0.5=0.9906 CI95=[0.98863, 0.99215]  singleton_acc=0.983  pairP=0.99809 pairR=0.97633
+  blocking: oracle_F0.5=0.9973 pair_recall=0.9918 cands/s1=27.15  scorer={'roc_auc': 0.9999, 'avg_precision': 0.99881}
+  by_country={"India": {"n": 1766, "f05": 0.98273}, "US": {"n": 2566, "f05": 0.99593}}  runtime=471.7s 
+  results: /tmp/repo/results/p2/smoke/20260925-211844_p2_adhoc_base_val_v1@0.1_7a45fd_smoke.json

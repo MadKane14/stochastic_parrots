@@ -1,0 +1,6 @@
+$ python src/run.py run -c configs/exp/p3/T05_cg_addr.yaml --smoke --task T05
+[val_v1@0.1 SMOKE] 20260925-211940_p3_T05_T05_cg_addr_val_v1@0.1_4dd982_smoke
+  F0.5=0.9939 CI95=[0.99245, 0.99527]  singleton_acc=0.9745  pairP=0.99757 pairR=0.98753
+  blocking: oracle_F0.5=0.9999 pair_recall=0.99953 cands/s1=41.05  scorer={'roc_auc': 0.99985, 'avg_precision': 0.99859}
+  by_country={"India": {"n": 1766, "f05": 0.99035}, "US": {"n": 2566, "f05": 0.99639}}  runtime=187.9s 
+  results: /kaggle/working/results/p3/smoke/20260925-211940_p3_T05_T05_cg_addr_val_v1@0.1_4dd982_smoke.json

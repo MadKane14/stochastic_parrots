@@ -1,0 +1,11 @@
+# T11 (p3) — T11_e extended to right records with a short address (<= 4 tokens, ~8% of right records; base recall
+# on 3-4-token addresses is also below the rest on a local sample, exploration/p3 sample check).
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p1_compound          # = T09_tr
+      params: {k: 30, k_rev: 3, max_df: 1000}
+    - name: p3_chargram          # transductive
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 4, k: 2, k_rev: 5,
+               max_df: 5000}

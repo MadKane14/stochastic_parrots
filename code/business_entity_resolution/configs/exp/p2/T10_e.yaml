@@ -1,0 +1,7 @@
+# T10 (p2) — D + learned abbreviation canonicalization (Latin tokens a true pair does not share, aligned by competitive
+# linking, kept only if one is an order-preserving abbreviation of the other: st->street, pvt->private, va->virginia).
+# Hypothesis: address bigram / number x word blocking keys and IDF overlaps stop breaking on abbreviations.
+# Thresholds fixed a priori (support >= 50, precision >= 0.5).
+inherit: T10_d.yaml
+normalize:
+  params: {canon_map: true, canon_min_support: 50, canon_min_precision: 0.5}
