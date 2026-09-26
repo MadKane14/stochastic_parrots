@@ -1,0 +1,14 @@
+12:21:38 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+12:21:38 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+12:23:49 rc=0     131s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+12:23:51 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+12:23:59 rc=0       8s  check: python src/run.py check
+12:25:24 rc=0      85s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+12:26:04 rc=0      40s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+12:43:17 rc=0    1033s  ft_h0: python exploration/p4/e5_finetune.py --split val_v1+fold2:0 --out /tmp/ber_artifacts/models/ft_h0 --n 400000
+13:00:36 rc=0    1039s  ft_h1: python exploration/p4/e5_finetune.py --split val_v1+fold2:1 --out /tmp/ber_artifacts/models/ft_h1 --n 400000
+13:19:19 rc=0    1124s  harness_pre: python src/run.py run -c configs/exp/p4/T16_val_p1e5.yaml --task T16 --split val_v1@0.1 --note 'pretrained E5'
+13:34:25 rc=0     906s  harness_naive: python src/run.py run -c configs/exp/p4/T16_val_p1e5.yaml --task T16 --split val_v1@0.1 --set features.1.params.model=/kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft/models/ft_val_v1 --note 'naive fine-tuned E5 (v1, whole train side)'
+13:55:50 rc=0    1286s  harness_cf: python src/run.py run -c configs/exp/p4/T16_val_cf.yaml --task T16 --split val_v1@0.1 --note 'cross-fitted E5'
+13:55:50 rc=0       0s  done: mkdir -p /kaggle/working/models && cp /tmp/ber_artifacts/models/ft_h0/p4_finetune_stats.json /kaggle/working/models/ft_h0_stats.json && cp /tmp/ber_artifacts/models/ft_h1/p4_finetune_stats.json /kaggle/working/models/ft_h1_stats.json
+13:55:51 rc=0       0s  done: free -g

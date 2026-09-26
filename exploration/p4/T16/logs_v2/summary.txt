@@ -1,0 +1,15 @@
+10:20:35 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+10:20:35 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+10:23:06 rc=0     151s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+10:23:07 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+10:23:17 rc=0      10s  check: python src/run.py check
+10:24:40 rc=0      83s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+10:25:20 rc=0      40s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+10:46:22 rc=0    1262s  cands: python src/run.py run -c configs/exp/p4/T06_base.yaml --task T12 --split val_v1@0.1,xc_India@0.1
+11:02:07 rc=0     945s  ft2_xc_India: python exploration/p4/e5_finetune.py --split xc_India --out /kaggle/working/models/ft2_xc_India --n 400000 --neg blocker --neg-frac 0.25
+11:12:05 rc=0     597s  eval_xc_India: python exploration/p4/e5_ft_eval.py --pairs /tmp/ber_artifacts/runs/20260926-103610_p4_T12_T06_base_xc_India@0.1_5b1ef7/scored_pairs.parquet --label xc_India@0.1 --models intfloat/multilingual-e5-small /kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft/models/ft_xc_India /kaggle/working/models/ft2_xc_India --out /kaggle/working/e5_ft_eval_out.md --json /kaggle/working/e5_ft2_eval_xc_India.json
+11:29:36 rc=0    1052s  harness_ft2_xc_India: python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T12 --split xc_India@0.1 --set features.1.params.model=/kaggle/working/models/ft2_xc_India --note 'e5 fine-tuned v2 (blocker negatives) on xc_India train side'
+11:53:27 rc=0    1431s  ft2_val_v1: python exploration/p4/e5_finetune.py --split val_v1 --out /kaggle/working/models/ft2_val_v1 --n 400000 --neg blocker --neg-frac 0.25
+11:58:30 rc=0     303s  eval_val_v1: python exploration/p4/e5_ft_eval.py --pairs /tmp/ber_artifacts/runs/20260926-102521_p4_T12_T06_base_val_v1@0.1_5b1ef7/scored_pairs.parquet --label val_v1@0.1 --models intfloat/multilingual-e5-small /kaggle/input/notebooks/anishtoshniwal006/ber-p4-t12ft/models/ft_val_v1 /kaggle/working/models/ft2_val_v1 --out /kaggle/working/e5_ft_eval_out.md --json /kaggle/working/e5_ft2_eval_val_v1.json
+12:15:54 rc=0    1044s  harness_ft2_val_v1: python src/run.py run -c configs/exp/p4/T06_e5g.yaml --task T12 --split val_v1@0.1 --set features.1.params.model=/kaggle/working/models/ft2_val_v1 --note 'e5 fine-tuned v2 (blocker negatives) on val_v1 train side'
+12:15:54 rc=0       0s  done: free -g; du -sh /kaggle/working/models/*; ls -R /kaggle/working | head -60

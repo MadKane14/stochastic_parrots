@@ -1,0 +1,27 @@
+$ python exploration/p4/e5_finetune.py --split xc_India --out /kaggle/working/models/v3mix_xc_India --n 400000 --neg blocker --neg-frac 0.35 --mix 0.5
+triples: 437,476 (9,137 same-address hard negatives)
+blocker triples: 437,476 from a 0.35 sample (463,283 S1, 15,588,988 candidates); 218,639 blocker negatives, 218,837 v1 negatives
+data ready in 568s; split xc_India train side: 1,323,633 S1
+step 0/2083 field name loss 3.6612 lr 3.84e-07 219 pairs/s
+step 100/2083 field name loss 0.1808 lr 1.87e-05 624 pairs/s
+step 200/2083 field name loss 0.2621 lr 1.81e-05 626 pairs/s
+step 300/2083 field name loss 0.2802 lr 1.71e-05 622 pairs/s
+step 400/2083 field name loss 0.1284 lr 1.61e-05 616 pairs/s
+step 500/2083 field name loss 0.0922 lr 1.52e-05 611 pairs/s
+step 600/2083 field name loss 0.3096 lr 1.42e-05 605 pairs/s
+step 700/2083 field name loss 0.1543 lr 1.33e-05 601 pairs/s
+step 800/2083 field name loss 0.1386 lr 1.23e-05 598 pairs/s
+step 900/2083 field name loss 0.1847 lr 1.13e-05 597 pairs/s
+step 1000/2083 field name loss 0.1509 lr 1.04e-05 595 pairs/s
+step 1100/2083 field name loss 0.1997 lr 9.43e-06 594 pairs/s
+step 1200/2083 field name loss 0.1992 lr 8.47e-06 593 pairs/s
+step 1300/2083 field name loss 0.1593 lr 7.51e-06 592 pairs/s
+step 1400/2083 field name loss 0.2045 lr 6.55e-06 591 pairs/s
+step 1500/2083 field name loss 0.1314 lr 5.59e-06 590 pairs/s
+step 1600/2083 field name loss 0.1396 lr 4.63e-06 590 pairs/s
+step 1700/2083 field name loss 0.1879 lr 3.67e-06 589 pairs/s
+step 1800/2083 field name loss 0.1638 lr 2.71e-06 589 pairs/s
+step 1900/2083 field name loss 0.2827 lr 1.75e-06 589 pairs/s
+step 2000/2083 field name loss 0.1248 lr 7.87e-07 588 pairs/s
+step 2082/2083 field name loss 0.1611 lr 0.00e+00 588 pairs/s
+{"split": "xc_India", "neg": "blocker", "neg_frac": 0.35, "epochs": 1, "mix": 0.5, "base_model": "intfloat/multilingual-e5-small", "n_triples": 400000, "n_hard_negatives": 218639, "steps": 2083, "batch": 192, "lr": 2e-05, "tau": 0.05, "max_length": 64, "seed": 0, "train_seconds": 681.1, "pairs_used": 399936, "gpu": "Tesla T4", "torch": "2.8.0+cu128"}

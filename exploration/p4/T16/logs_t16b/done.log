@@ -1,0 +1,5 @@
+$ mkdir -p /kaggle/working/models && cp /tmp/ber_artifacts/models/ft_h0/p4_finetune_stats.json /kaggle/working/models/ft_h0_stats.json && cp /tmp/ber_artifacts/models/ft_h1/p4_finetune_stats.json /kaggle/working/models/ft_h1_stats.json
+$ free -g
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          17           0          13          30
+Swap:              0           0           0

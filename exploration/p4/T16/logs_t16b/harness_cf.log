@@ -1,0 +1,9 @@
+$ python src/run.py run -c configs/exp/p4/T16_val_cf.yaml --task T16 --split val_v1@0.1 --note 'cross-fitted E5'
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] /tmp/ber_artifacts/models/ft_h0 on cuda (torch.float16), params=117,653,760, dim=384
+[p4_e5] /tmp/ber_artifacts/models/ft_h1 on cuda (torch.float16), params=117,653,760, dim=384
+[val_v1@0.1] 20260926-133426_p4_T16_T16_val_cf_val_v1@0.1_e3207d
+  F0.5=0.9907 CI95=[0.99014, 0.99125]  singleton_acc=0.9802  pairP=0.99364 pairR=0.98784
+  blocking: oracle_F0.5=0.9986 pair_recall=0.99583 cands/s1=33.53  scorer={'roc_auc': 0.99994, 'avg_precision': 0.99909}
+  by_country={"India": {"n": 17619, "f05": 0.9893}, "US": {"n": 26329, "f05": 0.99163}}  runtime=1279.3s 
+  results: /kaggle/working/results/p4/20260926-133426_p4_T16_T16_val_cf_val_v1@0.1_e3207d.json
