@@ -41,7 +41,9 @@ _Last updated: Sat 26 Sep 17:30 IST (round 4 — all branches merged; T10_e5 den
 | T08_g (group IDF + romanized skeletons + number distance) | 0.97679 | 0.9723 / 0.9798 | 0.92322 | `…T08_g_fafd84.json`, `…T08_g_fafd84_loco.json` |
 | T08_sub (T08_g + uncapped + thr 0.7) | 0.97885 | 0.9747 / 0.9816 | — | `…063458_densecv_T08_sub_724a04.json` |
 | T09_tr (T08_sub + p2_translit D; blocking recall 0.970 → 0.979) | 0.98279 | 0.9826 / 0.9829 | — | `…143459_densecv_T09_tr_490034.json` |
-| **T10_e5** (T09_tr + pretrained E5 `p1_e5` name/full) | **0.98313** | 0.9829 / 0.9833 | — | `…161049_densecv_T10_e5_08f49f.json` |
+| T10_e5 (T09_tr + pretrained E5 `p1_e5` name/full) | 0.98313 | 0.9829 / 0.9833 | — | `…161049_densecv_T10_e5_08f49f.json` |
+| T12_noise2 (T10_e5 + p1_noise, unsup noise-ness) = LB #4 0.978 | 0.98405 | 0.9844 / 0.9838 | — | `…201525_densecv_T12_noise2_c3f279.json` |
+| **T17** (p3 T15 blocking 0.979→0.989 recall + noise + pruning + E5 fine-tuned + p1_ambig) | **0.98722** | 0.9861 / 0.9880 | pending | `…013724_densecv_T17_530df3.json` |
 
 Full-density blocking (best.yaml blocker): pair recall 0.970, oracle F0.5 0.989 — blocking misses are the largest
 remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_analysis.md`).
@@ -53,8 +55,8 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 2 | Sat | ~09:00 | 20260926-063526_p1_T09_T08_sub_test_724a04 | T08_sub / c1b9f99 | 0.97885 | **0.969** | validator PASS (--check-ids); expected-F on test 0.981 vs 0.961 for #1 (`exploration/p1/expected_f_out.md`) |
 | 3 | – | not uploaded | 20260926-171638_p1_T13_T10_e5_test_08f49f | T10_e5 / 4e6d871 | 0.98313 | _pending_ | validator PASS (--check-ids); T09 (+p2_translit) + pretrained E5 |
 | 4 | Sat | ~22:00 | 20260926-201615_p1_T13_T13_sub4_test_fb141a | T13_sub4 / 1d9e21b | 0.98405 (T12_noise2) | **0.978** | + p1_noise + learned pruning: ~6.5 cands/S1 (was ~35); validator PASS |
-| 5 | Sat | _to upload_ | 20260926-221844_p1_T13_T13_sub5_ft_test_19770e | T13_sub5_ft / 04cf1fc | – | _pending_ | #4 + E5 fine-tuned on all train pairs (p4 v1); PASS |
-| 6 | Sat | _to upload_ | blend_sub4_sub5 (exploration/p1/blend_runs.py) | mean of #4 and #5 probabilities | – | _pending_ | same candidates; corr 0.998; PASS |
+| 5 | – | not uploaded | 20260926-221844_p1_T13_T13_sub5_ft_test_19770e | T13_sub5_ft / 04cf1fc | – | _pending_ | #4 + E5 fine-tuned on all train pairs (p4 v1); PASS |
+| 6 | Sat | ~23:50 | blend_sub4_sub5 (exploration/p1/blend_runs.py) | mean of #4 and #5 probabilities | – | **0.979** | same candidates; corr 0.998; PASS |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
