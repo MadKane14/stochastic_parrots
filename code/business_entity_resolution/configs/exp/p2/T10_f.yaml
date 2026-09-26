@@ -1,0 +1,5 @@
+# T10 (p2) — E + learned junk-token removal (frequent on the S2/S3 side of true pairs, <= 1% present in the S1 partner,
+# S1 df <= 1% of S2/S3 df). Hypothesis: noise tokens stop diluting IDF cosines. Thresholds fixed a priori.
+inherit: T10_e.yaml
+normalize:
+  params: {junk: true, junk_min_count: 1000, junk_max_hit: 0.01, junk_max_ratio: 0.01}

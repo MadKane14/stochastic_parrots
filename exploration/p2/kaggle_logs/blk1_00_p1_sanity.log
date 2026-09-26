@@ -1,0 +1,53 @@
+normalized 12,527,040 records in 386s
+loaded 10,540,382 records, 220,163 S1  (522s, peak 11.7 GB)
+2026-09-25 21:28:29,506 ber.blocking.p1_compound tokenize 52s
+2026-09-25 21:29:28,691 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 26713898 features (30.0/record), built in 58s
+2026-09-25 21:31:05,233 ber.blocking.p1_compound group 0 forward top-30: 97s
+2026-09-25 21:32:05,277 ber.blocking.p1_compound group 1: 88077 S1 x 4133346 right, 16183311 features (57.9/record), built in 60s
+2026-09-25 21:33:52,222 ber.blocking.p1_compound group 1 forward top-30: 107s
+channel cmp: 6,604,723 pairs in 378s (peak 23.8 GB)
+2026-09-25 21:33:56,193 ber.blocking.p1_compound tokenize 0s
+2026-09-25 21:34:54,291 ber.blocking.p1_compound group 0: 132086 S1 x 6186873 right, 26713898 features (30.0/record), built in 57s
+2026-09-25 21:36:28,036 ber.blocking.p1_compound group 0 reverse top-3: 94s
+2026-09-25 21:37:30,516 ber.blocking.p1_compound group 1: 88077 S1 x 4133346 right, 16183311 features (57.9/record), built in 62s
+2026-09-25 21:39:13,107 ber.blocking.p1_compound group 1 reverse top-3: 103s
+channel cmprev: 30,346,422 pairs in 346s (peak 24.7 GB)
+{'channels(k)': 'cmp@5', 'pair_recall': 0.8601, 'oracle_f05': 0.96, 'cands_mean': 5.0, 'cands_p95': 5.0, 'cands_max': 5.0, 'recall_India': 0.8392, 'recall_US': 0.8741}
+{'channels(k)': 'cmp@5 + cmprev@5', 'pair_recall': 0.9786, 'oracle_f05': 0.9925, 'cands_mean': 137.9317, 'cands_p95': 299.0, 'cands_max': 1126.0, 'recall_India': 0.971, 'recall_US': 0.9837}
+{'channels(k)': 'cmp@10', 'pair_recall': 0.9376, 'oracle_f05': 0.9781, 'cands_mean': 10.0, 'cands_p95': 10.0, 'cands_max': 10.0, 'recall_India': 0.923, 'recall_US': 0.9474}
+{'channels(k)': 'cmp@10 + cmprev@10', 'pair_recall': 0.9791, 'oracle_f05': 0.9927, 'cands_mean': 138.4049, 'cands_p95': 299.0, 'cands_max': 1126.0, 'recall_India': 0.9715, 'recall_US': 0.9842}
+{'channels(k)': 'cmp@15', 'pair_recall': 0.9507, 'oracle_f05': 0.9825, 'cands_mean': 14.9999, 'cands_p95': 15.0, 'cands_max': 15.0, 'recall_India': 0.9376, 'recall_US': 0.9594}
+{'channels(k)': 'cmp@15 + cmprev@15', 'pair_recall': 0.9795, 'oracle_f05': 0.9928, 'cands_mean': 139.1506, 'cands_p95': 300.0, 'cands_max': 1126.0, 'recall_India': 0.9719, 'recall_US': 0.9846}
+{'channels(k)': 'cmp@20', 'pair_recall': 0.9574, 'oracle_f05': 0.9848, 'cands_mean': 19.9997, 'cands_p95': 20.0, 'cands_max': 20.0, 'recall_India': 0.9452, 'recall_US': 0.9656}
+{'channels(k)': 'cmp@20 + cmprev@20', 'pair_recall': 0.9799, 'oracle_f05': 0.9929, 'cands_mean': 140.1234, 'cands_p95': 300.0, 'cands_max': 1126.0, 'recall_India': 0.9723, 'recall_US': 0.985}
+{'channels(k)': 'cmp@30', 'pair_recall': 0.9645, 'oracle_f05': 0.9873, 'cands_mean': 29.9992, 'cands_p95': 30.0, 'cands_max': 30.0, 'recall_India': 0.9531, 'recall_US': 0.9721}
+{'channels(k)': 'cmp@30 + cmprev@30', 'pair_recall': 0.9805, 'oracle_f05': 0.9932, 'cands_mean': 142.6859, 'cands_p95': 301.0, 'cands_max': 1126.0, 'recall_India': 0.9731, 'recall_US': 0.9856}
+{'channels(k)': 'cmp@5 + cmprev@1', 'pair_recall': 0.9786, 'oracle_f05': 0.9925, 'cands_mean': 137.9317, 'cands_p95': 299.0, 'cands_max': 1126.0, 'recall_India': 0.971, 'recall_US': 0.9837}
+{'channels(k)': 'cmp@10 + cmprev@1', 'pair_recall': 0.9791, 'oracle_f05': 0.9927, 'cands_mean': 138.4049, 'cands_p95': 299.0, 'cands_max': 1126.0, 'recall_India': 0.9715, 'recall_US': 0.9842}
+{'channels(k)': 'cmp@15 + cmprev@1', 'pair_recall': 0.9795, 'oracle_f05': 0.9928, 'cands_mean': 139.1506, 'cands_p95': 300.0, 'cands_max': 1126.0, 'recall_India': 0.9719, 'recall_US': 0.9846}
+{'channels(k)': 'cmp@20 + cmprev@1', 'pair_recall': 0.9799, 'oracle_f05': 0.9929, 'cands_mean': 140.1234, 'cands_p95': 300.0, 'cands_max': 1126.0, 'recall_India': 0.9723, 'recall_US': 0.985}
+{'channels(k)': 'cmp@30 + cmprev@1', 'pair_recall': 0.9805, 'oracle_f05': 0.9932, 'cands_mean': 142.6859, 'cands_p95': 301.0, 'cands_max': 1126.0, 'recall_India': 0.9731, 'recall_US': 0.9856}
+
+## Run 2026-09-25 21:40 — channels=cmp,cmprev frac=1.0 qfrac=0.1 kmax=30 krev=3 max_df=1000 num_variants=False max_df_unigram=0 BER_THREADS=4
+
+- records 10,540,382 (S1 220,163, right 10,320,219); GT pairs 762,339
+- blocking time per channel at k=30 (s): cmp=378, cmprev=346; total 724s; peak RSS 24.7 GB
+- test projection (1.73M S1 x 9.97M right, same scale): ~5689s for blocking the test set (the harness's test mode also blocks full train for fitting)
+
+| channels(k) | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US |
+|---|---|---|---|---|---|---|---|
+| cmp@5 | 0.8601 | 0.96 | 5.0 | 5.0 | 5.0 | 0.8392 | 0.8741 |
+| cmp@5 + cmprev@5 | 0.9786 | 0.9925 | 137.9317 | 299.0 | 1126.0 | 0.971 | 0.9837 |
+| cmp@10 | 0.9376 | 0.9781 | 10.0 | 10.0 | 10.0 | 0.923 | 0.9474 |
+| cmp@10 + cmprev@10 | 0.9791 | 0.9927 | 138.4049 | 299.0 | 1126.0 | 0.9715 | 0.9842 |
+| cmp@15 | 0.9507 | 0.9825 | 14.9999 | 15.0 | 15.0 | 0.9376 | 0.9594 |
+| cmp@15 + cmprev@15 | 0.9795 | 0.9928 | 139.1506 | 300.0 | 1126.0 | 0.9719 | 0.9846 |
+| cmp@20 | 0.9574 | 0.9848 | 19.9997 | 20.0 | 20.0 | 0.9452 | 0.9656 |
+| cmp@20 + cmprev@20 | 0.9799 | 0.9929 | 140.1234 | 300.0 | 1126.0 | 0.9723 | 0.985 |
+| cmp@30 | 0.9645 | 0.9873 | 29.9992 | 30.0 | 30.0 | 0.9531 | 0.9721 |
+| cmp@30 + cmprev@30 | 0.9805 | 0.9932 | 142.6859 | 301.0 | 1126.0 | 0.9731 | 0.9856 |
+| cmp@5 + cmprev@1 | 0.9786 | 0.9925 | 137.9317 | 299.0 | 1126.0 | 0.971 | 0.9837 |
+| cmp@10 + cmprev@1 | 0.9791 | 0.9927 | 138.4049 | 299.0 | 1126.0 | 0.9715 | 0.9842 |
+| cmp@15 + cmprev@1 | 0.9795 | 0.9928 | 139.1506 | 300.0 | 1126.0 | 0.9719 | 0.9846 |
+| cmp@20 + cmprev@1 | 0.9799 | 0.9929 | 140.1234 | 300.0 | 1126.0 | 0.9723 | 0.985 |
+| cmp@30 + cmprev@1 | 0.9805 | 0.9932 | 142.6859 | 301.0 | 1126.0 | 0.9731 | 0.9856 |
