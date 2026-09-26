@@ -6,6 +6,10 @@ Config sections (see configs/base.yaml):
     features:  [{name, params}, ...]
     scorer:    {name, params}
     decider:   {name, params}
+    prune:     optional {scorer: {name, params}, features: [column names], min_score: float, max_per_s1: int}
+               cheap stage-1 model fitted on the training candidates; at prediction time, per S1 keep candidates with
+               score >= min_score (at most max_per_s1): the final scorer/decider — and candidate_pairs.tsv — see only
+               the survivors. The final scorer is trained on all training candidates.
     cache:     true|false   (cache normalized records / candidates / features under artifacts)
 """
 from __future__ import annotations
@@ -52,6 +56,8 @@ class Pipeline:
         self.featuresets = [build("features", s) for s in (cfg.get("features") or [])]
         self.scorer = build("scorer", cfg["scorer"])
         self.decider = build("decider", cfg["decider"])
+        self.prune_cfg = cfg.get("prune")
+        self.pruner = build("scorer", self.prune_cfg["scorer"]) if self.prune_cfg else None
         self.use_cache = cfg.get("cache", True) if use_cache is None else use_cache
         self.cache_dir = Path(artifacts_dir) / "cache" if artifacts_dir else None
         self.timings: dict[str, float] = {}
@@ -118,6 +124,23 @@ class Pipeline:
             self._tick(f"features:{fs.registry_name}", t0)
         return pairs
 
+    def _prune_view(self, pairs: pd.DataFrame) -> pd.DataFrame:
+        cols = ["s1_id", "cand_id"] + [c for c in ("label",) if c in pairs.columns] + list(self.prune_cfg["features"])
+        return pairs[cols]
+
+    def _prune(self, ds: Dataset, pairs: pd.DataFrame) -> pd.DataFrame:
+        """Keep, per S1, candidates with stage-1 score >= min_score, best first, at most max_per_s1."""
+        t0 = time.time()
+        q = np.asarray(self.pruner.score(ds, self._prune_view(pairs)), dtype=float)
+        keep = pd.DataFrame({"s1_id": pairs["s1_id"].to_numpy(), "q": q})
+        keep = keep[keep["q"] >= float(self.prune_cfg.get("min_score", 0.0))]
+        cap = self.prune_cfg.get("max_per_s1")
+        if cap:
+            keep = keep.sort_values(["s1_id", "q"], ascending=[True, False]).groupby("s1_id").head(int(cap))
+        out = pairs.loc[np.sort(keep.index.to_numpy())].reset_index(drop=True)
+        self._tick("prune", t0)
+        return out
+
     # ---------------- public API ----------------
     def fit(self, train: Dataset) -> "Pipeline":
         self._train_fp = train.fingerprint() + train.name
@@ -130,6 +153,10 @@ class Pipeline:
         for fs in self.featuresets:
             fs.fit(train, pairs)
         pairs = self._features(train, pairs)
+        if self.pruner is not None:   # fitted on all train candidates; applied in predict() only — the final
+            t0 = time.time()           # scorer keeps training on all candidates (in-sample pruning would strip
+            self.pruner.fit(train, self._prune_view(pairs))   # its hard negatives)
+            self._tick("prune_fit", t0)
         t0 = time.time()
         self.scorer.fit(train, pairs)
         self._tick("scorer_fit", t0)
@@ -142,6 +169,8 @@ class Pipeline:
         ds = self._normalize(ds)
         pairs = self._block(ds)
         pairs = self._features(ds, pairs)
+        if self.pruner is not None and len(pairs):
+            pairs = self._prune(ds, pairs)
         t0 = time.time()
         scores = self.scorer.score(ds, pairs) if len(pairs) else np.zeros(0)
         schema.check_scores(scores, len(pairs), f"score:{self.scorer.registry_name}")
