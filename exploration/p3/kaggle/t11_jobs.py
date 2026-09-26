@@ -1,4 +1,4 @@
-"""T11 (p3) job runner, called by the Kaggle launchers kaggle_t11{a,b}/ber_p3_t11.py inside the cloned repo.
+"""T11/T15 (p3) job runner, called by the Kaggle launchers kaggle_t11{a,b}/ber_p3_t11.py inside the cloned repo.
 Usage: python exploration/p3/kaggle/t11_jobs.py <job> <out_dir>. Every step runs even if an earlier one failed;
 steps + return codes + wall times go to <out_dir>/summary.txt, logs to <out_dir>/logs/.
 """
@@ -19,6 +19,20 @@ JOBS = {
     # the expensive name-gram + address channel, alone and with the empty-address channel
     # variants of the empty-address channel (deeper reverse list; short addresses too)
     "c": [("dense", f"{DENSE} --config {CFG}/T11_e10.yaml --config {CFG}/T11_e4.yaml --config {CFG}/T11_e.yaml --out {{out}}/blk_dense_out.md")],
+    # T15 organizer-rule study: per-S1 caps x reverse-flood caps for the empty-address channel variants (provenance
+    # from p3_compound_rc / p3_chargram), then a pipeline smoke of the new blocker
+    "d": [("dense", f"python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30,40,50,70 --rev-caps 5,10,20,50 "
+                    f"--config {CFG}/T15_e.yaml --config {CFG}/T15_e10.yaml --config {CFG}/T15_e4.yaml --config {CFG}/T15_er.yaml "
+                    f"--config {CFG}/T15_base.yaml --out {{out}}/blk_dense_out.md"),
+          ("smoke", "cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T15_e.yaml --smoke --task T15")],
+    # T15 speed: the empty-address channel with lower df caps (T15_e at max_df 5000 took 1629 s on full train)
+    "e": [("dense", f"python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30,40,50 --rev-caps 10,20 "
+                    f"--config {CFG}/T15_e_df2000.yaml --config {CFG}/T15_e_df1000.yaml --config {CFG}/T15_base.yaml "
+                    f"--out {{out}}/blk_dense_out.md")],
+    # T15 name-token x address-word channel on top of the empty-address channel (k 10 and 5)
+    "f": [("dense", f"python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30,40,50 --rev-caps 10,20 "
+                    f"--config {CFG}/T15_ena.yaml --config {CFG}/T15_ena5.yaml --misses 60 --out {{out}}/blk_dense_out.md"),
+          ("smoke", "cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T15_ena.yaml --smoke --task T15")],
     "b": [("dense", f"{DENSE} --config {CFG}/T11_eca.yaml --config {CFG}/T11_ca.yaml --misses 60 --out {{out}}/blk_dense_out.md")],
 }
 

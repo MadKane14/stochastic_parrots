@@ -1,0 +1,14 @@
+# T15 (p3) — hand-off for p1: current best T10_e5 (T09_tr + p1_e5) + p3's empty-address name channel (= T11_e).
+# True-density blocking (exploration/p3/blk_dense.py --dense, exploration/p3/kaggle_t11a/out/blk_dense_out.md):
+#   T09_tr blocker 0.9793 recall @ 33.28 cands/S1 (p95 42, max 274)  ->  + channel 0.9820 @ 34.50 (p95 44, max 274);
+#   right-address-empty pairs 0.8537 -> 0.9141. Channel cost: 1629 s full-train blocking on 4 Kaggle vCPU (p1_compound 2264 s).
+# Compare dense CV with T10_e5 (0.98313). The channel's blk_1_score / blk_1_rank columns also reach the matcher.
+inherit: ../p1/T10_e5.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p1_compound          # = T09_tr / T10_e5
+      params: {k: 30, k_rev: 3, max_df: 1000}
+    - name: p3_chargram          # empty-address channel; transductive (IDF/df caps on the records being blocked)
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 5000}

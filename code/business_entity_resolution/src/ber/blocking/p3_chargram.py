@@ -24,6 +24,8 @@ T11 additions:
     compound blocker's full-density misses (I-12). p1_compound's cosine normalises every S1 over its (long) address,
     so a name-only right record can only reach an S1 whose score is diluted by address features; here S1 rows are
     normalised over their name features only and compete only against the few address-less right records.
+T15: `rev_cap` keeps, per S1, only the `rev_cap` best reverse-only pairs (see p3_revcap); `candidate_rows_prov`
+also returns the reverse-only flag so exploration/p3/blk_dense.py can emulate any cap from one run.
 """
 from __future__ import annotations
 
@@ -38,6 +40,7 @@ import scipy.sparse as sp
 
 from ber.blocking.p1_compound import _binary_csr, _gather, tokenize
 from ber.blocking.p1_idf_overlap import topk_rows
+from ber.blocking.p3_revcap import cap_reverse, dedup_forward_first
 from ber.data import Dataset
 from ber.interfaces import Blocker
 from ber.registry import register
@@ -159,7 +162,7 @@ class CharGramBlocker(Blocker):
                  max_len: int = 40, addr_field: str | None = None, addr_weight: float = 1.0, addr_cap: int = 20,
                  hit_budget: float = 1e7, group_by: str | None = "country", workers: int = 4,
                  words: bool = False, name_cap: int = 8, right_max_addr_tokens: int | None = None,
-                 right_addr_field: str = "addr_norm"):
+                 right_addr_field: str = "addr_norm", rev_cap: int | None = None):
         self.field, self.ngrams, self.max_len = field, tuple(int(n) for n in ngrams), int(max_len)
         self.k, self.k_rev, self.max_df = int(k), int(k_rev), int(max_df)
         self.min_score = float(min_score)
@@ -169,6 +172,7 @@ class CharGramBlocker(Blocker):
         self.words, self.name_cap = bool(words), int(name_cap)
         self.right_max_addr_tokens = None if right_max_addr_tokens is None else int(right_max_addr_tokens)
         self.right_addr_field = right_addr_field
+        self.rev_cap = None if rev_cap is None else int(rev_cap)   # per-S1 cap on reverse-only pairs (T15)
 
     def _cached(self, recs: pd.DataFrame, what: str, fn):
         key = (id(recs), len(recs), what)
@@ -222,13 +226,14 @@ class CharGramBlocker(Blocker):
         off = self._cached(recs, f"tok:{self.right_addr_field}", lambda: tokenize(recs[self.right_addr_field]))[0]
         return i2[(off[i2 + 1] - off[i2]) <= self.right_max_addr_tokens]
 
-    def candidate_rows(self, recs: pd.DataFrame):
-        """(s1_row, right_row, score) positional row indices into `recs` (forward + reverse, deduplicated)."""
+    def candidate_rows_prov(self, recs: pd.DataFrame):
+        """(s1_row, right_row, score, reverse_only) positional row indices into `recs` (forward + reverse, deduplicated;
+        a pair proposed in both directions counts as forward)."""
         is_s1 = (recs["source"] == 1).to_numpy()
         groups = recs[self.group_by].to_numpy() if self.group_by else np.zeros(len(recs), dtype=np.int8)
         codes, _ = pd.factorize(groups)
         workers = max(1, min(self.workers, int(os.environ.get("BER_THREADS", "8"))))
-        R, C, V = [], [], []
+        fwd, rev = [], []
         for g in np.unique(codes):
             in_g = codes == g
             i1, i2 = np.flatnonzero(in_g & is_s1), self._right_rows(recs, np.flatnonzero(in_g & ~is_s1))
@@ -244,19 +249,21 @@ class CharGramBlocker(Blocker):
             if self.k:
                 t0 = time.time()
                 r, c, v = chunked_topk(A, B, self.k, self.min_score, self.hit_budget, workers)
-                R.append(i1[r]); C.append(i2[c]); V.append(v.astype(np.float32))
+                fwd.append((i1[r], i2[c], v.astype(np.float32)))
                 log.info("group %s forward top-%d: %d pairs, %.0fs", g, self.k, len(r), time.time() - t0)
             if self.k_rev:
                 t0 = time.time()
                 c, r, v = chunked_topk(B, A, self.k_rev, self.min_score_rev, self.hit_budget, workers)
-                R.append(i1[r]); C.append(i2[c]); V.append(v.astype(np.float32))
+                rev.append((i1[r], i2[c], v.astype(np.float32)))
                 log.info("group %s reverse top-%d: %d pairs, %.0fs", g, self.k_rev, len(r), time.time() - t0)
             del A, B
-        if not R:
-            return np.zeros(0, np.int64), np.zeros(0, np.int64), np.zeros(0, np.float32)
-        r, c, v = np.concatenate(R), np.concatenate(C), np.concatenate(V)
-        _, first = np.unique(r * len(recs) + c, return_index=True)   # forward and reverse can propose the same pair
-        return r[first], c[first], v[first]
+        return dedup_forward_first(fwd, rev, len(recs))
+
+    def candidate_rows(self, recs: pd.DataFrame):
+        """(s1_row, right_row, score) positional row indices into `recs`; reverse-only pairs capped by `rev_cap`."""
+        r, c, v, is_rev = self.candidate_rows_prov(recs)
+        keep = cap_reverse(r, v, is_rev, self.rev_cap)
+        return r[keep], c[keep], v[keep]
 
     def candidates(self, ds: Dataset) -> pd.DataFrame:
         r, c, v = self.candidate_rows(ds.records)

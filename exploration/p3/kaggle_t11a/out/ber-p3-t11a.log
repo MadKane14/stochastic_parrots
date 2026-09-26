@@ -1,0 +1,14 @@
+[{"stream_name":"stderr","time":0.975501427,"data":"Cloning into '/tmp/repo'...\n"}
+,{"stream_name":"stdout","time":5105.807524373,"data":"12:46:23 rc=0    5069s  dense: python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 50,70,100 --config code/business_entity_resolution/configs/exp/p3/T11_e.yaml --config code/business_entity_resolution/configs/exp/p3/T11_base.yaml --misses 60 --out /kaggle/working/blk_dense_out.md\n"}
+,{"stream_name":"stdout","time":5384.0952302,"data":"12:51:01 rc=0     278s  smoke: cd code/business_entity_resolution \u0026\u0026 python src/run.py run -c configs/exp/p3/T11_e.yaml --smoke --task T11\n"}
+,{"stream_name":"stdout","time":6998.319600013,"data":"13:17:55 rc=0    1614s  val: cd code/business_entity_resolution \u0026\u0026 python src/run.py run -c configs/exp/p3/T11_e.yaml --task T11\n"}
+,{"stream_name":"stdout","time":6998.489785474,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":6998.489848416,"data":"Mem:              31          11          13           0           6          19\n"}
+,{"stream_name":"stdout","time":6998.48985537,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stderr","time":7008.536751065,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":7008.536796628,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":7009.287415977,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":7009.287460004,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":7010.997111276,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":7013.162246407,"data":"[NbConvertApp] Writing 278926 bytes to __results__.html\n"}
+]

@@ -1,0 +1,3 @@
+12:46:23 rc=0    5069s  dense: python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 50,70,100 --config code/business_entity_resolution/configs/exp/p3/T11_e.yaml --config code/business_entity_resolution/configs/exp/p3/T11_base.yaml --misses 60 --out /kaggle/working/blk_dense_out.md
+12:51:01 rc=0     278s  smoke: cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T11_e.yaml --smoke --task T11
+13:17:55 rc=0    1614s  val: cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T11_e.yaml --task T11

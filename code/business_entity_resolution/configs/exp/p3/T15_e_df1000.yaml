@@ -1,0 +1,13 @@
+# T15 (p3) — T15_e with max_df 1000 (was 5000): at true density the empty-address channel cost 1629 s vs 2264 s for
+# p1_compound on Kaggle (forward/reverse ~50/50; 17-21 indexed features per S1 at max_df 5000,
+# exploration/p3/kaggle_t11a/out/logs/dense.log). A lower df cap drops the least selective grams from the index
+# (they still count in the norms), cutting the product cost; checks how much of the +0.0027 recall it keeps.
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p3_compound_rc       # transductive (as p1_compound)
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: null}
+    - name: p3_chargram          # transductive: IDF/df caps computed on the records being blocked
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 1000}

@@ -1,0 +1,11 @@
+# T15 (p3) — T11_e (empty-address name channel) with the compound blocker as p3_compound_rc (identical candidates at
+# rev_cap null); used for the organizer-rule study: recall vs per-S1 cap x reverse-flood cap (blk_dense --rev-caps).
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p3_compound_rc       # transductive (as p1_compound)
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: null}
+    - name: p3_chargram          # transductive: IDF/df caps computed on the records being blocked
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 5000}
