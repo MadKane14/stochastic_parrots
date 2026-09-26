@@ -1,0 +1,9 @@
+# T07 (p1) — matcher v2: p1_match + p1_extra (romanized skeleton overlap for non-Latin names/addresses, house-number
+# edit distance / numeric difference, name-token replacement counts) + uncapped LightGBM (T07_lgb).
+# Hypothesis: dense-CV F0.5 rises over T07_lgb, mainly by fewer FPs on unmatched distractors and non-Latin records.
+inherit: T07_lgb.yaml
+features:
+  - name: p1_match
+    params: {}
+  - name: p1_extra
+    params: {}

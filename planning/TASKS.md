@@ -1,5 +1,50 @@
 # TASKS — workers: do only the tasks with your handle in the CURRENT round
 
+## Round 3 — Sat 26 Sep 09:30 (lead p1). First finish + push your Round 2 report (T04/T05/T06), then start here.
+Checkpoint Sat 18:30; overnight launch 23:30. Feature freeze Sun 12:00.
+
+### READ FIRST (everyone) — what changed overnight
+1. **LB #1 = 0.9487** while val_v1@0.1 said 0.9917 (I-15). Cause: test density (I-15..I-18), not a bug.
+   **val_v1@0.1 is no longer evidence for matcher / decider / feature work** — only for plumbing (smoke-like).
+2. New decision metrics (both needed; tools in `exploration/p1/`, need ~55–60 GB RAM, 15–40 min per run):
+   - **Dense CV** — out-of-fold over the full train set (test-like density):
+     `nice -n 10 python exploration/p1/dense_cv.py -c <your.yaml> [--tag x]` → `exploration/p1/dense_cv/<run>.json`
+   - **Dense LOCO** — leave-one-country-out at density, our proxy for unseen France: add `--loco`.
+   Copy the JSON into `exploration/<h>/` with your report; cite the run name. Improvements must show on dense CV
+   (both folds) and not regress LOCO. Features are cached per feature-config; scorer/decider changes are cheap.
+3. Current best (candidate for submission #2): `configs/exp/p1/T08_sub.yaml` = p1_compound blocker + p1_match &
+   p1_extra with `idf_group: country` + uncapped p1_lgbm + threshold 0.7. Dense CV of its features: 0.9768
+   (T08_g), LOCO 0.9232. Build on it: `inherit: ../p1/T08_sub.yaml`.
+4. `ber.features.p1_romanize.name_skeleton(text)` — script-agnostic romanization + consonant skeleton (unicodedata only):
+   `"रेड कंसल्टेंट्स प्राइवेट लिमिटेड"` and `"red consultants private limited"` → `"rd knsltnts prvt lmtd"`. Reuse it.
+
+### T09 — Submission #2/#3, merges, final pipeline (p1)
+- Test run of `T08_sub` (dense-CV-verified) → validator → lead uploads; log dense CV vs LB in STATE.
+- Merge verified worker components into `best.yaml`; re-run dense CV + LOCO on main after each merge.
+
+### T10 — Cross-script / noisy-name normalization at density (p2)
+- Hypothesis: adding romanized skeleton tokens (p1_romanize) and/or your learned token map to `name_norm`/`addr_norm`
+  of non-Latin records lets the blocker propose cross-script pairs (29% of blocking misses, I-12) → full-density
+  blocking recall (blk_eval `--qfrac 0.1`) up ≥ +0.004 and dense CV up, India most.
+- Change: your `p2_translit` normalizer; config inherits `p1/T08_sub.yaml` with `normalize: {name: p2_translit}`.
+- Metric: blk_eval (vs best.yaml blocker, same machine) → then dense CV + LOCO. Don't: country branches, hand dictionaries.
+
+### T11 — Blocking recall at density (p3)
+- Blocking misses are the largest dense-CV loss (0.0129 of 0.030, I-18). Hypothesis: your char-gram channel / reverse
+  cap / adaptive k raise full-density pair recall 0.970 → ≥ 0.98 at ≤ 50 cands/S1, and dense CV rises accordingly.
+- Metric: blk_eval `--qfrac 1` for finalists, then dense CV with the new blocker (note: new blocker = new cached
+  features, ~15 min extra). Keep full-test blocking ≤ 30 min, ≤ 60 GB.
+
+### T12 — Multilingual embeddings as matcher features, judged at density + LOCO (p4)
+- Hypothesis: e5 cosine features (name, name+address) raise dense CV over T08_sub AND raise LOCO (multilingual
+  encoders should transfer to an unseen country/script better than string features).
+- Change: your `p4_e5` FeatureSet added to `features:` of a config inheriting `p1/T08_sub.yaml`; embeddings cached
+  per text hash; embed all train + test texts once (GPU overnight if needed).
+- Metric: dense CV + dense LOCO vs the same config without p4_e5. Report throughput and total embedding time.
+
+---
+## Archive
+
 ## Round 2 — Fri 25 Sep 21:30 (lead p1 + planner). Reports due **Sat 09:30 sync**; checkpoint at Sat 18:30.
 
 ### READ FIRST (everyone)
@@ -91,9 +136,6 @@
 - Done when: 2 runs (with/without p4_e5) on val_v1@0.1 + xc_India@0.1, throughput numbers, report pushed.
 - Overnight: embed the full train + test record texts if throughput allows (for the final pipeline).
 - Don't: fine-tune yet (next round); use any model that is not MIT/Apache-2.0 or > 8B; send data to any API.
-
----
-## Archive
 
 ## Round 1 — Fri 25 Sep (real data is in; goal: submission #1 today). Reports due at the 18:30 sync.
 

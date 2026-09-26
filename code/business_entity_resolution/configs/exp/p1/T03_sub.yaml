@@ -1,0 +1,7 @@
+# T03 (p1) — submission config: T03_m1 (float16 features, all train candidates) with LightGBM fitting on at most
+# 15M rows (whole S1 groups) for memory headroom in test mode. On val_v1@0.1 the train side has ~6M rows, so this
+# is identical to T03_m1 there (run 20260925-232515_p1_T03_T03_m1_val_v1@0.1_92d363 = 0.9917).
+inherit: T03_m1.yaml
+scorer:
+  name: p1_lgbm
+  params: {max_rows: 15000000}

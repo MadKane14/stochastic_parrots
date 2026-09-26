@@ -1,0 +1,5 @@
+# T08 (p1) ablation — which features fail to transfer to an unseen country? Leave-one-country-out dense CV
+# (baseline T03_sub LOCO F0.5 0.90504). This one drops absolute IDF masses (keep IDF-Jaccard / counts).
+inherit: T03_sub.yaml
+scorer:
+  params: {drop_features: ['idf_._(shared|left_only|right_only|max_shared)$']}
