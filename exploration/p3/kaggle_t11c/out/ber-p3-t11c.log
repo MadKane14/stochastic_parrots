@@ -1,0 +1,12 @@
+[{"stream_name":"stderr","time":1.464281916,"data":"Cloning into '/tmp/repo'...\n"}
+,{"stream_name":"stdout","time":9570.467921396,"data":"14:01:31 rc=0    9535s  dense: python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 50,70,100 --config code/business_entity_resolution/configs/exp/p3/T11_e10.yaml --config code/business_entity_resolution/configs/exp/p3/T11_e4.yaml --config code/business_entity_resolution/configs/exp/p3/T11_e.yaml --out /kaggle/working/blk_dense_out.md\n"}
+,{"stream_name":"stdout","time":9570.606840123,"data":"               total        used        free      shared  buff/cache   available\n"}
+,{"stream_name":"stdout","time":9570.606900023,"data":"Mem:              31           1          23           0           6          29\n"}
+,{"stream_name":"stdout","time":9570.606908388,"data":"Swap:              0           0           0\n"}
+,{"stream_name":"stderr","time":9573.572170901,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":9573.57224731,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":9573.958706617,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":9573.958746102,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":9575.730700083,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":9577.514600221,"data":"[NbConvertApp] Writing 278926 bytes to __results__.html\n"}
+]
