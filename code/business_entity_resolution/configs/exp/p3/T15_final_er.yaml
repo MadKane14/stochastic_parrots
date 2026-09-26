@@ -1,0 +1,15 @@
+# T15 (p3) — T15_final with the empty-address channel reverse-only (k 2 / k_rev 5 -> k 0 / k_rev 10, = T15_er): at true
+# density T15_er alone gives 0.9819 recall @ 34.11 cands/S1 in 868 s vs T11_e 0.9820 @ 34.50 in 1608 s
+# (exploration/p3/kaggle_t15d/out/blk_dense_out.md): the forward slots buy +0.0001 for +0.39 cands/S1 and 2x the time.
+inherit: T15_final.yaml
+blocking:
+  max_candidates: 40
+  blockers:
+    - name: p3_compound_rc       # transductive (as p1_compound)
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: 10}
+    - name: p3_chargram          # transductive
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 0, k_rev: 10,
+               max_df: 5000, rev_cap: 10}
+    - name: p3_nameaddr          # transductive
+      params: {name_field: name_core, addr_field: addr_norm, name_cap: 4, addr_cap: 10, k: 5, k_rev: 1, max_df: 300,
+               rev_cap: 10}
