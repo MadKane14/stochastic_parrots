@@ -1,0 +1,11 @@
+# T11 (p3) — T11_e with a deeper reverse list (k_rev 5 -> 10): an address-less right record has only its name, and
+# generic names tie across many S1; more reverse slots cost ~0.15 cands/S1 per slot (3.3% of right records).
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p1_compound          # = T09_tr
+      params: {k: 30, k_rev: 3, max_df: 1000}
+    - name: p3_chargram          # transductive
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 10,
+               max_df: 5000}

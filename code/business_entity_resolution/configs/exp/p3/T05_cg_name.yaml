@@ -1,0 +1,14 @@
+# T05 (p3) — char-gram channel on the name only. Hypothesis: IDF cosine over char 3/4-grams of the de-spaced
+# name (catches typos `hemandez`/`hernandez` and glued web names `supremepackaging` via the rare cross-word grams)
+# plus reverse top-1 S1 per S2/S3 record (reaches right records with an empty address, 22% of p1's misses, I-12),
+# unioned with p1_compound and capped at 50 cands/S1 (best rank first), raises full-density pair recall
+# 0.9699 -> >= 0.98. max_df 3000: at 1000 only ~2.5 grams/S1 are indexed in the 5M-record India group
+# (names come from a small vocabulary, I-07) — see reports/p3/T05.md.
+inherit: ../../best.yaml
+blocking:
+  max_candidates: 50
+  blockers:
+    - name: p1_compound          # = best.yaml
+      params: {k: 30, k_rev: 3, max_df: 1000}
+    - name: p3_chargram          # transductive: IDF/df caps computed on the records being blocked
+      params: {field: name_norm, ngrams: [3, 4], k: 10, k_rev: 1, max_df: 3000}

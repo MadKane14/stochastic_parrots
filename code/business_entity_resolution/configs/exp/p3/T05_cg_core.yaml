@@ -1,0 +1,10 @@
+# T05 (p3) — char-gram channel on name_core (legal-form tokens removed). Hypothesis: as T05_cg_name, but without
+# `private limited` / `llc` grams, which are frequent (not indexed) yet dilute the cosine of short India names.
+inherit: ../../best.yaml
+blocking:
+  max_candidates: 50
+  blockers:
+    - name: p1_compound          # = best.yaml
+      params: {k: 30, k_rev: 3, max_df: 1000}
+    - name: p3_chargram          # transductive: IDF/df caps computed on the records being blocked
+      params: {field: name_core, ngrams: [3, 4], k: 10, k_rev: 1, max_df: 3000}

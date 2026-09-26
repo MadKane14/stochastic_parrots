@@ -1,0 +1,12 @@
+# T11 (p3) — T05's best char-gram channel (name grams + address tokens, T05_cg_addr) on top of T09_tr's normalizer.
+# Hypothesis: typo'd names that still share part of the address (`pediatric dentfiftry group | 329 red deer rd`)
+# are recovered; checks whether the T05 gain (+0.0041 at cap 50, qfrac 0.1) survives p2_translit (which already
+# splits web names) and true reverse density.
+inherit: T11_base.yaml
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p1_compound          # = T09_tr
+      params: {k: 30, k_rev: 3, max_df: 1000}
+    - name: p3_chargram          # transductive
+      params: {field: name_norm, ngrams: [3, 4], addr_field: addr_norm, addr_weight: 1.0, k: 15, k_rev: 1, max_df: 3000}
