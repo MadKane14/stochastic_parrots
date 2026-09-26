@@ -113,7 +113,7 @@ def blocker_triples(train, frac: float, seed: int, config: str) -> tuple[pd.Data
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", default="val_v1", help="val_v1 | xc_<Country> | full")
+    ap.add_argument("--split", default="val_v1", help="val_v1 | xc_<Country> | full, optionally +fold2:<k> (only S1 of cross-fitting fold k, see p4_e5cf)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--model", default="intfloat/multilingual-e5-small")
     ap.add_argument("--n", type=int, default=400_000, help="S1 entities (one pair each)")
@@ -133,7 +133,15 @@ def main():
     torch.manual_seed(a.seed)
     t0 = time.time()
     full = load_part(os.environ["BER_DATA_DIR"], "train", cache_dir=Path(os.environ["BER_ARTIFACTS"]) / "cache")
-    train = full if a.split == "full" else make_split(full, a.split)[0]
+    base, _, fold = a.split.partition("+fold2:")
+    train = full if base == "full" else make_split(full, base)[0]
+    if fold:   # cross-fitting: keep the labels of fold-k S1 entities only (all records stay as negatives)
+        from ber.features.p4_e5cf import cf_fold
+        ids = list(train.gt)
+        keep = cf_fold(ids) == int(fold)
+        train = train.__class__(train.name, train.records, {s: (train.gt[s] if k else frozenset()) for s, k in zip(ids, keep)},
+                                train.meta)
+        print(f"cross-fitting fold {fold}: {int(keep.sum()):,} of {len(ids):,} S1 keep their labels", flush=True)
     del full
     if a.neg == "blocker":
         tri, n_hard = blocker_triples(train, a.neg_frac, a.seed, a.blk_config)
