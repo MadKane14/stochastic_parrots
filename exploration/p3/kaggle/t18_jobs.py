@@ -19,7 +19,10 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[3]
 PKG = REPO / "code/business_entity_resolution"
 CFG_BASE = "code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml"
-CFG = {"a": CFG_BASE, "b": "code/business_entity_resolution/configs/exp/p3/T15_sub5.yaml"}
+CFG = {"a": CFG_BASE, "b": "code/business_entity_resolution/configs/exp/p3/T15_sub5.yaml",
+       # fallback without p1_e5 (no GPU needed): same pair minus the E5 feature set
+       "c": "code/business_entity_resolution/configs/exp/p3/T18_base_noe5.yaml",
+       "d": "code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml"}
 GROUP = "India"
 MODEL_DIR = "intfloat__multilingual-e5-small_ml64"      # p1_e5._root() for the configs' p1_e5 spec
 
@@ -70,6 +73,8 @@ def main():
         return
     # ---- a / b: dense CV on CPU with the GPU job's matrices ----
     sh(f"pip install -q -r {PKG}/requirements.txt", "pip")
+    if job in ("c", "d"):                          # no embeddings needed
+        return run_dense(job, sh, out)
     hits = glob.glob(f"/kaggle/input/**/emb_mm/{MODEL_DIR}", recursive=True)
     if not hits:
         sh("ls -R /kaggle/input | head -50", "link")
@@ -84,6 +89,11 @@ def main():
             "print(fp, [(f, os.path.exists(f)) for f in fs]); sys.exit(0 if all(map(os.path.exists, fs)) else 3)\"", "link")
     if rc != 0:
         raise SystemExit("embedding files do not match the India group's fingerprint: not starting (would embed on CPU)")
+    run_dense(job, sh, out)
+
+
+def run_dense(job, sh, out):
+    art = os.environ["BER_ARTIFACTS"]
     sh(f"python exploration/p3/dense_cv_group_prune.py -c {CFG[job]} --group {GROUP}", "dense")
     for pat in ("exploration/p2/dense_cv/*.json", "exploration/p2/dense_cv_out.md", "exploration/p3/dense_cv/*.json",
                 "exploration/p3/dense_cv_out.md"):
