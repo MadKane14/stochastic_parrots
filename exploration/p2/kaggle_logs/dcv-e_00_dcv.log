@@ -1,0 +1,40 @@
+2026-09-26 09:24:26,323 dense_cv normalize 135s
+2026-09-26 09:25:02,117 ber.blocking.p1_compound tokenize 26s
+2026-09-26 09:26:07,750 ber.blocking.p1_compound group 0: 883188 S1 x 4133346 right, 14852648 features (57.8/record), built in 65s
+2026-09-26 09:35:09,209 ber.blocking.p1_compound group 0 forward top-30: 541s
+2026-09-26 09:43:40,157 ber.blocking.p1_compound group 0 reverse top-3: 511s
+2026-09-26 09:46:57,638 dense_cv block 1351s: 29559860 pairs
+2026-09-26 10:10:51,159 dense_cv features 1403s (peak 21.1 GB)
+2026-09-26 11:00:05,381 ber.scorers.p1_lgbm p1_lgbm: 14033754 train rows (100% of pairs), 746757 valid rows, best_iteration=1395
+2026-09-26 11:15:24,168 dense_cv fold 0: fit+score 3720s (best_iteration 1395, peak 21.3 GB)
+2026-09-26 11:51:31,485 ber.scorers.p1_lgbm p1_lgbm: 14038232 train rows (100% of pairs), 741117 valid rows, best_iteration=949
+2026-09-26 12:02:56,055 dense_cv fold 1: fit+score 2852s (best_iteration 949, peak 21.7 GB)
+{
+ "group": "India",
+ "f05": 0.98336,
+ "by_fold": {
+  "0": 0.98333,
+  "1": 0.98339
+ },
+ "singleton_acc": 0.9898,
+ "f05_nonsingleton": 0.98298,
+ "n_s1": 883188,
+ "n_pairs": 29559860,
+ "cands_per_s1": {
+  "mean": 33.47,
+  "p95": 44.0,
+  "max": 450
+ },
+ "pair_precision": 0.99733,
+ "pair_recall": 0.95809,
+ "blocking_pair_recall": 0.97674,
+ "oracle_f05": 0.9916,
+ "f05_frozen_metric": 0.98336,
+ "threshold_curve": {
+  "0.5": 0.98249,
+  "0.6": 0.98311,
+  "0.7": 0.98336,
+  "0.8": 0.98323
+ }
+}
+2026-09-26 12:05:45,319 dense_cv_group done in 10364s, peak 21.7 GB
