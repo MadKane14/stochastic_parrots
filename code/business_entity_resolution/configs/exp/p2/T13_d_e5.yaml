@@ -1,0 +1,12 @@
+# T13 (p2 branch, full stack): p1 matcher (T08_sub) + p2 normalizer v1 (T10_d) + p4 E5 features (p4_e5, as in
+# configs/exp/p4/T12_e5.yaml). Hypothesis: E5 cosines add signal on top of p1+p2 → India dense CV above T10_d.
+# model: intfloat/multilingual-e5-small, licence: MIT, params: 117,653,760 (p4's count at load)
+inherit: T10_d.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p4_e5
+    params: {model: intfloat/multilingual-e5-small, fields: [name, full], max_length: 64, batch_size: 512,
+             group_feats: true, group_sides: [s1, rec]}
