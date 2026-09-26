@@ -79,6 +79,38 @@ def training_triples(ds, n_max: int, seed: int) -> pd.DataFrame:
     return pd.DataFrame({"a": a, "p": p, "n": n}), n_hard
 
 
+def blocker_triples(train, frac: float, seed: int, config: str) -> tuple[pd.DataFrame, int]:
+    """v2 negatives: run the team blocker (configs/best.yaml) on a `frac` sample of the train side and use, for each S1
+    entity with >= 1 match, one random true match and one of its 3 highest-ranked NON-matching candidates (the real
+    confusions). Rows index the SAMPLE's records (returned via .attrs['records'])."""
+    from ber.config import load_config
+    from ber.eval.splits import subsample
+    from ber.pipeline import Pipeline
+    rng = np.random.default_rng(seed)
+    sub = subsample(train, frac, seed=100 + seed)
+    pipe = Pipeline(load_config(config), None, use_cache=False)
+    pipe.normalizer.fit(sub)
+    nds = pipe._normalize(sub)
+    for b in pipe.blockers:
+        b.fit(nds)
+    c = pipe._block(nds)[["s1_id", "cand_id", "blk_0_rank"]]
+    c["y"] = sub.labels(c)
+    neg = c[c["y"] == 0].sort_values(["s1_id", "blk_0_rank"]).groupby("s1_id").head(3)
+    neg = neg.groupby("s1_id")["cand_id"].agg(list)
+    recs = sub.records.reset_index(drop=True)
+    row = pd.Series(np.arange(len(recs)), index=recs["entity_id"].to_numpy())
+    A, P, N = [], [], []
+    for s, m in sub.gt.items():
+        if not m or s not in neg.index:
+            continue
+        cands = neg[s]
+        A.append(row[s]); P.append(row[sorted(m)[rng.integers(len(m))]]); N.append(row[cands[rng.integers(len(cands))]])
+    tri = pd.DataFrame({"a": A, "p": P, "n": N})
+    tri.attrs["records"] = recs
+    print(f"blocker triples: {len(tri):,} from a {frac} sample ({len(sub.s1):,} S1, {len(c):,} candidates)", flush=True)
+    return tri, len(tri)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", default="val_v1", help="val_v1 | xc_<Country> | full")
@@ -90,6 +122,11 @@ def main():
     ap.add_argument("--tau", type=float, default=0.05)
     ap.add_argument("--max-length", type=int, default=64)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--neg", default="address", choices=["address", "blocker"],
+                    help="address = v1 (same-address / random negatives); blocker = v2 (top blocker non-matches)")
+    ap.add_argument("--neg-frac", type=float, default=0.25, help="v2: train-side sample fraction that is blocked")
+    ap.add_argument("--blk-config", default=str(REPO / "code/business_entity_resolution/configs/best.yaml"))
+    ap.add_argument("--epochs", type=int, default=1)
     a = ap.parse_args()
     import torch
     from transformers import AutoModel, AutoTokenizer
@@ -98,8 +135,15 @@ def main():
     full = load_part(os.environ["BER_DATA_DIR"], "train", cache_dir=Path(os.environ["BER_ARTIFACTS"]) / "cache")
     train = full if a.split == "full" else make_split(full, a.split)[0]
     del full
-    tri, n_hard = training_triples(train, a.n, a.seed)
-    texts = {f: field_texts(train.records.reset_index(drop=True), f) for f in ("name", "full")}
+    if a.neg == "blocker":
+        tri, n_hard = blocker_triples(train, a.neg_frac, a.seed, a.blk_config)
+        recs = tri.attrs.pop("records")
+        tri = tri.iloc[np.random.default_rng(a.seed).permutation(len(tri))[:a.n]].reset_index(drop=True)
+    else:
+        tri, n_hard = training_triples(train, a.n, a.seed)
+        recs = train.records.reset_index(drop=True)
+    texts = {f: field_texts(recs, f) for f in ("name", "full")}
+    del recs
     print(f"data ready in {time.time() - t0:.0f}s; split {a.split} train side: {len(train.s1):,} S1", flush=True)
     del train
 
@@ -107,7 +151,7 @@ def main():
     tok = AutoTokenizer.from_pretrained(a.model)
     model = AutoModel.from_pretrained(a.model).to(dev).train()
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.01)
-    steps = len(tri) // a.batch
+    steps = a.epochs * (len(tri) // a.batch)
     warm = max(1, steps // 20)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / warm) * max(0.0, (steps - s) / steps))
     scaler = torch.amp.GradScaler()
@@ -122,7 +166,7 @@ def main():
         return torch.nn.functional.normalize(v, dim=-1)
 
     rng = np.random.default_rng(a.seed + 1)
-    perm = rng.permutation(len(tri))
+    perm = np.concatenate([rng.permutation(len(tri)) for _ in range(a.epochs)])   # one shuffle per epoch
     A, P, N = tri["a"].to_numpy()[perm], tri["p"].to_numpy()[perm], tri["n"].to_numpy()[perm]
     log, t1, used = [], time.time(), 0
     for s in range(steps):
@@ -154,7 +198,8 @@ def main():
     out = Path(a.out)
     model.eval().half().save_pretrained(out)
     tok.save_pretrained(out)
-    stats = {"split": a.split, "base_model": a.model, "n_triples": int(len(tri)), "n_hard_negatives": int(n_hard),
+    stats = {"split": a.split, "neg": a.neg, "neg_frac": a.neg_frac if a.neg == "blocker" else None,
+             "epochs": a.epochs, "base_model": a.model, "n_triples": int(len(tri)), "n_hard_negatives": int(n_hard),
              "steps": steps, "batch": a.batch, "lr": a.lr, "tau": a.tau, "max_length": a.max_length, "seed": a.seed,
              "train_seconds": round(time.time() - t1, 1), "pairs_used": used, "loss_log": log,
              "gpu": torch.cuda.get_device_name(0), "torch": torch.__version__}
