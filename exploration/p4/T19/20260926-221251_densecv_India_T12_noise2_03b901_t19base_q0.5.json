@@ -1,0 +1,133 @@
+{
+ "run": "20260926-221251_densecv_India_T12_noise2_03b901_t19base_q0.5",
+ "config_path": "code/business_entity_resolution/configs/exp/p1/T12_noise2.yaml",
+ "config": {
+  "paths": {
+   "data_dir": "/kaggle/input/ber-data-p4",
+   "artifacts_dir": "/tmp/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p2_translit",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_e5",
+    "params": {
+     "fields": [
+      "name",
+      "full"
+     ]
+    }
+   },
+   {
+    "name": "p1_noise",
+    "params": {
+     "unsup": true
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.7,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "cf57a91",
+  "dirty": false
+ },
+ "fold_seed": 777,
+ "feature_cache": "base_afee5fdc48f4f67b+feat_p1_match_0128fb0d632b9d62+feat_p1_extra_e82eac243f83dbbc+feat_p1_e5_d5a4b3be3f286457+feat_p1_noise_c7cc2448ea59b70d",
+ "metrics": {
+  "group": "India",
+  "f05": 0.98294,
+  "by_fold": {
+   "0": 0.983,
+   "1": 0.98288
+  },
+  "singleton_acc": 0.9811,
+  "f05_nonsingleton": 0.98305,
+  "n_s1": 441310,
+  "n_pairs": 18736320,
+  "cands_per_s1": {
+   "mean": 42.46,
+   "p95": 72.0,
+   "max": 508
+  },
+  "pair_precision": 0.99509,
+  "pair_recall": 0.96146,
+  "blocking_pair_recall": 0.9792,
+  "oracle_f05": 0.99262,
+  "f05_frozen_metric": 0.98294,
+  "threshold_curve": {
+   "0.5": 0.98155,
+   "0.6": 0.98243,
+   "0.7": 0.98294,
+   "0.8": 0.98287
+  }
+ },
+ "runtime_s": 7248,
+ "peak_rss_gb": 28.7
+}

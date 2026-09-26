@@ -1,0 +1,12 @@
+$ python exploration/p2/dense_cv_group.py -c code/business_entity_resolution/configs/exp/p4/T14b_tcanon.yaml --group India --tag t19tcanon
+2026-09-26 18:42:35,570 dense_cv normalize 349s
+2026-09-26 18:43:04,765 ber.blocking.p1_compound tokenize 21s
+2026-09-26 18:44:01,723 ber.blocking.p1_compound group 0: 883188 S1 x 4133346 right, 14983514 features (57.8/record), built in 57s
+2026-09-26 18:51:48,993 ber.blocking.p1_compound group 0 forward top-30: 467s
+2026-09-26 18:58:46,575 ber.blocking.p1_compound group 0 reverse top-3: 418s
+2026-09-26 19:01:24,738 dense_cv block 1129s: 29408264 pairs
+2026-09-26 19:13:12,085 dense_cv features p1_match 679s (peak 24.2 GB)
+2026-09-26 19:22:07,245 dense_cv features p1_extra 535s (peak 24.2 GB)
+2026-09-26 19:28:47,828 dense_cv features p1_e5 400s (peak 29.2 GB)
+2026-09-26 19:32:08,865 dense_cv features p1_noise 201s (peak 29.2 GB)
+Killed
