@@ -1,0 +1,1 @@
+6e6f739 p3 T11 job a results (dense: T11_e recall 0.9793 -> 0.9820 at +1.2 cands/S1; val_v1@0.1 run), T15 df-cap variants + Kaggle job e

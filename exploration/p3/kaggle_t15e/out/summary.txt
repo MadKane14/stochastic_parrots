@@ -1,0 +1,1 @@
+14:37:16 rc=0    4403s  dense: python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30,40,50 --rev-caps 10,20 --config code/business_entity_resolution/configs/exp/p3/T15_e_df2000.yaml --config code/business_entity_resolution/configs/exp/p3/T15_e_df1000.yaml --config code/business_entity_resolution/configs/exp/p3/T15_base.yaml --out /kaggle/working/blk_dense_out.md
