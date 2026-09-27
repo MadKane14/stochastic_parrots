@@ -51,18 +51,118 @@ def group_loader(group: str):
     return load
 
 
+def rss_gb() -> float:
+    """Current resident memory (not the peak) from /proc, for memory diagnostics."""
+    try:
+        for line in open("/proc/self/status"):
+            if line.startswith("VmRSS:"):
+                return int(line.split()[1]) / 1e6
+    except OSError:
+        pass
+    return float("nan")
+
+
+def build_pairs_lean(cfg: dict, art: Path):
+    """Same steps, caches and outputs as p1's `dense_cv.build_pairs` (records -> normalize -> block -> labels -> one
+    parquet per feature set -> one frame), but every per-record structure is released BEFORE the feature files are
+    loaded: the feature-set objects (p1_match/p1_extra keep names, skeletons and token matrices of all records), the
+    blockers' module-level token caches, the pipeline and the raw/normalized record tables. On a 31 GB machine the
+    full p1+p2+p3+p4 stack was OOM-killed exactly at that load in p1's version (logs in exploration/p2/kaggle_logs)."""
+    import gc
+    import hashlib
+
+    import pyarrow.parquet as pq
+    from ber.pipeline import Pipeline, _component_fp
+    full = dcv.load_part(dcv.env("BER_DATA_DIR"), "train", cache_dir=art / "cache")
+    pipe = Pipeline(cfg, art)
+    pipe._train_fp = full.fingerprint() + full.name
+    pipe.normalizer.fit(full)
+    t = time.time(); train = pipe._normalize(full); log.info("normalize %.0fs (rss %.1f GB)", time.time() - t, rss_gb())
+    for b in pipe.blockers:
+        b.fit(train)
+    t = time.time(); pairs = pipe._block(train)
+    log.info("block %.0fs: %d pairs (rss %.1f GB)", time.time() - t, len(pairs), rss_gb())
+    recs = train.records
+    n = len(recs)
+    idx = pd.Index(recs["entity_id"].to_numpy())
+    li = idx.get_indexer(pairs["s1_id"]).astype(np.int64)
+    ri = idx.get_indexer(pairs["cand_id"]).astype(np.int64)
+    gt = full.gt
+    g_s = [s for s in gt for _ in gt[s]]
+    g_c = [c for s in gt for c in gt[s]]
+    gt_keys = np.unique(idx.get_indexer(g_s).astype(np.int64) * n + idx.get_indexer(g_c).astype(np.int64))
+    del g_s, g_c
+    label = np.isin(li * n + ri, gt_keys).astype(np.int8)
+    base_key = hashlib.sha256("|".join([pipe._train_fp, *[_component_fp(b) for b in pipe.blockers],
+                                        _component_fp(pipe.normalizer)]).encode()).hexdigest()[:16]
+    cdir = art / "dense_cv"
+    cdir.mkdir(parents=True, exist_ok=True)
+    names, paths = [f"base_{base_key}"], [cdir / f"base_{base_key}.parquet"]
+    if not paths[0].exists():
+        blk = pairs[[c for c in pairs.columns if c.startswith("blk_")]].astype(np.float32)
+        pd.concat([pd.DataFrame({"s1_id": li.astype(np.int32), "ri": ri.astype(np.int32), "label": label},
+                                index=pairs.index), blk], axis=1).to_parquet(paths[0])
+        del blk
+    for i, fs in enumerate(pipe.featuresets):
+        fkey = hashlib.sha256(f"{base_key}|{_component_fp(fs)}".encode()).hexdigest()[:16]
+        fpath = cdir / f"feat_{fs.registry_name}_{fkey}.parquet"
+        names.append(fpath.stem); paths.append(fpath)
+        if not fpath.exists():
+            t = time.time()
+            fs.fit(train, pairs)
+            fs.transform(train, pairs).reset_index(drop=True).to_parquet(fpath)
+            log.info("features %s %.0fs (peak %.1f GB, rss %.1f GB)", fs.registry_name, time.time() - t, dcv.peak_gb(), rss_gb())
+        pipe.featuresets[i] = None                  # drop the set's per-record arrays right away
+        del fs
+        gc.collect()
+    # keep only what scoring/evaluation needs, release everything else before loading the feature files
+    meta_recs = recs[["entity_id", "country"]].copy()
+    s1_rows = np.flatnonzero((recs["source"] == 1).to_numpy())
+    ntrue = np.zeros(n, np.int32)
+    np.add.at(ntrue, idx.get_indexer(list(gt)), [len(v) for v in gt.values()])
+    del pairs, recs, train, full, pipe, idx, li, ri, label
+    import importlib
+    for mod, attrs in (("ber.blocking.p1_compound", ["_TOK_CACHE"]), ("ber.blocking.p1_idf_overlap", ["_TOKEN_CACHE", "_W"]),
+                       ("ber.blocking.p3_chargram", ["_CACHE", "_W"]), ("ber.blocking.p3_nameaddr", ["_CACHE"]),
+                       ("ber.normalize.p2_translit", ["_PREP_CACHE"])):
+        try:
+            m = importlib.import_module(mod)
+            for a in attrs:
+                getattr(m, a, {}).clear()
+        except ImportError:
+            pass
+    gc.collect()
+    log.info("released per-record structures (rss %.1f GB)", rss_gb())
+    parts = []
+    for p_ in paths:
+        part = pq.read_table(p_).to_pandas(self_destruct=True, split_blocks=True).reset_index(drop=True)
+        f64 = [c for c in part.columns if part[c].dtype == np.float64]
+        if f64:
+            part[f64] = part[f64].astype(np.float32)
+        parts.append(part)
+        log.info("loaded %s (rss %.1f GB)", p_.name, rss_gb())
+    df = pd.concat(parts, axis=1, copy=False)
+    del parts
+    gc.collect()
+    log.info("feature frame %d x %d (rss %.1f GB)", len(df), df.shape[1], rss_gb())
+    meta = {"records": meta_recs, "s1_rows": s1_rows, "ntrue": ntrue, "gt": gt, "gt_keys": gt_keys, "n": n,
+            "feature_cache": "+".join(names)}
+    return df, meta
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("-c", "--config", required=True)
     ap.add_argument("--group", required=True, help="country string of the group to evaluate (evaluation choice)")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--lean", action="store_true", help="release per-record structures before loading features")
     a = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s", stream=sys.stdout)
     cfg = load_config(a.config)
     art = Path(cfg["paths"]["artifacts_dir"])
     t0 = time.time()
     dcv.load_part = group_loader(a.group)                       # p1's build_pairs picks this up
-    df, meta = dcv.build_pairs(cfg, art)
+    df, meta = build_pairs_lean(cfg, art) if a.lean else dcv.build_pairs(cfg, art)
     oof, fold = dcv.oof_scores(df, cfg)
     li, ri = df["s1_id"].to_numpy().astype(np.int64), df["ri"].to_numpy().astype(np.int64)
     label = df["label"].to_numpy()
