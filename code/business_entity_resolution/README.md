@@ -35,8 +35,10 @@ Step 2 runs the organizers' validator (`utils/validate_submission.py`, if presen
 checks, and writes a results JSON (config, commit, timings, per-country prediction stats) under `results/`.
 
 ## Pipeline (configs/best.yaml)
-1. **Normalize** (`p2_translit`): lowercase, Latin accent stripping, punctuation; native-script → Latin token map
-   learned from train true pairs; web-style names split; digits split from letters, leading zeros stripped.
+1. **Normalize** (`p4_tcanon`, built on `p2_translit`): lowercase, Latin accent stripping, punctuation; native-script →
+   Latin token map learned from train true pairs; web-style names split, initials joined; digits split from letters,
+   leading zeros stripped; address abbreviations and junk tokens canonicalized from label-free statistics per
+   country-string group (e.g. `r`→`rue`, `st`→`street`/`saint` as the group's own data indicates).
 2. **Block** (`p3_compound_rc`, `p3_chargram`, `p3_nameaddr`): within each group of equal `country` string, IDF cosine
    over single tokens and token pairs (name-word pairs, address bigrams, house-number × word, house-number × name word),
    forward top-k per Source 1 entity and reverse top-k per S2/S3 record; a name channel for address-less records and a
@@ -46,7 +48,7 @@ checks, and writes a results JSON (config, commit, timings, per-country predicti
    cosines, learned noise-word statistics, name-ambiguity counts, ranks/margins within the entity and the record.
 4. **Prune** (learned stage-1 LightGBM): keeps ~6 candidates per Source 1 entity — `candidate_pairs.tsv` is this set.
 5. **Score** (`p1_lgbm`, LightGBM) and **decide** (`p1_assign`): each S2/S3 record goes to at most one Source 1 entity
-   (its best), then probability ≥ 0.7.
+   (its best), then probability ≥ 0.8.
 
 ## Validation used during development
 - `python src/run.py run -c configs/best.yaml --split val_v1` — grouped split by Source 1 entity (frozen harness).

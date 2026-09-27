@@ -1,0 +1,10 @@
+# T27 (p1, Sun 27 Sep): T26 (FINAL T18 + p1_mnoise, label-free per-country noise-word rates) without the degenerate
+# name "core token" features f_p1_core_n_* (T25: in-country dense CV 0.98746 at thr 0.8 = T18 0.98746, i.e. they add
+# nothing for US/India, while 78% of France names keep <= 1 core word, I-27).
+# Hypothesis: France precision (siblings / co-located businesses, I-28) improves; in-country unchanged.
+# Gate: in-country dense CV >= T18 (0.98746 at thr 0.8) within fold noise.
+# Transductive: p1_mnoise (plus those of best.yaml). model: LightGBM (MIT); encoder multilingual-e5-small (MIT, 117,653,760).
+inherit: T26_mnoise.yaml
+scorer:
+  name: p1_lgbm
+  params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, drop_features: ["^f_p1_core_n_"]}

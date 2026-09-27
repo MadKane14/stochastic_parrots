@@ -1,5 +1,59 @@
 # TASKS — workers: do only the tasks with your handle in the CURRENT round
 
+## Round 7 — Sun 09:45 → 14:00 (lead p1). LB #7b = 0.979 (dense CV 0.98717). Target 0.988 (top 50).
+**Diagnosis (label-free, scripts in exploration/p1/, commit d7795bc):** US/India test predictions reproduce dense CV on every
+statistic we can measure without labels (house-number conflicts 6.18% vs 6.07% US, 2.16% vs 2.15% India; empty-address
+assignment rates; matches/S1). The LB stall is **France** (15% of test S1, never in validation): #4→#7b moved France 3-5x more
+than US/India (fine-tuned E5: 6.8% of France S1 changed vs 1.4%; threshold 0.8: 3.8% vs 1.1%). Implied France F ≈ 0.93-0.95.
+LOCO (our France proxy) fails differently (shifted-house-number near-copies; France predictions have 0.9% conflicts).
+Lead (phoenix): #8 = best.yaml (T18 + tcanon) finishing now; **T24 self-training scorer** (`p1_selftrain`, adapts to the
+scored data with its own confident pseudo-labels) validated by dense LOCO; if it helps, its test run is submission #9.
+Everyone: fetch main (≥ d7795bc). Reports as `reports/<you>/T2x.md`, push to your branch by **14:00**. No new features.
+
+### T21 — p2: package review (read-only) — unchanged
+Read `code/business_entity_resolution/` as an organizer would (docs/organizers_README.md "Final Submission Package"): README
+steps vs code (`src/run.py test`, `src/e5_finetune.py`), `requirements.txt` vs every import, docstrings on public functions,
+no country-value branches (grep `India|US|France|country ==`), no GPL imports. List file:line issues + suggested patch.
+
+### T22 — p3: methodology fact check + unseen-country section
+Check every number/claim in `Documentation_template.md` against committed JSONs/reports. Then draft (in your report, as
+markdown ready to paste) a short section "Unseen country (France)" from the lead's diagnosis above: what we measured without
+labels, why validation could not see it, what we did (target canonicalization p4_tcanon, self-training if adopted).
+
+### T23 — p4: compliance record + France audit (label-free)
+(a) Table for the methodology appendix: every model/library in the final pipeline with licence, params, training data,
+offline status; every transductive component (p4_tcanon, blockers' IDF, p1_match/p1_extra IDF, p1_noise unsup, p1_ambig,
+p1_selftrain) with the statistic it takes from the records it processes. Flag anything that could read as a rule violation.
+(b) Using only test records (no labels), list France address/name forms that T18's normalization still leaves different
+between likely copies (e.g. department vs region names "Nord"/"Hauts-de-France", "Pas-de-Calais", "(28)", "5 - Rue",
+"6 bis"/"6B", legal forms SARL/EURL/SAS/SASU/SCI/SNC/EI, "(France)", web names, acronym copies "EC"/"BF"). For each: how
+often it occurs (count), and whether a GENERIC label-free rule (no country branch, no hand dictionary) could handle it.
+
+## Round 6 (superseded 09:45) — Sun 08:30 → 17:00, FREEZE (lead p1). No new features or model changes.
+**FINAL = `configs/best.yaml`** = T18 (T17 + p4_tcanon) at threshold 0.8 (D15): dense CV **0.98752**, LOCO **0.93538**
+(T17: 0.98722 / 0.93443). Its test run (#8) is on phoenix now; a clean-checkout reproduction (`exploration/p1/repro_final.sh`)
+follows. Your jobs are review only. Fetch main (≥ 88c85e6). Report as `reports/<you>/T2x.md` by **Sun 14:00**; push to your branch.
+
+### T21 — p2: package review (read-only)
+Read `code/business_entity_resolution/` as an organizer would: README steps vs code (`src/run.py test`, `src/e5_finetune.py`),
+`requirements.txt` vs every import, docstrings on public functions, no dead paths in the final config's components, no
+country-specific branches (grep `India|US|France|country ==`) and no GPL imports. List exact file:line issues with a suggested
+patch; do not edit core/src files yourself.
+
+### T22 — p3: methodology fact check
+Check every number and claim in `Documentation_template.md` against the committed JSONs / reports (`exploration/p1/dense_cv/`,
+`exploration/*/blk_eval_out.md`, planning/STATE.md). Report each mismatch with the correct value and its source.
+Blocking section: confirm the three channels' parameters match `configs/best.yaml`.
+
+### T23 — p4: compliance record
+One table for the methodology appendix: every model / library in the final pipeline with licence, parameter count, training
+data (provided train only), offline status; and the transductive components (p4_tcanon, blockers' IDF, p1_match/p1_extra IDF,
+p1_noise unsup, p1_ambig) with what statistic each takes from the test records. Point out anything that could be read as a
+rule violation (§2 of CLAUDE.md).
+
+---
+## Archive
+
 ## Round 5 — Sat 22:30 → Sun 08:00 (lead p1). LB #4 = **0.978** (dense CV 0.98405). Top-10 ≈ 0.99.
 Tonight: #5 (= #4 + fine-tuned E5 `ft_full`) and #6 (probability average of #4 and #5) are uploaded by the lead.
 Phoenix overnight runs the FULL dense CV of the final stack. Your Kaggle machines validate the two big levers on the
@@ -21,9 +75,6 @@ dataset / re-train with `exploration/p4/e5_finetune.py --split full`), vs pretra
 these pairs (p4 T16 found naive ≈ cross-fitted).
 
 Everyone: no new features after these; Sun 09:30 sync decides the final stack; Sun 12:00 feature freeze.
-
----
-## Archive
 
 ## Round 4 — Sat 17:30, FINAL NIGHT (lead p1). Push results + a short report by **21:00**; last sync Sun 09:30.
 Sun 12:00 feature freeze · 18:00 code freeze · 21:00 zip + methodology. Top-100 LB ≥ 0.984; we are at 0.969 (#2).

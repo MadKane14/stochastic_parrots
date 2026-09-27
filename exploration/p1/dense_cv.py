@@ -46,6 +46,7 @@ from ber.registry import build  # noqa: E402
 
 log = logging.getLogger("dense_cv")
 FOLD_SEED = 777
+BASE_OOF = np.zeros(0)                                    # set by oof_scores
 
 
 def peak_gb() -> float:
@@ -149,6 +150,8 @@ def oof_scores(df: pd.DataFrame, cfg: dict, folds: int = 2, s1_country: np.ndarr
         fold_of_u = np.array([int(unit_hash(str(x), FOLD_SEED) * folds) for x in u], dtype=np.int8)
         fold = fold_of_u[np.searchsorted(u, df["s1_id"].to_numpy())]
     oof = np.zeros(len(df), np.float64)
+    global BASE_OOF
+    BASE_OOF = np.full(len(df), np.nan)                   # self-training scorers: scores before adaptation
     s1 = df["s1_id"].to_numpy()
     for k in range(folds):
         t = time.time()
@@ -167,9 +170,19 @@ def oof_scores(df: pd.DataFrame, cfg: dict, folds: int = 2, s1_country: np.ndarr
             sc.valid_frac = sc.valid_frac * frac
         sc.fit(None, df.iloc[tr_rows])                   # s1_id = S1 row code: the scorer samples whole S1 groups
         te_rows = np.flatnonzero(fold == k)
+        if hasattr(sc, "adapt"):                         # self-training scorer: base pass, adapt on the fold, rescore
+            p0 = np.empty(len(te_rows))
+            for c0 in range(0, len(te_rows), 5_000_000):
+                p0[c0:c0 + 5_000_000] = sc.base_score(df.iloc[te_rows[c0:c0 + 5_000_000]])
+            base_oof = p0
+            sc.adapt(p0, df["ri"].to_numpy()[te_rows], lambda idx: df.iloc[te_rows[idx]])
+            del p0
         for c0 in range(0, len(te_rows), 5_000_000):     # score in slices: never copy the whole fold
             part = te_rows[c0:c0 + 5_000_000]
-            oof[part] = sc.score(None, df.iloc[part])
+            oof[part] = sc.base_score(df.iloc[part]) if hasattr(sc, "adapt") else sc.score(None, df.iloc[part])
+        if hasattr(sc, "adapt"):
+            BASE_OOF[te_rows] = base_oof
+            del base_oof
         log.info("fold %d: fit+score %.0fs (best_iteration %s, peak %.1f GB)", k, time.time() - t,
                  getattr(sc, "best_iteration", None), peak_gb())
     return oof, fold
@@ -239,6 +252,14 @@ def main():
     for t in (0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9):
         curve[str(t)] = round(float(evaluate_dense(li, ri, label, oof, meta, t)[0].mean()), 5)
     res["threshold_curve"] = curve
+    if not np.isnan(BASE_OOF).any():                      # self-training: same folds, base model before adapt()
+        res["base_f05"] = round(float(evaluate_dense(li, ri, label, BASE_OOF, meta, dp.get("threshold", 0.5))[0].mean()), 5)
+        fb, kb = evaluate_dense(li, ri, label, BASE_OOF, meta, dp.get("threshold", 0.5))
+        res["base_by_country"] = {c: round(float(fb[country == c].mean()), 5) for c in sorted(set(country))}
+        res["base_pair_precision"] = round(float(label[kb].mean()), 5)
+        res["base_pair_recall"] = round(float(label[kb].sum() / len(meta["gt_keys"])), 5)
+        res["base_threshold_curve"] = {str(t): round(float(evaluate_dense(li, ri, label, BASE_OOF, meta, t)[0].mean()), 5)
+                                       for t in (0.5, 0.6, 0.7, 0.8, 0.9)}
 
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", "code", "exploration/p1/dense_cv.py"], cwd=REPO,

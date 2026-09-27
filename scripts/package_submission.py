@@ -3,12 +3,13 @@
 
     python scripts/package_submission.py --run-dir <BER_ARTIFACTS>/submissions/<run_id> --team stochastic_parrots
 
-Copies the two TSVs into output/, then zips:
+Zips the two TSVs straight from --run-dir (no copy into the repo: outputs are large and $HOME may be a small NFS
+quota); the zip goes to --out, default $BER_ARTIFACTS/<team>_submission.zip (repo root if BER_ARTIFACTS is unset):
     output/ (2 TSVs), code/business_entity_resolution/ (src, README.md, requirements.txt, configs, tests),
     Documentation_template.md
 """
 import argparse
-import shutil
+import os
 import zipfile
 from pathlib import Path
 
@@ -23,10 +24,6 @@ def main():
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     run_dir = Path(a.run_dir)
-    out_dir = ROOT / "output"
-    out_dir.mkdir(exist_ok=True)
-    for f in ("matching_results.tsv", "candidate_pairs.tsv"):
-        shutil.copy2(run_dir / f, out_dir / f)
     doc = ROOT / "Documentation_template.md"
     problems = []
     if not doc.exists():
@@ -35,10 +32,16 @@ def main():
     for need in ("src", "README.md", "requirements.txt"):
         if not (pkg / need).exists():
             problems.append(f"code/business_entity_resolution/{need} missing")
-    zpath = Path(a.out or ROOT / f"{a.team}_submission.zip")
+    for f in ("matching_results.tsv", "candidate_pairs.tsv"):
+        if not (run_dir / f).exists():
+            problems.append(f"{run_dir / f} missing")
+    if problems:
+        raise SystemExit("\n".join(problems))
+    zdir = Path(os.environ["BER_ARTIFACTS"]) if os.environ.get("BER_ARTIFACTS") else ROOT
+    zpath = Path(a.out or zdir / f"{a.team}_submission.zip")
     with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
         for f in ("matching_results.tsv", "candidate_pairs.tsv"):
-            z.write(out_dir / f, f"output/{f}")
+            z.write(run_dir / f, f"output/{f}")
         for p in sorted(pkg.rglob("*")):
             if p.is_file() and not SKIP_PARTS & set(p.parts):
                 z.write(p, p.relative_to(ROOT).as_posix())

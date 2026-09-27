@@ -1,0 +1,24 @@
+# T26 (p1, Sun 27 Sep): FINAL (best.yaml = T18, thr 0.8) + p1_mnoise (label-free, per-country noise-word rates mined
+# from likely copies among each dataset's own candidates).
+# Hypothesis: France's precision loss is siblings / co-located businesses whose names differ by a genuine word
+# (I-27, I-28); p1_noise's word rates are learned from US/India labels and give every French word the prior. Mined rates
+# on test France (exploration/p1/mnoise_check.py): stable words club .019, comite .013, musique .007, ecole .018 vs added
+# noise holding .885, participations .968. Gate: in-country dense CV >= T18 (0.98752) within noise; LOCO not worse
+# (0.93538). Transductive (p1_mnoise: statistics of the processed records, no labels).
+# model: LightGBM (MIT); encoder as in best.yaml (multilingual-e5-small, MIT, 117,653,760 params).
+inherit: ../../best.yaml
+features:
+- name: p1_match
+  params: {idf_group: country}
+- name: p1_extra
+  params: {idf_group: country}
+- name: p1_e5
+  params:
+    fields: [name, full]
+    model: ${BER_ARTIFACTS}/models/ft_full
+- name: p1_noise
+  params: {unsup: true}
+- name: p1_ambig
+  params: {}
+- name: p1_mnoise
+  params: {}

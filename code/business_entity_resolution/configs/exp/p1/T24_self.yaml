@@ -1,0 +1,12 @@
+# T24 (p1, Sun 27 Sep): FINAL (best.yaml = T18, thr 0.8) + self-training scorer p1_selftrain.
+# Hypothesis: the LB gap is the unseen country (France, 15% of test S1): US/India test predictions match dense CV on
+# every label-free statistic (exploration/p1/num_conflict.py, empty_oof.py), and France churn from train-fitted choices is
+# 3-5x that of US/India (diff_subs.py). One round of self-training on the scored pairs adapts the matcher to the new
+# country's feature distribution. Validation: dense LOCO (unseen-country proxy) adapted vs base on the same folds, and
+# in-country dense CV not worse. Transductive (pseudo-labels from the model's own confident scores on the scored pairs).
+# model: LightGBM (MIT); encoder as in best.yaml (multilingual-e5-small, MIT, 117,653,760 params).
+inherit: ../../best.yaml
+scorer:
+  name: p1_selftrain
+  params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, hi: 0.95, lo: 0.02, max_pos: 2000000,
+           neg_per_pos: 1.5, pseudo_weight: 1.0, keep_rows: 8000000}
