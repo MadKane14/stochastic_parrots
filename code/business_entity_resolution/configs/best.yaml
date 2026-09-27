@@ -7,7 +7,8 @@
 # Models: intfloat/multilingual-e5-small, licence MIT, params 117,653,760, contrastively fine-tuned on the provided
 #   train pairs only (src/e5_finetune.py --split full --out ${BER_ARTIFACTS}/models/ft_full); LightGBM x2 (MIT).
 # Transductive components (unsupervised statistics on the records being processed, no labels): normalizer p4_tcanon
-#   (address abbreviations / junk tokens mined per country-string group), blockers (IDF / df caps), features
+#   (address abbreviations / junk tokens mined per country-string group; includes p2_translit's web-name segmentation
+#   vocabulary), blockers (IDF / df caps), features
 #   p1_match / p1_extra (IDF per country group), p1_noise (S2S3-vs-S1 token frequencies), p1_ambig (name counts),
 #   p1_mnoise (noise-word rates mined from likely copies among each country group's own candidates).
 # No country value is special-cased anywhere; groups are formed by equal country strings.
