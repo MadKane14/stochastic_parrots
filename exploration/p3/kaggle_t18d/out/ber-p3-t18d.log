@@ -1,13 +1,13 @@
-[{"stream_name":"stderr","time":1.385174873,"data":"Cloning into '/tmp/repo'...\n"}
-,{"stream_name":"stdout","time":1.81473336,"data":"20:44:19 rc=0       0s  setup: nproc; free -g; nvidia-smi -L 2\u003e/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline\n"}
-,{"stream_name":"stdout","time":38.142642395,"data":"20:44:55 rc=0      36s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements.txt\n"}
-,{"stream_name":"stdout","time":4684.173415012,"data":"22:02:21 rc=137    4646s  dense: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India\n"}
-,{"stream_name":"stdout","time":5617.72903647,"data":"22:17:55 rc=137     934s  dense_retry: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India\n"}
-,{"stream_name":"stdout","time":5618.170962864,"data":"22:17:55 rc=0       0s  done: free -g; du -sh /tmp/ber_artifacts/* 2\u003e/dev/null\n"}
-,{"stream_name":"stderr","time":5621.89134247,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
-,{"stream_name":"stderr","time":5621.891395714,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
-,{"stream_name":"stderr","time":5622.425831979,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
-,{"stream_name":"stderr","time":5622.425881871,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
-,{"stream_name":"stderr","time":5624.621269185,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
-,{"stream_name":"stderr","time":5626.439793538,"data":"[NbConvertApp] Writing 277873 bytes to __results__.html\n"}
+[{"stream_name":"stderr","time":1.090646243,"data":"Cloning into '/tmp/repo'...\n"}
+,{"stream_name":"stdout","time":1.53958322,"data":"22:21:03 rc=0       0s  setup: nproc; free -g; nvidia-smi -L 2\u003e/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline\n"}
+,{"stream_name":"stdout","time":37.356538412,"data":"22:21:39 rc=0      36s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements.txt\n"}
+,{"stream_name":"stdout","time":8061.186414342,"data":"00:35:23 rc=137    8024s  dense: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India\n"}
+,{"stream_name":"stdout","time":12405.533398026,"data":"01:47:47 rc=137    4344s  dense_retry: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India\n"}
+,{"stream_name":"stdout","time":12406.030568106,"data":"01:47:48 rc=0       0s  done: free -g; du -sh /tmp/ber_artifacts/* 2\u003e/dev/null\n"}
+,{"stream_name":"stderr","time":12409.767041318,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":12409.767092872,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":12410.315626164,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":12410.315676352,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":12412.67354638,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":12414.60929087,"data":"[NbConvertApp] Writing 277873 bytes to __results__.html\n"}
 ]

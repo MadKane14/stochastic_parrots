@@ -1,1 +1,1 @@
-6f84029 p3 T18: t18d OOM-killed after features (30.9M pairs, 25.9 GB before concat); runner retries once with warm caches; GPU embedding job logs
+aefbf76 p3 T18: t18d retry also OOM at the feature concat; wrapper frees blocker token caches after blocking + malloc_trim at build_pairs' gc.collect (memory hygiene, results unchanged)

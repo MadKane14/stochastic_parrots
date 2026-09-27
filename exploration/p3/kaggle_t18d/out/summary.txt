@@ -1,5 +1,5 @@
-20:44:19 rc=0       0s  setup: nproc; free -g; nvidia-smi -L 2>/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline
-20:44:55 rc=0      36s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements.txt
-22:02:21 rc=137    4646s  dense: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India
-22:17:55 rc=137     934s  dense_retry: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India
-22:17:55 rc=0       0s  done: free -g; du -sh /tmp/ber_artifacts/* 2>/dev/null
+22:21:03 rc=0       0s  setup: nproc; free -g; nvidia-smi -L 2>/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline
+22:21:39 rc=0      36s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements.txt
+00:35:23 rc=137    8024s  dense: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India
+01:47:47 rc=137    4344s  dense_retry: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India
+01:47:48 rc=0       0s  done: free -g; du -sh /tmp/ber_artifacts/* 2>/dev/null

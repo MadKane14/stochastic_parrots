@@ -7,4 +7,4 @@ Filesystem      Size  Used Avail Use% Mounted on
 overlay         8.0T  6.9T  1.1T  87% /
 /dev/loop2       20G  132K   20G   1% /kaggle/working
 Python 3.12.13
-6f84029 p3 T18: t18d OOM-killed after features (30.9M pairs, 25.9 GB before concat); runner retries once with warm caches; GPU embedding job logs
+aefbf76 p3 T18: t18d retry also OOM at the feature concat; wrapper frees blocker token caches after blocking + malloc_trim at build_pairs' gc.collect (memory hygiene, results unchanged)
