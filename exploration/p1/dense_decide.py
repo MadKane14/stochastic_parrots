@@ -78,10 +78,11 @@ def main():
                      **{c: round(float(f[ctry == c].mean()), 5) for c in sorted(set(ctry))},
                      "pred_pairs": int(len(keep))})
         print(rows[-1], flush=True)
-    for t in (0.4, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8):
+    for t in (0.6, 0.65, 0.7, 0.72, 0.75, 0.78, 0.8, 0.82, 0.85, 0.88, 0.9):
         add(f"thr {t}", own[p[own] >= t])
-    for a in (1.0, 1.03, 1.1):
-        add(f"ef alpha={a}", ef_rule(li, p, own, n, a))
+    if "--ef" in sys.argv:
+        for a in (1.0, 1.03, 1.1):
+            add(f"ef alpha={a}", ef_rule(li, p, own, n, a))
     text = f"\n## {run}\n\n" + pd.DataFrame(rows).to_string(index=False) + "\n"
     out = REPO / "exploration/p1/dense_decide_out.md"
     if not out.exists():

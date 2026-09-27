@@ -58,6 +58,7 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 5 | – | not uploaded | 20260926-221844_p1_T13_T13_sub5_ft_test_19770e | T13_sub5_ft / 04cf1fc | – | _pending_ | #4 + E5 fine-tuned on all train pairs (p4 v1); PASS |
 | 6 | Sat | ~23:50 | blend_sub4_sub5 (exploration/p1/blend_runs.py) | mean of #4 and #5 probabilities | – | **0.979** | same candidates; corr 0.998; PASS |
 | 7 | Sun | _to upload_ | 20260927-033731_p1_T16_T17_test_530df3 | T17 / cb81d3a | 0.98722 | _pending_ | p3 blocking (recall 0.979→0.989) + noise + pruning + ft E5 + p1_ambig; PASS (--check-ids); expected-F 0.9876 |
+| 7b | Sun | _to upload_ | T17_thr080 (blend_runs.py, same scores, threshold 0.8) | T17 / cb81d3a | 0.98717 (LOCO 0.937 vs 0.934) | _pending_ | recommended over #7 (D14); PASS |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
@@ -80,5 +81,9 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 - D13: **Organizer update (Sat): smaller candidate sets per S1 rank higher in the final evaluation** (`docs/organizer_updates.md`).
   Current: ~35 cands/S1 on test (max ~380 from the reverse direction). Every blocking/pruning result must report cands/S1
   (mean, p95, max) next to recall; a learned pruning stage before the final matcher is the planned way to shrink it.
+- D14: decision threshold 0.7 → **0.8** for the final (validation-based, not LB): T17 in-country dense CV is flat 0.7–0.8
+  (0.98722 vs 0.98717) while the clean unseen-country fold (India-trained model → US) rises 0.926 → 0.931 (0.9: 0.939);
+  the model is overconfident on an unseen country (France). `exploration/p1/dense_decide_out.md` (T17 runs).
+  T17 re-decided at 0.8 from saved scores: `submissions/T17_thr080` (validator PASS).
 - Open organizer questions: see QUESTIONS.md.
 - video-slides.pdf in the claude.ai project is image-only; the planner could not read it.
