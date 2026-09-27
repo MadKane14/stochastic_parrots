@@ -122,6 +122,12 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
   in-country −0.001 for −2.0% France) → #10 = min@0.8. #11 only if #10 ≥ #9 + 0.001 (one more step, min@0.85); else final = #9.
   Decision rule D18 extends to #10/#11 (ties within 0.0003 → higher dense CV). If a min variant wins, `weighted_mean` gets a
   `combine: min` option after T29 finishes and one test run confirms the packaged config reproduces the file.
+- D21 (Sun 16:45): T29 (one config) reproduces #9: identical candidate_pairs.tsv, 2,356 of 5.8M matched pairs differ (members
+  retrained in one run). T30 = T29 + `combine: min` (reproduces #10) test run launched 16:39. Remaining in-country loss of the #9
+  OOF (0.01252): empty-address entities 14% of S1 / 55% of loss, blocking misses 19%, FN in candidates 16%, FP 7%, singletons 3%;
+  ceilings: perfect blocking +0.0038, zero FP +0.0015 (`exploration/p1/loss_breakdown_out.txt`) → 0.99 is out of reach today.
+  Private LB = remaining portion of the same test file (US/India/France only); a non-random split with more France would hurt
+  us (France ≈ 0.96 vs 0.987) → France stays the lever for public and private alike.
 - D18 (written before #8/#9 LB are known): FINAL = highest public LB among #7b / #8 / #9; if the top two are within
   0.0003, take the one with the higher dense CV (blend 0.98748 > T18 0.98746 > T17 0.98717). best.yaml / README / methodology are then set
   to that config and the zip is built from its run dir.
