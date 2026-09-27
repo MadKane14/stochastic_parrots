@@ -1,0 +1,17 @@
+# T29 (p1, Sun 27 Sep): submission #9 as ONE pipeline — probability mean of the T18 matcher and the T28 matcher on the
+# same candidates / features (T26 feature list: T18's sets + p1_mnoise). Member 1 = T18 (ignores p1_mnoise columns),
+# member 2 = T28 (mined noise rates instead of label-learned ones, no core-name features). Decision threshold 0.8.
+# Evidence: OOF mean of the T18 and T28 dense-CV runs 0.98748 @0.8 (T18 0.98746, T28 0.98732; precision 0.99833);
+# label-free France checks in STATE D19. Reproduces blend_runs.py(T18 run, T28 run) = submissions/sub9_blend.
+# Transductive: p1_mnoise + those of best.yaml. model: LightGBM x2 (MIT); encoder multilingual-e5-small (MIT, 117,653,760).
+inherit: T26_mnoise.yaml
+scorer:
+  name: weighted_mean
+  params:
+    members:
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, drop_features: ["^f_p1m_"]}
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000,
+               drop_features: ["^f_p1_core_n_", "^f_p1n_(n|a)_", "^f_p1n_total_unexpl", "^f_p1n_rec_"]}
+    weights: [0.5, 0.5]
