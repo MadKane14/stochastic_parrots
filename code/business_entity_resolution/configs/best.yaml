@@ -1,11 +1,15 @@
-# FINAL CONFIGURATION (team stochastic_parrots) — flattened from configs/exp/p1/T18.yaml (+ threshold 0.8, D14).
-# Evidence (planning/STATE.md, exploration/p1/dense_cv/): test-density CV 0.98752 (T18) / 0.98746 at threshold 0.8;
-# threshold 0.8 chosen on validation (flat in-country, better on an unseen country).
+# FINAL CONFIGURATION (team stochastic_parrots) — flattened from configs/exp/p1/T29_blend.yaml (= submission #9, public
+# LB 0.983): T18 (best_t18.yaml) + feature set p1_mnoise + a two-member LightGBM ensemble, threshold 0.8.
+#   member A = every feature; member B = label-free mined noise-word rates instead of the label-learned ones, no core-name
+#   features. Score = mean of the two probabilities (scorer.params.combine: mean).
+# Evidence (planning/STATE.md D17b/D19/D20, exploration/p1/): test-density CV 0.98748 at threshold 0.8 (A 0.98746, B 0.98732);
+# public LB #8 (A alone) 0.981 -> #9 (this) 0.983; threshold 0.8 chosen on validation (flat in-country, better unseen-country).
 # Models: intfloat/multilingual-e5-small, licence MIT, params 117,653,760, contrastively fine-tuned on the provided
-#   train pairs only (src/e5_finetune.py --split full --out ${BER_ARTIFACTS}/models/ft_full); LightGBM (MIT).
+#   train pairs only (src/e5_finetune.py --split full --out ${BER_ARTIFACTS}/models/ft_full); LightGBM x2 (MIT).
 # Transductive components (unsupervised statistics on the records being processed, no labels): normalizer p4_tcanon
 #   (address abbreviations / junk tokens mined per country-string group), blockers (IDF / df caps), features
-#   p1_match / p1_extra (IDF per country group), p1_noise (S2S3-vs-S1 token frequencies), p1_ambig (name counts).
+#   p1_match / p1_extra (IDF per country group), p1_noise (S2S3-vs-S1 token frequencies), p1_ambig (name counts),
+#   p1_mnoise (noise-word rates mined from likely copies among each country group's own candidates).
 # No country value is special-cased anywhere; groups are formed by equal country strings.
 inherit: base.yaml
 cache: true
@@ -50,9 +54,22 @@ features:
   params: {unsup: true}
 - name: p1_ambig
   params: {}
+- name: p1_mnoise
+  params: {}
 scorer:
-  name: p1_lgbm
-  params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000}
+  name: weighted_mean
+  params:
+    max_iter: 3000
+    learning_rate: 0.05
+    max_rows: 15000000
+    combine: mean
+    weights: [0.5, 0.5]
+    members:
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, drop_features: ["^f_p1m_"]}
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000,
+               drop_features: ["^f_p1_core_n_", "^f_p1n_(n|a)_", "^f_p1n_total_unexpl", "^f_p1n_rec_"]}
 decider:
   name: p1_assign
   params: {threshold: 0.8, exclusive_right: true}

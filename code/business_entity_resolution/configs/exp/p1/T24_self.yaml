@@ -5,7 +5,7 @@
 # country's feature distribution. Validation: dense LOCO (unseen-country proxy) adapted vs base on the same folds, and
 # in-country dense CV not worse. Transductive (pseudo-labels from the model's own confident scores on the scored pairs).
 # model: LightGBM (MIT); encoder as in best.yaml (multilingual-e5-small, MIT, 117,653,760 params).
-inherit: ../../best.yaml
+inherit: ../../best_t18.yaml
 scorer:
   name: p1_selftrain
   params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, hi: 0.95, lo: 0.02, max_pos: 2000000,

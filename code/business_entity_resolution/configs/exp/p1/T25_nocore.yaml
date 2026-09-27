@@ -6,7 +6,7 @@
 # for siblings ("DD Comite" vs "DD Musique" at the same address) → false merges. Dropping the features removes a
 # country-dependent cue. Gate: in-country dense CV within noise of T18 (0.98752) and LOCO not worse (0.93538).
 # model: LightGBM (MIT); encoder as in best.yaml (multilingual-e5-small, MIT, 117,653,760 params).
-inherit: ../../best.yaml
+inherit: ../../best_t18.yaml
 scorer:
   name: p1_lgbm
   params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, drop_features: ["^f_p1_core_n_"]}
