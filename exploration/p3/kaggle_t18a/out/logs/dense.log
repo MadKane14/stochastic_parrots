@@ -1,0 +1,12 @@
+$ python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml --group India
+2026-09-26 20:56:17,654 dense_cv normalize 221s
+2026-09-26 20:56:51,269 ber.blocking.p1_compound tokenize 24s
+2026-09-26 20:57:52,288 ber.blocking.p1_compound group 0: 883188 S1 x 4133346 right, 15100321 features (57.9/record), built in 61s
+2026-09-26 21:07:00,752 ber.blocking.p1_compound group 0 forward top-30: 548s
+2026-09-26 21:15:20,068 ber.blocking.p1_compound group 0 reverse top-3: 499s
+2026-09-26 21:18:18,315 dense_cv block 1321s: 29440337 pairs
+2026-09-26 21:32:14,114 dense_cv features p1_match 802s (peak 22.2 GB)
+2026-09-26 21:42:32,298 dense_cv features p1_extra 616s (peak 22.2 GB)
+2026-09-26 21:52:46,959 dense_cv features p1_e5 615s (peak 27.5 GB)
+2026-09-26 21:56:45,628 dense_cv features p1_noise 239s (peak 27.5 GB)
+Killed

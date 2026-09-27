@@ -1,0 +1,228 @@
+$ python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30 --config code/business_entity_resolution/configs/exp/p3/T15_final_t09.yaml --config code/business_entity_resolution/configs/exp/p3/T15_final_e10.yaml --config code/business_entity_resolution/configs/exp/p3/T15_final_na1000.yaml --misses 60 --out /kaggle/working/blk_dense_out.md
+normalized 12,527,040 records in 656s
+slim cache /tmp/ber_artifacts/p3_dense/slim_0787c4ffa666_q0.1.parquet (12,527,040 rows, peak 16.5 GB)
+group India: 5,016,534 of 12,527,040 rows (11s, peak 6.9 GB)
+2026-09-26 15:12:54,773 ber.blocking.p3_revcap tokenize 24s
+2026-09-26 15:13:57,500 ber.blocking.p3_revcap group 0: 883188 S1 x 4133346 right, 15107731 features (57.9/record), built in 62s
+2026-09-26 15:23:11,215 ber.blocking.p3_revcap group 0 forward top-30: 554s
+2026-09-26 15:31:10,058 ber.blocking.p3_revcap group 0 reverse top-3: 479s
+blocker 0 group India: 28,769,120 pairs in 1128s, peak 20.8 GB -> /tmp/ber_artifacts/p3_dense/p3_compound_rc_d9afe8856ae3.npz
+group US: 7,510,506 of 12,527,040 rows (27s, peak 7.6 GB)
+2026-09-26 15:32:33,932 ber.blocking.p3_revcap tokenize 26s
+2026-09-26 15:33:35,464 ber.blocking.p3_revcap group 0: 1323633 S1 x 6186873 right, 26279191 features (29.5/record), built in 61s
+2026-09-26 15:41:13,713 ber.blocking.p3_revcap group 0 forward top-30: 458s
+2026-09-26 15:48:16,302 ber.blocking.p3_revcap group 0 reverse top-3: 423s
+blocker 0 group US: 43,280,381 pairs in 982s, peak 18.6 GB -> /tmp/ber_artifacts/p3_dense/p3_compound_rc_bb869be7de67.npz
+group India: 5,016,534 of 12,527,040 rows (16s, peak 7.4 GB)
+2026-09-26 15:49:55,816 ber.blocking.p3_chargram group 0: 883188 S1 x 122794 right, 17.2 indexed features/S1, built in 21s
+2026-09-26 15:49:56,111 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 15:53:14,943 ber.blocking.p3_chargram group 0 forward top-2: 1766376 pairs, 199s
+2026-09-26 15:53:15,524 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 15:56:42,499 ber.blocking.p3_chargram group 0 reverse top-5: 613965 pairs, 208s
+blocker 1 group India: 1,989,515 pairs in 446s, peak 11.0 GB -> /tmp/ber_artifacts/p3_dense/p3_chargram_b669937f5f8e.npz
+group US: 7,510,506 of 12,527,040 rows (22s, peak 8.5 GB)
+2026-09-26 15:57:54,742 ber.blocking.p3_chargram group 0: 1323633 S1 x 222089 right, 20.8 indexed features/S1, built in 30s
+2026-09-26 15:57:55,353 ber.blocking.p3_chargram   product: 5.01e+09 postings, 502 chunks
+2026-09-26 16:06:07,826 ber.blocking.p3_chargram group 0 forward top-2: 2647037 pairs, 493s
+2026-09-26 16:06:09,641 ber.blocking.p3_chargram   product: 5.01e+09 postings, 502 chunks
+2026-09-26 16:15:10,685 ber.blocking.p3_chargram group 0 reverse top-5: 1110351 pairs, 543s
+blocker 1 group US: 3,104,055 pairs in 1082s, peak 12.5 GB -> /tmp/ber_artifacts/p3_dense/p3_chargram_73b339d82b34.npz
+group India: 5,016,534 of 12,527,040 rows (19s, peak 6.8 GB)
+2026-09-26 16:16:38,259 ber.blocking.p3_nameaddr group 0: 883188 S1 x 4133346 right, 12395956 keys, 12.0 indexed keys/S1, built in 60s
+2026-09-26 16:16:41,977 ber.blocking.p3_chargram   product: 3.23e+08 postings, 33 chunks
+2026-09-26 16:17:36,260 ber.blocking.p3_nameaddr group 0 forward top-5: 4397368 pairs, 58s
+2026-09-26 16:17:37,759 ber.blocking.p3_chargram   product: 3.23e+08 postings, 33 chunks
+2026-09-26 16:18:30,542 ber.blocking.p3_nameaddr group 0 reverse top-1: 3788325 pairs, 54s
+blocker 2 group India: 4,944,748 pairs in 175s, peak 13.8 GB -> /tmp/ber_artifacts/p3_dense/p3_nameaddr_dafee54be720.npz
+group US: 7,510,506 of 12,527,040 rows (16s, peak 7.6 GB)
+2026-09-26 16:20:00,700 ber.blocking.p3_nameaddr group 0: 1323633 S1 x 6186873 right, 14047076 keys, 9.1 indexed keys/S1, built in 66s
+2026-09-26 16:20:05,186 ber.blocking.p3_chargram   product: 4.11e+08 postings, 42 chunks
+2026-09-26 16:21:20,485 ber.blocking.p3_nameaddr group 0 forward top-5: 6597360 pairs, 80s
+2026-09-26 16:21:22,311 ber.blocking.p3_chargram   product: 4.11e+08 postings, 42 chunks
+2026-09-26 16:22:37,503 ber.blocking.p3_nameaddr group 0 reverse top-1: 5769685 pairs, 77s
+blocker 2 group US: 7,377,757 pairs in 226s, peak 13.5 GB -> /tmp/ber_artifacts/p3_dense/p3_nameaddr_ecc5420c1245.npz
+group India: 5,016,534 of 12,527,040 rows (12s, peak 7.4 GB)
+2026-09-26 16:23:51,235 ber.blocking.p3_chargram group 0: 883188 S1 x 122794 right, 17.2 indexed features/S1, built in 21s
+2026-09-26 16:23:51,564 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 16:27:28,912 ber.blocking.p3_chargram group 0 forward top-2: 1766376 pairs, 218s
+2026-09-26 16:27:30,180 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 16:31:00,027 ber.blocking.p3_chargram group 0 reverse top-10: 1227930 pairs, 211s
+blocker 1 group India: 2,370,598 pairs in 468s, peak 10.9 GB -> /tmp/ber_artifacts/p3_dense/p3_chargram_2d17ad6b2274.npz
+group US: 7,510,506 of 12,527,040 rows (29s, peak 7.6 GB)
+2026-09-26 16:32:22,015 ber.blocking.p3_chargram group 0: 1323633 S1 x 222089 right, 20.8 indexed features/S1, built in 31s
+2026-09-26 16:32:22,852 ber.blocking.p3_chargram   product: 5.01e+09 postings, 502 chunks
+2026-09-26 16:40:50,586 ber.blocking.p3_chargram group 0 forward top-2: 2647037 pairs, 509s
+2026-09-26 16:40:52,950 ber.blocking.p3_chargram   product: 5.01e+09 postings, 502 chunks
+2026-09-26 16:50:06,187 ber.blocking.p3_chargram group 0 reverse top-10: 2220701 pairs, 556s
+blocker 1 group US: 3,824,853 pairs in 1113s, peak 11.1 GB -> /tmp/ber_artifacts/p3_dense/p3_chargram_79676a4e6a1f.npz
+group India: 5,016,534 of 12,527,040 rows (14s, peak 7.4 GB)
+2026-09-26 16:51:46,155 ber.blocking.p3_nameaddr group 0: 883188 S1 x 4133346 right, 12395956 keys, 14.0 indexed keys/S1, built in 65s
+2026-09-26 16:51:52,356 ber.blocking.p3_chargram   product: 1.15e+09 postings, 115 chunks
+2026-09-26 16:55:06,375 ber.blocking.p3_nameaddr group 0 forward top-5: 4413344 pairs, 200s
+2026-09-26 16:55:08,248 ber.blocking.p3_chargram   product: 1.15e+09 postings, 115 chunks
+2026-09-26 16:58:09,997 ber.blocking.p3_nameaddr group 0 reverse top-1: 3893412 pairs, 184s
+blocker 2 group India: 5,001,388 pairs in 451s, peak 13.9 GB -> /tmp/ber_artifacts/p3_dense/p3_nameaddr_37e1b0ddacbd.npz
+group US: 7,510,506 of 12,527,040 rows (27s, peak 8.5 GB)
+2026-09-26 16:59:51,882 ber.blocking.p3_nameaddr group 0: 1323633 S1 x 6186873 right, 14047076 keys, 10.6 indexed keys/S1, built in 66s
+2026-09-26 16:59:58,448 ber.blocking.p3_chargram   product: 1.22e+09 postings, 123 chunks
+2026-09-26 17:03:54,298 ber.blocking.p3_nameaddr group 0 forward top-5: 6606413 pairs, 242s
+2026-09-26 17:03:56,747 ber.blocking.p3_chargram   product: 1.22e+09 postings, 123 chunks
+2026-09-26 17:07:29,703 ber.blocking.p3_nameaddr group 0 reverse top-1: 5791406 pairs, 215s
+blocker 2 group US: 7,397,547 pairs in 527s, peak 14.9 GB -> /tmp/ber_artifacts/p3_dense/p3_nameaddr_bc0d9e584d6a.npz
+{'candidates': 'b0_p3_compound_rc', 'pair_recall': 0.979, 'oracle_f05': 0.9928, 'cands_mean': 32.638, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9773, 'recall_US': 0.9801, 'rec_addr_empty': 0.8527, 'rec_name_nonascii': 0.9588, 'rec_no_name_tok': 0.9261}
+{'candidates': 'b1_p3_chargram', 'pair_recall': 0.0384, 'oracle_f05': 0.1352, 'cands_mean': 2.3065, 'cands_p95': 4.0, 'cands_max': 12.0, 'recall_India': 0.0343, 'recall_US': 0.0411, 'rec_addr_empty': 0.8712, 'rec_name_nonascii': 0.0, 'rec_no_name_tok': 0.0}
+{'candidates': 'b2_p3_nameaddr', 'pair_recall': 0.88, 'oracle_f05': 0.9553, 'cands_mean': 5.584, 'cands_p95': 8.0, 'cands_max': 15.0, 'recall_India': 0.8554, 'recall_US': 0.8964, 'rec_addr_empty': 0.0, 'rec_name_nonascii': 0.788, 'rec_no_name_tok': 0.0228}
+{'candidates': 'union', 'pair_recall': 0.9892, 'oracle_f05': 0.9965, 'cands_mean': 35.4297, 'cands_p95': 43.0, 'cands_max': 66.0, 'recall_India': 0.9841, 'recall_US': 0.9926, 'rec_addr_empty': 0.9136, 'rec_name_nonascii': 0.9667, 'rec_no_name_tok': 0.9263}
+{'candidates': 'union - b0_p3_compound_rc', 'pair_recall': 0.9183, 'oracle_f05': 0.969, 'cands_mean': 7.8905, 'cands_p95': 11.0, 'cands_max': 27.0, 'recall_India': 0.8897, 'recall_US': 0.9375, 'rec_addr_empty': 0.8712, 'rec_name_nonascii': 0.788, 'rec_no_name_tok': 0.0228}
+{'candidates': 'union - b1_p3_chargram', 'pair_recall': 0.9865, 'oracle_f05': 0.9957, 'cands_mean': 34.2237, 'cands_p95': 42.0, 'cands_max': 54.0, 'recall_India': 0.9809, 'recall_US': 0.9903, 'rec_addr_empty': 0.8527, 'rec_name_nonascii': 0.9667, 'rec_no_name_tok': 0.9263}
+{'candidates': 'union - b2_p3_nameaddr', 'pair_recall': 0.9817, 'oracle_f05': 0.9936, 'cands_mean': 33.844, 'cands_p95': 41.0, 'cands_max': 52.0, 'recall_India': 0.9805, 'recall_US': 0.9824, 'rec_addr_empty': 0.9136, 'rec_name_nonascii': 0.9588, 'rec_no_name_tok': 0.9261}
+{'candidates': 'union cap 20', 'pair_recall': 0.9847, 'oracle_f05': 0.9949, 'cands_mean': 19.9998, 'cands_p95': 20.0, 'cands_max': 20.0, 'recall_India': 0.9766, 'recall_US': 0.9901, 'rec_addr_empty': 0.8989, 'rec_name_nonascii': 0.9467, 'rec_no_name_tok': 0.8922}
+{'candidates': 'union cap 30', 'pair_recall': 0.9872, 'oracle_f05': 0.9957, 'cands_mean': 29.9993, 'cands_p95': 30.0, 'cands_max': 30.0, 'recall_India': 0.9805, 'recall_US': 0.9917, 'rec_addr_empty': 0.9104, 'rec_name_nonascii': 0.9529, 'rec_no_name_tok': 0.912}
+{'candidates': 'union cap 40 (config)', 'pair_recall': 0.9891, 'oracle_f05': 0.9964, 'cands_mean': 35.0644, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9838, 'recall_US': 0.9926, 'rec_addr_empty': 0.9135, 'rec_name_nonascii': 0.9642, 'rec_no_name_tok': 0.9256}
+
+## Run 2026-09-26 17:08 — config=code/business_entity_resolution/configs/exp/p3/T15_final_t09.yaml qfrac=0.1 dense=True BER_THREADS=4 (exploration/p3/blk_dense.py)
+
+- normalize: `{"name": "p2_translit", "params": {"legal_tokens": ["inc", "llc", "ltd", "pvt", "private", "limited", "corp", "corporation", "co", "company", "plc", "llp"], "mode": "replace", "min_support": 3, "min_precision": 0.5, "fold_scripts": false, "map_address": true, "web_names": true, "join_initials": true}}`
+- blockers: `p3_compound_rc {"k": 30, "k_rev": 3, "max_df": 1000, "rev_cap": 10}`; `p3_chargram {"field": "name_norm", "ngrams": [3, 4], "words": true, "right_max_addr_tokens": 0, "k": 2, "k_rev": 5, "max_df": 5000, "rev_cap": 10}`; `p3_nameaddr {"name_field": "name_core", "addr_field": "addr_norm", "name_cap": 4, "addr_cap": 10, "k": 5, "k_rev": 1, "max_df": 300, "rev_cap": 10}`
+- records 12,527,040 (S1 2,206,821, query S1 220,163, right 10,320,219); query GT pairs 762,339; subset sizes {'addr_empty': 33557, 'name_nonascii': 2401, 'no_name_tok': 25594}
+- share of reverse-only pairs per blocker (query S1): b0_p3_compound_rc=0.081, b1_p3_chargram=0.133, b2_p3_nameaddr=0.108
+- blocking time summed over groups (s) / max peak RSS (GB) per blocker: b0_p3_compound_rc=2110s/20.8GB, b1_p3_chargram=1528s/12.5GB, b2_p3_nameaddr=400s/13.8GB — at dense=True this is the full-train blocking time (test ≈ x0.78)
+
+| candidates | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | rec_addr_empty | rec_name_nonascii | rec_no_name_tok |
+|---|---|---|---|---|---|---|---|---|---|---|
+| b0_p3_compound_rc | 0.979 | 0.9928 | 32.638 | 40.0 | 40.0 | 0.9773 | 0.9801 | 0.8527 | 0.9588 | 0.9261 |
+| b1_p3_chargram | 0.0384 | 0.1352 | 2.3065 | 4.0 | 12.0 | 0.0343 | 0.0411 | 0.8712 | 0.0 | 0.0 |
+| b2_p3_nameaddr | 0.88 | 0.9553 | 5.584 | 8.0 | 15.0 | 0.8554 | 0.8964 | 0.0 | 0.788 | 0.0228 |
+| union | 0.9892 | 0.9965 | 35.4297 | 43.0 | 66.0 | 0.9841 | 0.9926 | 0.9136 | 0.9667 | 0.9263 |
+| union - b0_p3_compound_rc | 0.9183 | 0.969 | 7.8905 | 11.0 | 27.0 | 0.8897 | 0.9375 | 0.8712 | 0.788 | 0.0228 |
+| union - b1_p3_chargram | 0.9865 | 0.9957 | 34.2237 | 42.0 | 54.0 | 0.9809 | 0.9903 | 0.8527 | 0.9667 | 0.9263 |
+| union - b2_p3_nameaddr | 0.9817 | 0.9936 | 33.844 | 41.0 | 52.0 | 0.9805 | 0.9824 | 0.9136 | 0.9588 | 0.9261 |
+| union cap 20 | 0.9847 | 0.9949 | 19.9998 | 20.0 | 20.0 | 0.9766 | 0.9901 | 0.8989 | 0.9467 | 0.8922 |
+| union cap 30 | 0.9872 | 0.9957 | 29.9993 | 30.0 | 30.0 | 0.9805 | 0.9917 | 0.9104 | 0.9529 | 0.912 |
+| union cap 40 (config) | 0.9891 | 0.9964 | 35.0644 | 40.0 | 40.0 | 0.9838 | 0.9926 | 0.9135 | 0.9642 | 0.9256 |
+
+### Missed pairs sample (8,340 missed at cap 40) — code/business_entity_resolution/configs/exp/p3/T15_final_t09.yaml
+
+- `saanvi ventures` | `skyview shop no 2 sevoke road siliguri jalpaiguri west bengal` [India]  <>  `5aanvi ventures` | `skyview bengal kolkata` [S2]
+- `ace exports private limited` | `12th floor the watermark technopark plot no 11 survey no 9 whitefields kondapur hyderabad telangana` [India]  <>  `ace exports పోర్ట్స్ private limited` | `h no 12th 6 floor hyderabad k v rangareddy telangana` [S2]
+- `horizon software` | `405 8th street washington dc` [US]  <>  `horizon software` | `05 eighth street washington district of columbia` [S3]
+- `sky technologies private limited` | `2902 floor 29 plot 183 185 king stone tower g d ambekar marg kalachowky mumbai mumbai mumbai city maharashtra` [India]  <>  `smt sky teghnoobgies private limited` | `290 mumbai mumbai city mh` [S3]
+- `vision center inc` | `410 dickerson lane strasburg town va` [US]  <>  `vision cnetr inc` | `` [S3]
+- `global systems private limited` | `h no 5 143 kothur rangareddy telangana` [India]  <>  `sri global private limited center` | `` [S3]
+- `bureau of public works` | `3664 herndon road bud wv` [US]  <>  `bureau of works center enterprises` | `` [S3]
+- `urology care associates` | `3403 covey lane ozark mo` [US]  <>  `urology associates center` | `` [S2]
+- `modern properties private limited` | `901 c 3 rameshwaram madhav sankalp gandhare kalyan thane maharashtra` [India]  <>  `shri modern properties private limited` | `9 01 thane mh` [S3]
+- `9 hw aldabra` | `2277 25 lynd mn` [US]  <>  `9` | `` [S3]
+- `red and partners private limited` | `pune maharashtra pune bldg r7 flat no d 207 life republic kolte patil i ven townships marunji` [India]  <>  `red` | `` [S2]
+- `big constructions private limited` | `no 343 reddy complex bgs road mylasndra keng bangalore south bangalore karnataka` [India]  <>  `big ಕನ್ constructions private limited` | `43 bangalore south bangalore karnataka` [S3]
+- `reliable ace peoples inc` | `229 private road 6136 jasper tx` [US]  <>  `rap eop les com www rap eop les` | `223 private road 6136 jasper texas` [S3]
+- `shakti solutions private limited` | `25 bangalore karnataka bangalore padmashree mansions ii floor 1st cross sampige road malleshwaram` [India]  <>  `shakti solutions private limited` | `hn 537 25 bengaluru bangalore karnataka` [S2]
+- `rs trading pvt ltd` | `door no g1 p a towers new no 218 869 perambur purasawalkam chennai tamil nadu` [India]  <>  `rst rad ing` | `door no g1 perambur purasawalkam chennai tn` [S3]
+- `new delhi india private limited` | `g 1 9 kunwar singh nagar nangloi new delhi west delhi delhi` [India]  <>  `new delhi iir private limited` | `g 1 9 west dl` [S3]
+- `willis select` | `fulshear tx 4910 oxbow circle e` [US]  <>  `willis sbeaet` | `` [S3]
+- `golden public school private limited` | `404 khajurwala chambers 313 315 n n st mumbai mumbai city maharashtra` [India]  <>  `6olden public school private limited` | `404 greater bombay maharashtra` [S3]
+- `ram infrastructure private limited` | `8th floor fitway enclave dn block 12 street no 18 salt lake sector v bidhan nagar ck market bidhannagar north 24 parganas kolkata west bengal india saltlake north 24 parganas west bengal` [India]  <>  `smt noviquoavi` | `8th floor saltlake north 24 parganas wb` [S3]
+- `bharat hospitality private limited` | `first floor elango salai vannia teynampet no 3 2 chennai tamil nadu` [India]  <>  `bharat hospitality private limited` | `no 3 2 null chennai abiramapuram tamil nadu` [S2]
+- `digital projects private limited` | `b sh u 40 surat building b land mark empires landmark corpo saroli gujarat` [India]  <>  `digital projects limited partners` | `` [S3]
+- `maa foods private limited` | `hyderabad flat no 201 road no 3 banjara hills hyderabad plot no 13 telangana` [India]  <>  `mr maa fsd private limited` | `` [S3]
+- `hedvig l didomenico dc` | `wilmington nc 640 spring branch road` [US]  <>  `hedvigldidomenico` | `643 spring branch rd wilmington nc` [S2]
+- `premier agro private limited` | `b 4 jayagopal flat balakrishnan street nanmangallam chennai tamil nadu` [India]  <>  `premier agro private limited` | `chennai nadu b 4` [S2]
+- `eloy heritage perfect inc` | `3620 arcadia drive eloy az` [US]  <>  `lyrazeph` | `az eloy 3705 arcadia dr` [S2]
+- `bhadohi bio private limited` | `kans raipur sant ravidas nagar bhadohi uttar pradesh c o vimla devi sant ravidas nagar` [India]  <>  `8hadohi private limited partners` | `c o vmla devi bhadohi sant ravidas nagar up` [S3]
+- `ridge league` | `5635 fairview forest drive houston tx` [US]  <>  `ridge league id 81515` | `` [S3]
+- `tirupati international private limited` | `214 5thcross 3rd main offense colony indiranagar bangalore karnataka` [India]  <>  `mr tirupati international private limited` | `` [S3]
+- `pune logistics private limited` | `unit no 410 4th floor oxy primo gat no 559 1 pune nagar road wagholi pune maharashtra` [India]  <>  `pune logistics` | `unit no 4 10 pune maharashtra` [S3]
+- `pediatric dental medicine` | `62050 260 road ok grove` [US]  <>  `pediatric dental medicine enterprises` | `` [S2]
+- `lydia turner dc dds pc` | `269 grandview drive sneads ferry nc` [US]  <>  `lydiaturnerdc` | `north carolina null sneads ferry 266 grandview drive` [S3]
+- `new delhi hospitality private limited` | `l 80a ground floor l block malviya nagar malviya nagar new delhi south delhi delhi` [India]  <>  `new delhi hsporiihaliy private limited` | `` [S3]
+- `womens health clinic group` | `3500 g274 hollis drive springfield il` [US]  <>  `womenshealthclinic` | `3499929 hollis dr springfield cdp il` [S2]
+- `surya power private limited` | `mumbai maharashtra simran plaza cts e1829 jn of 3rd and 4th road khar west opp nag sh 6 inas rest` [India]  <>  `surya power private limited` | `sh 6 inas rest mumbai maharashtra` [S2]
+- `south sun power private limited` | `ground floor 2 sarthak complex b h urja house near swastik cross road c g road ahmedabad gujarat` [India]  <>  `south sun private limited services` | `grofnd floor 2 ahmedabad gj` [S3]
+- `hotel technology pvt ltd` | `14 n s road 1st floor suit no 107 kolkata kolkata howrah west bengal` [India]  <>  `hotel tebhnnology pvt ltd` | `14 lucknow howrah wb` [S3]
+- `international media private limited` | `karnataka bangalore bangalore north ground floor ramanuja plaza 5th cross 12` [India]  <>  `international ನ್ಯಾಷನಲ್ media private limited` | `h no 511 12 bangalore north bangalore karnataka` [S2]
+- `cascade center` | `16 union street wallingford ct` [US]  <>  `cascade center enterprises` | `` [S2]
+- `east exports private limited` | `402 karnik towers 6 2 967 khairthabad hyderabad andhra pradesh` [India]  <>  `east exports private` | `4 02 hyderabad ap` [S3]
+- `behavioral health care llc` | `210 hazel street mobile al` [US]  <>  `behavioral health care llc ventures` | `` [S3]
+- `sree products private limited` | `house no 130 ward 10 hospital road opps of block colony gate vill barharia siwan bihar` [India]  <>  `shree products private limited` | `house no 330 bihar muzaffarpur region` [S2]
+- `consultants sarthak advisory pvt ltd` | `r 16 ambar super city colony behind bareilly uttar pradesh` [India]  <>  `zephzephveo` | `r c 16 bareilly uttar pradesh` [S2]
+- `pediatric partners` | `1077 37th street ut ogden city` [US]  <>  `pediatric partners ltd` | `` [S2]
+- `global hospitality private limited` | `no 1a coimbatore dharapuram road panapalayam palladam tiruppur tamil nadu` [India]  <>  `global hospitality private limited` | `coimbatore door no 1a tamil nadu coimbatore` [S2]
+- `east logistics private limited` | `g 74 sector 44 noida gautam buddha nagar uttar pradesh` [India]  <>  `east logistics private trading` | `` [S2]
+- `good consultancy llp` | `chennai tamil nadu new no 1 2 chennai old no 53a 1st floor 1st main road vii lane sastri nagar adyar` [India]  <>  `good consultancy llp` | `new no 1 2 madras chennai nadu` [S3]
+- `shree consultants india limited` | `12th floor survey no 17 vasavi shalom sky city k v rangareddy telangana seri lingampally` [India]  <>  `shree consultants india limited` | `tg no 12th floor` [S3]
+- `commission on buildings` | `tx 281 thousand oaks drive whitney` [US]  <>  `commission on breugldmngs` | `` [S3]
+- `eye specialists` | `801 trade street matthews nc` [US]  <>  `eye services trading` | `` [S3]
+- `cardiology cascade care associates` | `121 gabrielle circle bethalto il` [US]  <>  `cardiology care associates service` | `` [S3]
+- `classic energy limited` | `mumbai 125 damji shamji udyog bhavanveer desai road andheri w maharashtra mumbai` [India]  <>  `classic limited center` | `` [S3]
+- `creative exports private limited` | `lix b 8 10 tayade master chawl santoshi mata mandr mumbai maharashtra` [India]  <>  `creative exports private limited id 19724` | `` [S3]
+- `vd coimbatore private limited` | `no 49 tropical paradise layout kudlu hosur road madiwala post bangalore karnataka` [India]  <>  `vdcoimbatorecom` | `49 null bangalore karnataka` [S2]
+- `piedmont capital partners llc` | `22 barnum street taunton ma` [US]  <>  `piedmont partners partners llc services` | `` [S2]
+- `pune homoeo ltd` | `pimpalwandi pune maharashtra` [India]  <>  `pune hoomeo ltd` | `pmpalwandi poona pune maharashtra` [S3]
+- `gujarat projects limited` | `plot no 09 11 and 25 27 vadodara ashok estate dabhoi road gujarat vadodara` [India]  <>  `gujarat projects enterprises` | `` [S2]
+- `grace community church` | `131 second street fl floor 2 albany ny` [US]  <>  `grace community church ltd` | `` [S2]
+- `empire alliance` | `va 23 clark lane stafford county` [US]  <>  `empire empire alliance www empire emp` | `` [S3]
+- `lotus software` | `1st floor reshma taj no 114 16 patel puttaiah dipanjali indus area bangalore bangalore karnataka` [India]  <>  `lotus software ವೇರ್` | `h no 1st floor bangalore karnataka` [S2]
+- `indore media pvt ltd` | `226 pu 4 scheme no 54 indore madhya pradesh` [India]  <>  `indore pvt ltd partners` | `225 indore burhanpur mp` [S3]
+{'candidates': 'b0_p3_compound_rc', 'pair_recall': 0.979, 'oracle_f05': 0.9928, 'cands_mean': 32.638, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9773, 'recall_US': 0.9801, 'rec_addr_empty': 0.8527, 'rec_name_nonascii': 0.9588, 'rec_no_name_tok': 0.9261}
+{'candidates': 'b1_p3_chargram', 'pair_recall': 0.0391, 'oracle_f05': 0.1368, 'cands_mean': 2.8014, 'cands_p95': 6.0, 'cands_max': 12.0, 'recall_India': 0.035, 'recall_US': 0.0419, 'rec_addr_empty': 0.8887, 'rec_name_nonascii': 0.0, 'rec_no_name_tok': 0.0}
+{'candidates': 'b2_p3_nameaddr', 'pair_recall': 0.88, 'oracle_f05': 0.9553, 'cands_mean': 5.584, 'cands_p95': 8.0, 'cands_max': 15.0, 'recall_India': 0.8554, 'recall_US': 0.8964, 'rec_addr_empty': 0.0, 'rec_name_nonascii': 0.788, 'rec_no_name_tok': 0.0228}
+{'candidates': 'union', 'pair_recall': 0.9896, 'oracle_f05': 0.9966, 'cands_mean': 35.7955, 'cands_p95': 44.0, 'cands_max': 66.0, 'recall_India': 0.9846, 'recall_US': 0.993, 'rec_addr_empty': 0.9225, 'rec_name_nonascii': 0.9667, 'rec_no_name_tok': 0.9263}
+{'candidates': 'union - b0_p3_compound_rc', 'pair_recall': 0.9191, 'oracle_f05': 0.9693, 'cands_mean': 8.3853, 'cands_p95': 12.0, 'cands_max': 27.0, 'recall_India': 0.8904, 'recall_US': 0.9383, 'rec_addr_empty': 0.8887, 'rec_name_nonascii': 0.788, 'rec_no_name_tok': 0.0228}
+{'candidates': 'union - b1_p3_chargram', 'pair_recall': 0.9865, 'oracle_f05': 0.9957, 'cands_mean': 34.2237, 'cands_p95': 42.0, 'cands_max': 54.0, 'recall_India': 0.9809, 'recall_US': 0.9903, 'rec_addr_empty': 0.8527, 'rec_name_nonascii': 0.9667, 'rec_no_name_tok': 0.9263}
+{'candidates': 'union - b2_p3_nameaddr', 'pair_recall': 0.982, 'oracle_f05': 0.9937, 'cands_mean': 34.2098, 'cands_p95': 42.0, 'cands_max': 52.0, 'recall_India': 0.981, 'recall_US': 0.9828, 'rec_addr_empty': 0.9225, 'rec_name_nonascii': 0.9588, 'rec_no_name_tok': 0.9261}
+{'candidates': 'union cap 20', 'pair_recall': 0.985, 'oracle_f05': 0.995, 'cands_mean': 19.9998, 'cands_p95': 20.0, 'cands_max': 20.0, 'recall_India': 0.9769, 'recall_US': 0.9904, 'rec_addr_empty': 0.9096, 'rec_name_nonascii': 0.9463, 'rec_no_name_tok': 0.8906}
+{'candidates': 'union cap 30', 'pair_recall': 0.9876, 'oracle_f05': 0.9958, 'cands_mean': 29.9993, 'cands_p95': 30.0, 'cands_max': 30.0, 'recall_India': 0.9808, 'recall_US': 0.992, 'rec_addr_empty': 0.9197, 'rec_name_nonascii': 0.9529, 'rec_no_name_tok': 0.9114}
+{'candidates': 'union cap 40 (config)', 'pair_recall': 0.9894, 'oracle_f05': 0.9965, 'cands_mean': 35.3279, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9842, 'recall_US': 0.9929, 'rec_addr_empty': 0.9224, 'rec_name_nonascii': 0.9642, 'rec_no_name_tok': 0.9252}
+
+## Run 2026-09-26 17:09 — config=code/business_entity_resolution/configs/exp/p3/T15_final_e10.yaml qfrac=0.1 dense=True BER_THREADS=4 (exploration/p3/blk_dense.py)
+
+- normalize: `{"name": "p2_translit", "params": {"legal_tokens": ["inc", "llc", "ltd", "pvt", "private", "limited", "corp", "corporation", "co", "company", "plc", "llp"], "mode": "replace", "min_support": 3, "min_precision": 0.5, "fold_scripts": false, "map_address": true, "web_names": true, "join_initials": true}}`
+- blockers: `p3_compound_rc {"k": 30, "k_rev": 3, "max_df": 1000, "rev_cap": 10}`; `p3_chargram {"field": "name_norm", "ngrams": [3, 4], "words": true, "right_max_addr_tokens": 0, "k": 2, "k_rev": 10, "max_df": 5000, "rev_cap": 10}`; `p3_nameaddr {"name_field": "name_core", "addr_field": "addr_norm", "name_cap": 4, "addr_cap": 10, "k": 5, "k_rev": 1, "max_df": 300, "rev_cap": 10}`
+- records 12,527,040 (S1 2,206,821, query S1 220,163, right 10,320,219); query GT pairs 762,339; subset sizes {'addr_empty': 33557, 'name_nonascii': 2401, 'no_name_tok': 25594}
+- share of reverse-only pairs per blocker (query S1): b0_p3_compound_rc=0.081, b1_p3_chargram=0.286, b2_p3_nameaddr=0.108
+- blocking time summed over groups (s) / max peak RSS (GB) per blocker: b0_p3_compound_rc=2110s/20.8GB, b1_p3_chargram=1581s/11.1GB, b2_p3_nameaddr=400s/13.8GB — at dense=True this is the full-train blocking time (test ≈ x0.78)
+
+| candidates | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | rec_addr_empty | rec_name_nonascii | rec_no_name_tok |
+|---|---|---|---|---|---|---|---|---|---|---|
+| b0_p3_compound_rc | 0.979 | 0.9928 | 32.638 | 40.0 | 40.0 | 0.9773 | 0.9801 | 0.8527 | 0.9588 | 0.9261 |
+| b1_p3_chargram | 0.0391 | 0.1368 | 2.8014 | 6.0 | 12.0 | 0.035 | 0.0419 | 0.8887 | 0.0 | 0.0 |
+| b2_p3_nameaddr | 0.88 | 0.9553 | 5.584 | 8.0 | 15.0 | 0.8554 | 0.8964 | 0.0 | 0.788 | 0.0228 |
+| union | 0.9896 | 0.9966 | 35.7955 | 44.0 | 66.0 | 0.9846 | 0.993 | 0.9225 | 0.9667 | 0.9263 |
+| union - b0_p3_compound_rc | 0.9191 | 0.9693 | 8.3853 | 12.0 | 27.0 | 0.8904 | 0.9383 | 0.8887 | 0.788 | 0.0228 |
+| union - b1_p3_chargram | 0.9865 | 0.9957 | 34.2237 | 42.0 | 54.0 | 0.9809 | 0.9903 | 0.8527 | 0.9667 | 0.9263 |
+| union - b2_p3_nameaddr | 0.982 | 0.9937 | 34.2098 | 42.0 | 52.0 | 0.981 | 0.9828 | 0.9225 | 0.9588 | 0.9261 |
+| union cap 20 | 0.985 | 0.995 | 19.9998 | 20.0 | 20.0 | 0.9769 | 0.9904 | 0.9096 | 0.9463 | 0.8906 |
+| union cap 30 | 0.9876 | 0.9958 | 29.9993 | 30.0 | 30.0 | 0.9808 | 0.992 | 0.9197 | 0.9529 | 0.9114 |
+| union cap 40 (config) | 0.9894 | 0.9965 | 35.3279 | 40.0 | 40.0 | 0.9842 | 0.9929 | 0.9224 | 0.9642 | 0.9252 |
+{'candidates': 'b0_p3_compound_rc', 'pair_recall': 0.979, 'oracle_f05': 0.9928, 'cands_mean': 32.638, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9773, 'recall_US': 0.9801, 'rec_addr_empty': 0.8527, 'rec_name_nonascii': 0.9588, 'rec_no_name_tok': 0.9261}
+{'candidates': 'b1_p3_chargram', 'pair_recall': 0.0384, 'oracle_f05': 0.1352, 'cands_mean': 2.3065, 'cands_p95': 4.0, 'cands_max': 12.0, 'recall_India': 0.0343, 'recall_US': 0.0411, 'rec_addr_empty': 0.8712, 'rec_name_nonascii': 0.0, 'rec_no_name_tok': 0.0}
+{'candidates': 'b2_p3_nameaddr', 'pair_recall': 0.8888, 'oracle_f05': 0.9606, 'cands_mean': 5.6196, 'cands_p95': 8.0, 'cands_max': 15.0, 'recall_India': 0.8699, 'recall_US': 0.9014, 'rec_addr_empty': 0.0, 'rec_name_nonascii': 0.8088, 'rec_no_name_tok': 0.0229}
+{'candidates': 'union', 'pair_recall': 0.99, 'oracle_f05': 0.9968, 'cands_mean': 35.4323, 'cands_p95': 43.0, 'cands_max': 66.0, 'recall_India': 0.9857, 'recall_US': 0.9929, 'rec_addr_empty': 0.9136, 'rec_name_nonascii': 0.9688, 'rec_no_name_tok': 0.9263}
+{'candidates': 'union - b0_p3_compound_rc', 'pair_recall': 0.9271, 'oracle_f05': 0.9741, 'cands_mean': 7.9261, 'cands_p95': 11.0, 'cands_max': 27.0, 'recall_India': 0.9042, 'recall_US': 0.9425, 'rec_addr_empty': 0.8712, 'rec_name_nonascii': 0.8088, 'rec_no_name_tok': 0.0229}
+{'candidates': 'union - b1_p3_chargram', 'pair_recall': 0.9873, 'oracle_f05': 0.9959, 'cands_mean': 34.2263, 'cands_p95': 42.0, 'cands_max': 55.0, 'recall_India': 0.9824, 'recall_US': 0.9906, 'rec_addr_empty': 0.8527, 'rec_name_nonascii': 0.9688, 'rec_no_name_tok': 0.9263}
+{'candidates': 'union - b2_p3_nameaddr', 'pair_recall': 0.9817, 'oracle_f05': 0.9936, 'cands_mean': 33.844, 'cands_p95': 41.0, 'cands_max': 52.0, 'recall_India': 0.9805, 'recall_US': 0.9824, 'rec_addr_empty': 0.9136, 'rec_name_nonascii': 0.9588, 'rec_no_name_tok': 0.9261}
+{'candidates': 'union cap 20', 'pair_recall': 0.9857, 'oracle_f05': 0.9953, 'cands_mean': 19.9998, 'cands_p95': 20.0, 'cands_max': 20.0, 'recall_India': 0.9788, 'recall_US': 0.9904, 'rec_addr_empty': 0.8987, 'rec_name_nonascii': 0.9488, 'rec_no_name_tok': 0.8921}
+{'candidates': 'union cap 30', 'pair_recall': 0.9881, 'oracle_f05': 0.9961, 'cands_mean': 29.9993, 'cands_p95': 30.0, 'cands_max': 30.0, 'recall_India': 0.9824, 'recall_US': 0.992, 'rec_addr_empty': 0.9103, 'rec_name_nonascii': 0.9559, 'rec_no_name_tok': 0.9119}
+{'candidates': 'union cap 40 (config)', 'pair_recall': 0.9898, 'oracle_f05': 0.9967, 'cands_mean': 35.0634, 'cands_p95': 40.0, 'cands_max': 40.0, 'recall_India': 0.9854, 'recall_US': 0.9928, 'rec_addr_empty': 0.9135, 'rec_name_nonascii': 0.9663, 'rec_no_name_tok': 0.9255}
+
+## Run 2026-09-26 17:10 — config=code/business_entity_resolution/configs/exp/p3/T15_final_na1000.yaml qfrac=0.1 dense=True BER_THREADS=4 (exploration/p3/blk_dense.py)
+
+- normalize: `{"name": "p2_translit", "params": {"legal_tokens": ["inc", "llc", "ltd", "pvt", "private", "limited", "corp", "corporation", "co", "company", "plc", "llp"], "mode": "replace", "min_support": 3, "min_precision": 0.5, "fold_scripts": false, "map_address": true, "web_names": true, "join_initials": true}}`
+- blockers: `p3_compound_rc {"k": 30, "k_rev": 3, "max_df": 1000, "rev_cap": 10}`; `p3_chargram {"field": "name_norm", "ngrams": [3, 4], "words": true, "right_max_addr_tokens": 0, "k": 2, "k_rev": 5, "max_df": 5000, "rev_cap": 10}`; `p3_nameaddr {"name_field": "name_core", "addr_field": "addr_norm", "name_cap": 4, "addr_cap": 10, "k": 5, "k_rev": 1, "max_df": 1000, "rev_cap": 10}`
+- records 12,527,040 (S1 2,206,821, query S1 220,163, right 10,320,219); query GT pairs 762,339; subset sizes {'addr_empty': 33557, 'name_nonascii': 2401, 'no_name_tok': 25594}
+- share of reverse-only pairs per blocker (query S1): b0_p3_compound_rc=0.081, b1_p3_chargram=0.133, b2_p3_nameaddr=0.111
+- blocking time summed over groups (s) / max peak RSS (GB) per blocker: b0_p3_compound_rc=2110s/20.8GB, b1_p3_chargram=1528s/12.5GB, b2_p3_nameaddr=979s/14.9GB — at dense=True this is the full-train blocking time (test ≈ x0.78)
+
+| candidates | pair_recall | oracle_f05 | cands_mean | cands_p95 | cands_max | recall_India | recall_US | rec_addr_empty | rec_name_nonascii | rec_no_name_tok |
+|---|---|---|---|---|---|---|---|---|---|---|
+| b0_p3_compound_rc | 0.979 | 0.9928 | 32.638 | 40.0 | 40.0 | 0.9773 | 0.9801 | 0.8527 | 0.9588 | 0.9261 |
+| b1_p3_chargram | 0.0384 | 0.1352 | 2.3065 | 4.0 | 12.0 | 0.0343 | 0.0411 | 0.8712 | 0.0 | 0.0 |
+| b2_p3_nameaddr | 0.8888 | 0.9606 | 5.6196 | 8.0 | 15.0 | 0.8699 | 0.9014 | 0.0 | 0.8088 | 0.0229 |
+| union | 0.99 | 0.9968 | 35.4323 | 43.0 | 66.0 | 0.9857 | 0.9929 | 0.9136 | 0.9688 | 0.9263 |
+| union - b0_p3_compound_rc | 0.9271 | 0.9741 | 7.9261 | 11.0 | 27.0 | 0.9042 | 0.9425 | 0.8712 | 0.8088 | 0.0229 |
+| union - b1_p3_chargram | 0.9873 | 0.9959 | 34.2263 | 42.0 | 55.0 | 0.9824 | 0.9906 | 0.8527 | 0.9688 | 0.9263 |
+| union - b2_p3_nameaddr | 0.9817 | 0.9936 | 33.844 | 41.0 | 52.0 | 0.9805 | 0.9824 | 0.9136 | 0.9588 | 0.9261 |
+| union cap 20 | 0.9857 | 0.9953 | 19.9998 | 20.0 | 20.0 | 0.9788 | 0.9904 | 0.8987 | 0.9488 | 0.8921 |
+| union cap 30 | 0.9881 | 0.9961 | 29.9993 | 30.0 | 30.0 | 0.9824 | 0.992 | 0.9103 | 0.9559 | 0.9119 |
+| union cap 40 (config) | 0.9898 | 0.9967 | 35.0634 | 40.0 | 40.0 | 0.9854 | 0.9928 | 0.9135 | 0.9663 | 0.9255 |
+eval 174s; new blocker runs: {"p3_compound_rc_d9afe8856ae3.npz": 1162, "p3_compound_rc_bb869be7de67.npz": 1040, "p3_chargram_b669937f5f8e.npz": 466, "p3_chargram_73b339d82b34.npz": 1111, "p3_nameaddr_dafee54be720.npz": 200, "p3_nameaddr_ecc5420c1245.npz": 250, "p3_chargram_2d17ad6b2274.npz": 485, "p3_chargram_79676a4e6a1f.npz": 1148, "p3_nameaddr_37e1b0ddacbd.npz": 472, "p3_nameaddr_bc0d9e584d6a.npz": 563}

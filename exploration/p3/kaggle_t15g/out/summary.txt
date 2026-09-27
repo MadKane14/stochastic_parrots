@@ -1,0 +1,2 @@
+17:10:36 rc=0    7895s  dense: python exploration/p3/blk_dense.py --dense --qfrac 0.1 --caps 20,30 --config code/business_entity_resolution/configs/exp/p3/T15_final_t09.yaml --config code/business_entity_resolution/configs/exp/p3/T15_final_e10.yaml --config code/business_entity_resolution/configs/exp/p3/T15_final_na1000.yaml --misses 60 --out /kaggle/working/blk_dense_out.md
+17:15:26 rc=0     291s  smoke: cd code/business_entity_resolution && python src/run.py run -c configs/exp/p3/T15_final_t09_prune.yaml --smoke --task T15

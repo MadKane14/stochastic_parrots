@@ -1,0 +1,16 @@
+# T15 (p3) — T15_sub5 with the name x address channel's df cap 300 -> 1000 (= T15_final_na1000's blocking).
+# Measured at true density (job t15g, exploration/p3/kaggle_t15g/out/blk_dense_out.md): recall 0.9898 vs 0.9891 for
+# T15_final at the same 35.06 cands/S1 (max 40); India 0.9838 -> 0.9854. Cost: channel 979 s vs 400 s full-train
+# blocking on 4 Kaggle vCPU (~+3 min on the test set on phoenix, estimated from submission #4's block timing).
+inherit: T15_sub5.yaml
+blocking:
+  max_candidates: 40
+  blockers:
+    - name: p3_compound_rc       # = p1_compound (imported, unchanged) + reverse-flood cap; transductive
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: 10}
+    - name: p3_chargram          # empty-address name channel; transductive
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 5000, rev_cap: 10}
+    - name: p3_nameaddr          # name token x address word channel; transductive
+      params: {name_field: name_core, addr_field: addr_norm, name_cap: 4, addr_cap: 10, k: 5, k_rev: 1, max_df: 1000,
+               rev_cap: 10}

@@ -1,0 +1,12 @@
+$ nproc; free -g; nvidia-smi -L 2>/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+GPU 0: Tesla T4 (UUID: GPU-e35652f7-7227-4ddc-1576-cae3c1b95e39)
+GPU 1: Tesla T4 (UUID: GPU-9c7c4a18-fe95-37d8-36f7-6744e2be8efe)
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         8.0T  6.9T  1.1T  87% /
+/dev/loop2       20G  132K   20G   1% /kaggle/working
+Python 3.12.13
+e178df0 p3 T18: India-group dense CV with out-of-fold pruning (wraps p2's dense_cv_group.py unchanged), E5 group precompute, Kaggle jobs (GPU embeddings -> 2 CPU dense runs: T13_sub4 vs T15_sub5)

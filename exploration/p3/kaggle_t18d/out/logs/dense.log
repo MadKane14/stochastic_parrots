@@ -1,0 +1,24 @@
+$ python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T18_p3_noe5.yaml --group India
+2026-09-26 22:30:03,108 dense_cv normalize 226s
+2026-09-26 22:30:38,208 ber.blocking.p3_revcap tokenize 26s
+2026-09-26 22:31:42,228 ber.blocking.p3_revcap group 0: 883188 S1 x 4133346 right, 15100321 features (57.9/record), built in 64s
+2026-09-26 22:40:51,883 ber.blocking.p3_revcap group 0 forward top-30: 550s
+2026-09-26 22:49:08,398 ber.blocking.p3_revcap group 0 reverse top-3: 497s
+2026-09-26 22:49:17,478 ber.blocking.p3_revcap rev_cap 10: kept 2274734 of 2946400 reverse-only pairs
+2026-09-26 22:52:02,330 ber.blocking.p3_chargram group 0: 883188 S1 x 122794 right, 17.2 indexed features/S1, built in 22s
+2026-09-26 22:52:02,712 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 22:55:28,230 ber.blocking.p3_chargram group 0 forward top-2: 1766376 pairs, 206s
+2026-09-26 22:55:28,735 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 22:59:03,076 ber.blocking.p3_chargram group 0 reverse top-5: 613965 pairs, 215s
+2026-09-26 23:01:58,591 ber.blocking.p3_nameaddr group 0: 883188 S1 x 4133346 right, 12388506 keys, 12.0 indexed keys/S1, built in 59s
+2026-09-26 23:02:01,345 ber.blocking.p3_chargram   product: 3.23e+08 postings, 33 chunks
+2026-09-26 23:02:54,758 ber.blocking.p3_nameaddr group 0 forward top-5: 4397367 pairs, 56s
+2026-09-26 23:02:56,152 ber.blocking.p3_chargram   product: 3.23e+08 postings, 33 chunks
+2026-09-26 23:03:48,127 ber.blocking.p3_nameaddr group 0 reverse top-1: 3785365 pairs, 53s
+2026-09-26 23:07:43,082 dense_cv block 2260s: 30893033 pairs
+2026-09-26 23:22:18,503 dense_cv features p1_match 830s (peak 23.0 GB)
+2026-09-26 23:32:55,626 dense_cv features p1_extra 637s (peak 23.0 GB)
+2026-09-26 23:36:51,142 dense_cv features p1_noise 235s (peak 23.0 GB)
+2026-09-27 00:22:01,003 ber.scorers.p1_lgbm p1_lgbm: 14243788 train rows (97% of pairs), 758172 valid rows, best_iteration=1025
+2026-09-27 00:34:44,468 dense_cv fold 0: fit+score 3397s (best_iteration 1025, peak 30.8 GB)
+Killed

@@ -1,0 +1,8 @@
+19:29:29 rc=0       0s  setup: nproc; free -g; nvidia-smi -L 2>/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline
+19:32:00 rc=0     151s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+19:32:01 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+19:33:38 rc=0      97s  rawcache: python -c "import sys; sys.path.insert(0, 'code/business_entity_resolution/src'); import os; from ber.data import load_part; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir=os.environ['BER_ARTIFACTS'] + '/cache')"
+19:34:30 rc=0      52s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+19:43:41 rc=0     551s  embed_name (GPU, parallel)
+19:57:18 rc=0    1369s  embed_full (GPU, parallel)
+19:57:28 rc=0       9s  copy: mkdir -p /kaggle/working/emb_mm && cp -r /tmp/ber_artifacts/emb_mm/intfloat__multilingual-e5-small_ml64 /kaggle/working/emb_mm/ && rm -f /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64/*.tmp.npy /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64/*.rows.npy; ls -la /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64

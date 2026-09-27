@@ -1,0 +1,1 @@
+$ python -c "import sys; sys.path.insert(0, 'code/business_entity_resolution/src'); import os; from ber.data import load_part; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir=os.environ['BER_ARTIFACTS'] + '/cache')"

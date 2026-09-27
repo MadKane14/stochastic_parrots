@@ -1,0 +1,1 @@
+c11d354 p3 T18: CPU fallback pair without p1_e5 (GPU queue stalled): T18_base_noe5 vs T18_p3_noe5, Kaggle jobs c/d
