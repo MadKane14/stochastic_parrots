@@ -63,7 +63,7 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 8 | Sun | ~15:45 | 20260927-081609_p1_FINAL_best_test_a7adec (= submissions/sub8_T18) | best.yaml (T18 + thr 0.8) / af1a1be | 0.98746 @0.8 | **0.981** | official validator PASS; vs #7b: France +10.1k/−6.0k pairs, US/India ±5-7k |
 | – | – | not uploaded | 20260927-130314_p1_T28_T28_mined_only_test_ea4e7e (sub9_T28) | T28 / 9489112 | 0.98732 @0.8 | – | PASS, but its 38k added France pairs have 39% house-number conflicts (kept 0.9%) → suffix-sibling false merges (D19) |
 | 9 | Sun | ~15:45 | blend_T18_T28 (= submissions/sub9_blend; blend_runs.py mean of #8 and T28 scores, thr 0.8) | T18 + T28 | **0.98748 @0.8** (OOF mean) | **0.983** | official validator PASS (--check-ids); vs #8: France −15.5k/+5.7k pairs (added 4.5% conflicts; France partial-name same-address assigned 65.6% → 58.1%), US/India ±2-3k |
-| 10 | Sun | _to upload_ | sub10_min (blend_runs.py --combine min of #8 and T28 scores, thr 0.8: both members must pass) | T18 + T28 | 0.98721 @0.8 (OOF min) | _pending_ | official validator PASS; sha256 82cab7bb…; vs #9 removes 1.34% of France pairs vs 0.18-0.19% US/India (`exploration/p1/test_variant_churn_out.txt`) |
+| 10 | Sun | ~16:40 | sub10_min (blend_runs.py --combine min of #8 and T28 scores, thr 0.8: both members must pass) | T18 + T28 | 0.98721 @0.8 (OOF min) | **0.983186** | official validator PASS; sha256 82cab7bb…; vs #9 removes 1.34% of France pairs vs 0.18-0.19% US/India (`exploration/p1/test_variant_churn_out.txt`) |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
@@ -128,6 +128,10 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
   ceilings: perfect blocking +0.0038, zero FP +0.0015 (`exploration/p1/loss_breakdown_out.txt`) → 0.99 is out of reach today.
   Private LB = remaining portion of the same test file (US/India/France only); a non-random split with more France would hurt
   us (France ≈ 0.96 vs 0.987) → France stays the lever for public and private alike.
+- D22 (Sun 17:00): #10 (min) 0.983186 ≈ #9 (0.983, exact value pending) → France precision beyond #9 is neutral. Final
+  under D18 = #9 unless #9 < 0.982886. `configs/best.yaml` = flattened T29 (#9 ensemble; the T18 final frozen as best_t18.yaml,
+  all other configs hash-identical); provisional zip built from the T29 run dir. #11 = the packaged run's own output of the
+  winner (T29, or T30 if #10 wins) so the zip's matching_results.tsv is the last uploaded file.
 - D18 (written before #8/#9 LB are known): FINAL = highest public LB among #7b / #8 / #9; if the top two are within
   0.0003, take the one with the higher dense CV (blend 0.98748 > T18 0.98746 > T17 0.98717). best.yaml / README / methodology are then set
   to that config and the zip is built from its run dir.

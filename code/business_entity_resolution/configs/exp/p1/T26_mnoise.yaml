@@ -6,7 +6,7 @@
 # noise holding .885, participations .968. Gate: in-country dense CV >= T18 (0.98752) within noise; LOCO not worse
 # (0.93538). Transductive (p1_mnoise: statistics of the processed records, no labels).
 # model: LightGBM (MIT); encoder as in best.yaml (multilingual-e5-small, MIT, 117,653,760 params).
-inherit: ../../best.yaml
+inherit: ../../best_t18.yaml
 features:
 - name: p1_match
   params: {idf_group: country}

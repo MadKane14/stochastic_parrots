@@ -43,12 +43,15 @@ checks, and writes a results JSON (config, commit, timings, per-country predicti
    over single tokens and token pairs (name-word pairs, address bigrams, house-number × word, house-number × name word),
    forward top-k per Source 1 entity and reverse top-k per S2/S3 record; a name channel for address-less records and a
    name × street-word channel; per-entity caps.
-3. **Features** (`p1_match`, `p1_extra`, `p1_e5`, `p1_noise`, `p1_ambig`): string similarities, IDF overlaps computed
-   within each country group, house-number agreement / edit distance, script-agnostic romanized skeletons, encoder
-   cosines, learned noise-word statistics, name-ambiguity counts, ranks/margins within the entity and the record.
-4. **Prune** (learned stage-1 LightGBM): keeps ~6 candidates per Source 1 entity — `candidate_pairs.tsv` is this set.
-5. **Score** (`p1_lgbm`, LightGBM) and **decide** (`p1_assign`): each S2/S3 record goes to at most one Source 1 entity
-   (its best), then probability ≥ 0.8.
+3. **Features** (`p1_match`, `p1_extra`, `p1_e5`, `p1_noise`, `p1_ambig`, `p1_mnoise`): string similarities, IDF overlaps
+   computed within each country group, house-number agreement / edit distance, script-agnostic romanized skeletons,
+   encoder cosines, noise-word statistics (learned from train labels, and mined without labels per country group),
+   name-ambiguity counts, ranks/margins within the entity and the record.
+4. **Prune** (learned stage-1 LightGBM): keeps ~7 candidates per Source 1 entity (6.7 on test) — `candidate_pairs.tsv`
+   is this set.
+5. **Score** (`weighted_mean` of two `p1_lgbm` LightGBM members: A = all features, B = label-free noise rates and no
+   core-name features; mean probability) and **decide** (`p1_assign`): each S2/S3 record goes to at most one Source 1
+   entity (its best), then probability ≥ 0.8.
 
 ## Validation used during development
 - `python src/run.py run -c configs/best.yaml --split val_v1` — grouped split by Source 1 entity (frozen harness).
