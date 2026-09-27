@@ -57,9 +57,14 @@ romanization from Unicode character names, unsupervised "noise-ness" of words (S
   best S1 is a strong candidate). Sparse matrix products in chunks; ~12 min per full dataset on 4 processes.
 - **Learned pruning:** a 60-tree LightGBM on 12 cheap features keeps, per S1, candidates with score ≥ 0.005 (≤ 10);
   the final model and `candidate_pairs.tsv` see only survivors.
-- **Candidate pairs generated:** ~57M before pruning (≈ 33 per S1), ≈ 6 per S1 after pruning [final].
+- **Channels:** (1) compound-key IDF cosine (forward top-30, reverse top-3 with a per-entity cap); (2) a name channel
+  for S2/S3 records without an address (their dominant failure mode); (3) a core-name × street-word channel for
+  records whose house number is perturbed. Per-entity cap of 40 before pruning.
+- **Candidate pairs generated:** ≈ 35 per S1 before pruning (77.4M on the full training set), **≈ 6.9 per S1 after
+  pruning** on test (France 7.2, India 6.9, US 6.5) — `candidate_pairs.tsv` is the pruned set.
 - **How we ensured true matches were not lost:** recall measured at test density on the full training set (not on a
-  sparse hold-out): 97.9% of true pairs retrieved before pruning; pruning keeps 99.9% of those.
+  sparse hold-out): **98.9% of true pairs retrieved** (was 97.0% with the compound channel alone); the pruning stage
+  keeps 99.9% of them.
 
 ---
 
@@ -79,14 +84,18 @@ romanization from Unicode character names, unsupervised "noise-ness" of words (S
   competing S1 entities.
 
 **Model type:** LightGBM (binary, early stopping on held-out S1 groups; no class re-weighting).
-**Threshold selection method:** macro-F0.5 curve on test-density out-of-fold scores; threshold 0.7 after the
-one-owner assignment (each S2/S3 record goes only to its best-scoring S1).
+**Threshold selection method:** macro-F0.5 curves on test-density out-of-fold scores, in-country and leave-one-
+country-out. After the one-owner assignment (each S2/S3 record goes only to its best-scoring S1), the in-country curve
+is flat between 0.7 and 0.8 while the unseen-country curve keeps rising (the model is overconfident on a country it
+never saw) → **0.8**, chosen on validation data only.
 
 ---
 
 ## 5. Results & Error Analysis
-- **F_0.5 Score (macro):** test-density CV [final] (0.984 for the configuration before the final additions);
-  public leaderboard 0.949 → 0.969 → [final].
+- **F_0.5 Score (macro):** test-density out-of-fold CV over the full training set (2.2M S1): 0.9696 → 0.9789 →
+  0.9828 → 0.9841 → **0.9872** (final additions [final]); leave-one-country-out 0.905 → 0.923 → 0.934.
+  Public leaderboard: 0.949 → 0.969 → 0.978 → 0.979 → [final]. A 20% random hold-out reported 0.992 for the first
+  model — it hides siblings/distractors, so we stopped using it for decisions.
 - **Common false positives (wrong merges):** unmatched near-copies with a shifted house number; siblings at the same
   address whose name differs by one word; non-Latin names of a different company at the same address.
 - **Common false negatives (missed matches):** S2/S3 records with an empty address and a common name (ambiguous between
