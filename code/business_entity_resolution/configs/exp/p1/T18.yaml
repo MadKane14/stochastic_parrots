@@ -1,0 +1,9 @@
+# T18 (p1) — T17 with p4's label-free target canonicalization normalizer (p4_tcanon = p2_translit v1 + address
+# abbreviations mined without labels on the processed records per country-string group, e.g. r->rue, st->saint, and
+# side-skewed junk tokens like N°; transductive). Hypothesis (reports/p4/T14b_for_p2.md): helps unseen France without
+# hurting US/India → dense CV ≥ T17 (0.98722) and dense LOCO up. New normalizer → full recompute.
+inherit: T17.yaml
+normalize:
+  name: p4_tcanon
+  params: {legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp], mode: replace,
+           min_support: 3, min_precision: 0.5, fold_scripts: false, map_address: true, web_names: true, join_initials: true}
