@@ -1,0 +1,12 @@
+# T25 (p1, Sun 27 Sep): FINAL (best.yaml = T18, thr 0.8) without the name "core token" features f_p1_core_n_*.
+# Hypothesis: core name tokens = name words with in-country document frequency <= 1% (p1_match group_idf common_frac).
+# The cut is degenerate for France: 77.8% of France S1 names keep <= 1 core word (US 8.4%, India 44%) because the words
+# that tell French businesses apart (club, amicale, ecole, maison, centre, comite, pharmacie ...) exceed 1%
+# (exploration/p1/name_vocab.py). Trained on US, core-name equality + same address means "copy"; in France it also holds
+# for siblings ("DD Comite" vs "DD Musique" at the same address) → false merges. Dropping the features removes a
+# country-dependent cue. Gate: in-country dense CV within noise of T18 (0.98752) and LOCO not worse (0.93538).
+# model: LightGBM (MIT); encoder as in best.yaml (multilingual-e5-small, MIT, 117,653,760 params).
+inherit: ../../best.yaml
+scorer:
+  name: p1_lgbm
+  params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, drop_features: ["^f_p1_core_n_"]}
