@@ -24,8 +24,11 @@ export BER_THREADS=12                         # CPU threads for every library
 
 ## End-to-end (data → blocking → matching → output)
 ```bash
-# 1) fine-tune the encoder on TRAIN true pairs only (~15 min on one GPU)
-CUDA_VISIBLE_DEVICES=0 python src/e5_finetune.py --split full --out $BER_ARTIFACTS/models/ft_full --n 400000
+# 1) fine-tune the encoder on TRAIN true pairs only: ~15 min on one 16 GB GPU (T4 / RTX A4000: ~2 min data loading +
+#    ~13 min training, 2,083 steps; peak GPU memory ~10 GB). Seeded (--seed 0 is the default and the value we used);
+#    deterministic on one GPU type (two runs give a byte-identical model.safetensors), float-tolerance equal across GPU
+#    models. Writes $BER_ARTIFACTS/models/ft_full, the path configs/best.yaml reads.
+CUDA_VISIBLE_DEVICES=0 python src/e5_finetune.py --split full --out $BER_ARTIFACTS/models/ft_full --n 400000 --seed 0
 # 2) train on all labelled data, block + score + decide the test set, validate, write both TSVs (~2.5 h; the first run
 #    also embeds all train + test names/addresses with the encoder, ~1.5 h on one GPU, cached afterwards)
 CUDA_VISIBLE_DEVICES=0 python src/run.py test -c configs/best.yaml

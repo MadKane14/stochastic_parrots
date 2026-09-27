@@ -1,10 +1,8 @@
 # ML Challenge 2026: Business Entity Resolution Solution Template
 
 **Team Name:** stochastic_parrots
-**Team Members:** [fill: 4 members]
+**Team Members:** Madhur Kankane, Anish Toshniwal, Vansh Jaiswal, BMIrocks
 **Submission Date:** 27 September 2026
-
-> Sun 27 Sep (lead). Final configuration: `configs/best.yaml` (two-member LightGBM ensemble).
 
 ---
 
@@ -35,8 +33,7 @@ error class.
   zeros and glued digits in numbers (`001954`, `26th`), empty addresses (3.3% of S2/S3), and names/addresses in
   Devanagari, Tamil, Telugu, Kannada, Bengali, Gujarati, Malayalam, Odia, Gurmukhi (~14% of true pairs have a
   non-Latin S2/S3 name; S1 is always Latin).
-- **Density matters**: a random 20% hold-out keeps only 20% of the other entities' records, so each S1 faces far fewer
-  siblings/distractors than in test. Our first model scored 0.992 on such a hold-out but 0.949 on the leaderboard.
+- **Density matters**: ordinary hold-outs see far fewer siblings/distractors per entity than the test set (§2.3).
 
 ### 2.2 Solution Strategy
 **Approach Type:** Blocking + learned pruning + GBDT classifier + assignment decision rule
@@ -61,7 +58,8 @@ otherwise optimistic).
 
 **Unseen-country proxy.** Leave-one-country-out at the same density (train on India, score US and vice versa). It is
 the only labelled signal for an unseen country, but its dominant error (near-copies with a shifted house number) is
-rare in France predictions (0.9% conflicts), so we used it only as a guard (no change may lower it) and not to tune.
+rare in France predictions (0.9% conflicts), so we used it as a guard (no change may lower it) and for one decision only, the threshold (0.7 → 0.8, §4); the
+leaderboard showed no gain from that change (0.979 before and after), consistent with France failing differently.
 
 **How the leaderboard was used.** France is 15% of test and appears in no training data, so the public leaderboard is
 the only France signal. We used it for at most three discrete, pre-registered choices between variants that were
@@ -146,18 +144,17 @@ unseen country. Used alone, B adds France pairs whose house numbers conflict (39
 pairs): mined rates make French sibling suffixes ("participations", "holding") look like noise. The probability mean
 keeps B's removals of same-address siblings and rejects most of those additions (4.5% conflicts among the pairs the
 mean adds). Public leaderboard: 0.981 (A) → 0.983 (mean). Requiring both members to pass the threshold ("min") removes
-another 1.3% of France pairs (0.2% US/India) at 0.98721 in-country and scored the same (0.9832), so the final uses the
-mean.
+another 1.3% of France pairs (0.2% US/India) at 0.98721 in-country and scored the same within noise (0.98319 vs 0.98315 for the mean), so the final uses the mean, which has the higher
+test-density CV (our tie rule, fixed before the scores were known).
 
 ---
 
 ## 5. Results & Error Analysis
 - **F_0.5 Score (macro):** test-density out-of-fold CV over the full training set (2.2M S1): 0.9696 → 0.9789 →
-  0.9828 → 0.9841 → 0.9872 → 0.9875 → **0.9875** (final ensemble, 0.98748 at threshold 0.8; member A alone 0.98746,
-  member B alone 0.98732); leave-one-country-out 0.905 → 0.923 → 0.937 → **0.938** (threshold 0.8; member A — the
-  ensemble's LOCO was not run).
-  Public leaderboard: 0.949 → 0.969 → 0.978 → 0.979 → 0.981 → **0.983** (final). A 20% random hold-out reported 0.992 for the first
-  model — it hides siblings/distractors, so we stopped using it for decisions.
+  0.9831 → 0.9841 → 0.9872 → 0.9875 → **0.9875** (final ensemble, 0.98748 at threshold 0.8; member A alone 0.98746,
+  member B alone 0.98732); leave-one-country-out 0.905 → 0.923 → 0.937 → **0.938** (each at its configuration's threshold: 0.5, 0.5,
+  0.8, 0.8; member A — the ensemble's LOCO was not run).
+  Public leaderboard: 0.949 → 0.969 → 0.978 → 0.979 → 0.981 → **0.983** (final).
 - **Unseen country (France) — what validation could not show, and what we measured without labels.** Our test-density
   CV contains only US and India. On the test set, label-free statistics of our US/India predictions reproduce the CV
   exactly (share of predicted pairs with conflicting house numbers 6.18% vs 6.07% US, 2.16% vs 2.15% India; share of
@@ -185,6 +182,15 @@ mean.
 Scalable sparse compound-key retrieval plus a feature-rich GBDT solves most of the problem; the decisive steps were
 measuring at test density (which exposed siblings and distractors that ordinary hold-outs hide) and making every
 feature country- and script-agnostic so it transfers to the unseen country.
+For the unseen country, replacing label-learned statistics by statistics mined without labels from the target's own
+records — and averaging the two models — was the only change that moved the leaderboard without changing in-country
+validation. With more time, the largest measured remaining loss (entities with an address-less copy, 55% of the
+in-country error) and the pairs blocking never proposes (19%) are where we would work next; a simple same-name
+cross-copy rule we tested on the final day lowered test-density CV, so it needs a learned model, not a rule.
+
+Compute: one full `run.py test` (fit on train + predict test, both LightGBM members) takes ≈ 2 h on a 16-core / 128 GB
+machine (≈ 37 min of it blocking train + test); fine-tuning E5 once takes ≈ 15 min on a 16 GB GPU. See Appendix D for
+models, licences and the transductive (label-free, target-side) components.
 
 ---
 
@@ -202,7 +208,7 @@ splits). Reproduce: `python src/run.py test -c configs/best.yaml` (see README.md
 | 1 | compound-key blocking + LightGBM (300-round cap) + one-owner rule | 0.9696 | 0.905 | 0.949 |
 | 2 | + IDF within country groups, core tokens, romanized skeletons, number edit distance, uncapped LightGBM | 0.9789 | 0.923¹ | 0.969 |
 | 3 | + transliteration map, pretrained E5 cosines | 0.9831 | — | not submitted |
-| 4 | + noise-word features, learned pruning (~6.5 candidates/S1) | 0.9841 | — | 0.978 |
+| 4 | + noise-word features, learned pruning (6.4 candidates/S1) | 0.9841 | — | 0.978 |
 | 4b | + E5 fine-tuned on train pairs (mean with 4) | — | — | 0.979 |
 | 5 | + 3-channel blocking (recall 98.9%), name-ambiguity features, threshold 0.8 | 0.9872 | 0.937 | 0.979 |
 | 6 | + target canonicalization (`p4_tcanon`) | 0.9875 | 0.938 | 0.981 |
@@ -220,6 +226,67 @@ other (unseen-country proxy). ¹ measured on the same features without the final
 | 6 | mean of #4 and #4 with fine-tuned E5 | — | 0.979 |
 | 7b | + 3-channel blocking (recall 98.9%), name ambiguity, fine-tuned E5, threshold 0.8 | 0.9872 | 0.979 |
 | 8 | + target canonicalization (`p4_tcanon`) | 0.9875 | 0.981 |
-| **9** | **ensemble: mean of label-learned and label-free members (final)** | **0.9875** | **0.983** |
-| 10 | ensemble, both members must agree (min) | 0.9872 | 0.9832 |
+| **9** | **ensemble: mean of label-learned and label-free members (final)** | **0.9875** | **0.98315** |
+| 10 | ensemble, both members must agree (min) | 0.9872 | 0.98319 |
 Submissions #3 and #5 were built but not uploaded. The test-density CV of #6 was not run.
+
+### D. Models, licences and rule compliance
+
+#### D.1 Models
+| model | role in the pipeline | licence | parameters | trained on | runs offline |
+|---|---|---|---|---|---|
+| `intfloat/multilingual-e5-small` | text encoder for the `p1_e5` cosine features (name; name + address) | MIT | 117,653,760 (counted at load; fine-tuning adds none) | pretrained weights (Hugging Face) **contrastively fine-tuned on the provided training true pairs only** (`src/e5_finetune.py --split full --n 400000 --seed 0`: one true pair per sampled S1 entity, same-address non-match as hard negative, InfoNCE τ = 0.05, AdamW lr 2e-5, batch 192, 1 epoch) | yes — weights downloaded once, then `HF_HUB_OFFLINE` |
+| LightGBM member A (`p1_lgbm`) | pair scorer, all features | MIT | gradient-boosted trees (≤ 3,000 rounds, lr 0.05); ≪ 8B | provided training candidate pairs + labels | yes |
+| LightGBM member B (`p1_lgbm`) | pair scorer, label-free noise-word rates, no core-name features | MIT | as A | provided training candidate pairs + labels | yes |
+| LightGBM stage-1 pruner (`p1_lgbm`) | keeps candidates with score ≥ 0.005, ≤ 10 per S1 entity (6.7/S1 on test) | MIT | ≤ 60 trees, 31 leaves | provided training candidate pairs + labels | yes |
+No large language model, no hosted model or API, no model above 8B parameters, no model under a non-MIT/Apache licence.
+
+#### D.2 Libraries (`requirements.txt`, all pinned)
+| package | version | licence |
+|---|---|---|
+| numpy | 2.2.6 | BSD-3-Clause |
+| pandas | 2.3.3 | BSD-3-Clause |
+| scipy | 1.15.2 | BSD-3-Clause |
+| scikit-learn | 1.7.2 | BSD-3-Clause |
+| rapidfuzz | 3.14.1 | MIT |
+| lightgbm | 4.6.0 | MIT |
+| pyarrow | 21.0.0 | Apache-2.0 |
+| PyYAML | 6.0.3 | MIT |
+| torch | 2.8.0 | BSD-3-Clause (BSD-style) |
+| transformers | 4.57.1 | Apache-2.0 |
+| tokenizers | 0.22.2 | Apache-2.0 |
+| safetensors | 0.8.0 | Apache-2.0 |
+| huggingface-hub | 0.36.0 | Apache-2.0 |
+All direct dependencies are MIT / BSD / Apache-2.0; no GPL code is imported (romanization uses the standard library's
+`unicodedata`, not `unidecode`). Transitive installs that are *not* MIT/BSD/Apache/ISC, for completeness: the GPU build of
+torch pulls NVIDIA's CUDA runtime wheels (`nvidia-*-cu12`, NVIDIA's redistributable licence — the standard way to run
+PyTorch on a GPU; no NVIDIA model or data is used), and `tqdm` / `certifi` (MPL-2.0, file-level, not GPL). The exact
+transitive list can be printed with `pip install pip-licenses && pip-licenses --from=mixed`.
+
+#### D.3 Data and external resources
+- Only the provided `train/` and `test/` files are read. No external datasets, gazetteers, geocoders, business registries,
+  web lookups or hosted APIs; the only network access is the one-time download of the pretrained encoder weights.
+- No hand-written country-specific dictionaries. The only word list in the configuration is a short, country-agnostic
+  list of English legal-form tokens (`inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp`).
+- No country value is special-cased anywhere: `grep` over `src/` finds no country-name literal and no
+  `country == …` test. Statistics are grouped by *equal* `country` strings (an open set), so an unseen country such as
+  France gets its own group automatically.
+
+#### D.4 Transductive components (unsupervised statistics of the records being processed — no labels)
+| component | statistic taken from the records being processed (at test time: the test records) |
+|---|---|
+| normalizer `p2_translit` (inside `p4_tcanon`) | word-segmentation vocabulary (name-token counts) used to split concatenated/web-style names |
+| normalizer `p4_tcanon` | per country group: address abbreviations mined from confident candidate pairs (same house number + address word, name `token_set_ratio ≥ 90`), e.g. `r → rue`; tokens used almost only on the S2/S3 side dropped (e.g. `N°`) |
+| blockers `p3_compound_rc`, `p3_chargram`, `p3_nameaddr` | IDF weights and document-frequency caps of blocking keys |
+| features `p1_match`, `p1_extra` | IDF within each country group; frequent boilerplate ("core") token rates |
+| feature `p1_noise` (`unsup: true`) | S2/S3-vs-S1 name-token frequency ratio per country group |
+| feature `p1_mnoise` | noise-word rates mined from likely copies among each country group's own candidate pairs |
+| feature `p1_ambig` | name-ambiguity counts per country group |
+None of these uses labels of the processed records, and none uses the model's own predictions as training labels.
+Label-learned components (native→Latin token map, `p1_noise`'s label-learned rates, both LightGBM members, the
+pruner, the encoder fine-tuning) are fitted on the provided training data only.
+
+#### D.5 Reproducibility
+The encoder fine-tuning is deterministic on a given GPU type: two runs with the same seed produce a byte-identical
+`model.safetensors` (Tesla T4, torch 2.8.0; reports/p4/T32.md). Across GPU models, results agree to floating-point
+tolerance. All other randomness (sampling, splits, LightGBM) is seeded.
