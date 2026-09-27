@@ -1,7 +1,7 @@
 # T06 hypothesis: E5 cosine similarities (name, address, name+address) fed to the shared GBDT raise val_v1@0.1 F0.5
 # over T06_base, most on India / cross-script pairs and on xc_India@0.1.
 # model: intfloat/multilingual-e5-small, licence: MIT, params: ~118M (exact count logged by p4_e5 at load)
-inherit: ../../best.yaml
+inherit: ../../best_r2.yaml
 features:
   - name: string_sims
     params: {fields: [name_norm, name_core, addr_norm]}

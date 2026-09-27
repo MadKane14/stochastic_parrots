@@ -1,7 +1,7 @@
 # T16b plumbing (p4, Kaggle val_v1@0.1 only): as T16_val_p1e5 but with cross-fitted fine-tuned E5 (p4_e5cf): ft_h0/ft_h1
 # fine-tuned on the val_v1 TRAIN side's fold-0 / fold-1 S1 pairs (e5_finetune.py --split val_v1+fold2:<k>).
 # model: intfloat/multilingual-e5-small (fine-tuned x2), licence: MIT, params: 117,653,760 each
-inherit: ../../best.yaml
+inherit: ../../best_r2.yaml
 features:
   - name: string_sims
     params: {fields: [name_norm, name_core, addr_norm]}

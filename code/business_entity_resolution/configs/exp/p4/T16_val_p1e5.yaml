@@ -1,7 +1,7 @@
 # T16b plumbing (p4, Kaggle val_v1@0.1 only): best.yaml + string_sims + p1_e5 (name, full). Model = pretrained, or a
 # naively fine-tuned one via --set features.1.params.model=<dir>. Compared with T16_val_cf (cross-fitted).
 # model: intfloat/multilingual-e5-small, licence: MIT, params: 117,653,760
-inherit: ../../best.yaml
+inherit: ../../best_r2.yaml
 features:
   - name: string_sims
     params: {fields: [name_norm, name_core, addr_norm]}

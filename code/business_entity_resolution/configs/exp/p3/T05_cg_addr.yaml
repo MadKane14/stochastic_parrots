@@ -1,7 +1,7 @@
 # T05 (p3) — char-gram channel on name + address tokens. Hypothesis: as T05_cg_name, but the bag also holds the
 # address tokens (numbers + words, p1_compound tokenisation), so a typo'd / glued name still ranks high when the
 # address overlaps even partially — the name grams alone are weakly selective in 5M-record country groups (I-07).
-inherit: ../../best.yaml
+inherit: ../../best_r2.yaml
 blocking:
   max_candidates: 50
   blockers:

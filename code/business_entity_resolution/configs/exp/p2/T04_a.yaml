@@ -4,7 +4,7 @@
 # joined single-letter runs. Hypothesis: full-density pair recall of best.yaml's blocker +>= 0.005 (T04).
 # Thresholds fixed a priori (min_support 3, min_precision 0.5); not tuned on evaluation data.
 # transductive: segmentation vocabulary also counts name tokens of the records being normalized (no labels).
-inherit: ../../best.yaml
+inherit: ../../best_r2.yaml
 normalize:
   name: p2_translit
   params: {legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp], mode: replace, min_support: 3, min_precision: 0.5, fold_scripts: true,

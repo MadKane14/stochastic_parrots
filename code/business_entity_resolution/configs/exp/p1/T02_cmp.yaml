@@ -2,7 +2,7 @@
 # address bigrams, number x word, number x name) within equal-country-string groups, forward top-k per S1 plus
 # reverse top-3 S1 per S2/S3 record, gives high pair recall at <= 50 cands/S1 at full (test-like) density.
 # Full-train evidence (exploration/p1/blk_eval_out.md): k=30 + k_rev=3 -> recall 0.970, oracle F0.5 0.989, 33 cands/S1.
-inherit: ../../best.yaml
+inherit: ../../best_r2.yaml
 blocking:
   max_candidates: null
   blockers:
