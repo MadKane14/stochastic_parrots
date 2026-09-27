@@ -61,7 +61,8 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 7 | Sun | _to upload_ | 20260927-033731_p1_T16_T17_test_530df3 | T17 / cb81d3a | 0.98722 | _pending_ | p3 blocking (recall 0.979→0.989) + noise + pruning + ft E5 + p1_ambig; PASS (--check-ids); expected-F 0.9876 |
 | 7b | Sun | ~08:30 | T17_thr080 (blend_runs.py, same scores, threshold 0.8) | T17 / cb81d3a | 0.98717 (LOCO 0.937 vs 0.934) | **0.979** | no LB gain over #6 despite +0.003 dense CV → D16 |
 | 8 | Sun | _to upload_ | 20260927-081609_p1_FINAL_best_test_a7adec (= submissions/sub8_T18) | best.yaml (T18 + thr 0.8) / af1a1be | 0.98746 @0.8 | _pending_ | official validator PASS; vs #7b: France +10.1k/−6.0k pairs, US/India ±5-7k |
-| 9 | Sun | _running (13:03, ETA ~14:50)_ | T28 test run → submissions/sub9_T28 | T28 (T18 + p1_mnoise − core-name − label-learned noise feats) / 9489112 | 0.98732 @0.8 | _pending_ | France-targeted (I-27..I-29); replaces the T27 run (stopped 12:28) |
+| – | – | not uploaded | 20260927-130314_p1_T28_T28_mined_only_test_ea4e7e (sub9_T28) | T28 / 9489112 | 0.98732 @0.8 | – | PASS, but its 38k added France pairs have 39% house-number conflicts (kept 0.9%) → suffix-sibling false merges (D19) |
+| 9 | Sun | _to upload_ | blend_T18_T28 (= submissions/sub9_blend; blend_runs.py mean of #8 and T28 scores, thr 0.8) | T18 + T28 | **0.98748 @0.8** (OOF mean) | _pending_ | official validator PASS (--check-ids); vs #8: France −15.5k/+5.7k pairs (added 4.5% conflicts; France partial-name same-address assigned 65.6% → 58.1%), US/India ±2-3k |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
@@ -106,8 +107,13 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
   logloss 0.00724 vs 0.00728 (T27) / 0.00736 (T18); dense CV 0.98732 @0.8 (T18 0.98746, T27 0.98739) → gate passed, T28 = #9.
   In-country (labelled) the same-address sibling classes are already ~99.9% precise for T18 and T27 alike
   (`exploration/p1/sibling_oof.py`): the gain, if any, is France-only by construction.
+- D19 (Sun 14:55): T28 alone is not uploaded — label-free: the France pairs it adds vs #8 have 39% house-number conflicts
+  (kept pairs 0.9%, #8's additions over #7b 10%): mined rates make French sibling suffixes ("participations" .97,
+  "holding" .89) look like noise. The probability mean of T18 and T28 keeps T28's removals of same-address word-swap
+  siblings and rejects its number-shifted additions (added France pairs 4.5% conflicts); in-country OOF mean 0.98748 @0.8
+  (T18 0.98746, T28 0.98732; precision 0.99833 best). → #9 = blend. `exploration/p1/{diff_numconf,oof_blend}.py`.
 - D18 (written before #8/#9 LB are known): FINAL = highest public LB among #7b / #8 / #9; if the top two are within
-  0.0003, take the one without country-degenerate features (T28 > T18 > T17). best.yaml / README / methodology are then set
+  0.0003, take the one with the higher dense CV (blend 0.98748 > T18 0.98746 > T17 0.98717). best.yaml / README / methodology are then set
   to that config and the zip is built from its run dir.
 - Open organizer questions: see QUESTIONS.md.
 - video-slides.pdf in the claude.ai project is image-only; the planner could not read it.
