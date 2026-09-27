@@ -1,0 +1,18 @@
+base (#9-equivalent) @0.8: 0.98748
+right records in candidates 10,315,405; assigned 7,391,467; unassigned address-less 159,594
+sibling_addr=False only_empty=True  floor= 0.0: added  22,104 (precision 0.363)  F0.5 0.98655  Δ -0.00092
+sibling_addr=False only_empty=True  floor=0.05: added  19,745 (precision 0.400)  F0.5 0.98672  Δ -0.00075
+sibling_addr=False only_empty=True  floor= 0.2: added  15,314 (precision 0.465)  F0.5 0.98699  Δ -0.00049
+sibling_addr=False only_empty=True  floor= 0.5: added   5,163 (precision 0.623)  F0.5 0.98739  Δ -0.00008
+sibling_addr=False only_empty=False floor= 0.0: added  52,033 (precision 0.183)  F0.5 0.98437  Δ -0.00311
+sibling_addr=False only_empty=False floor=0.05: added  23,698 (precision 0.395)  F0.5 0.98656  Δ -0.00092
+sibling_addr=False only_empty=False floor= 0.2: added  17,827 (precision 0.474)  F0.5 0.98693  Δ -0.00054
+sibling_addr=False only_empty=False floor= 0.5: added   6,670 (precision 0.633)  F0.5 0.98738  Δ -0.00009
+sibling_addr=True  only_empty=True  floor= 0.0: added  22,072 (precision 0.362)  F0.5 0.98655  Δ -0.00092
+sibling_addr=True  only_empty=True  floor=0.05: added  19,714 (precision 0.400)  F0.5 0.98672  Δ -0.00075
+sibling_addr=True  only_empty=True  floor= 0.2: added  15,280 (precision 0.464)  F0.5 0.98699  Δ -0.00049
+sibling_addr=True  only_empty=True  floor= 0.5: added   5,127 (precision 0.622)  F0.5 0.98739  Δ -0.00008
+sibling_addr=True  only_empty=False floor= 0.0: added  51,183 (precision 0.184)  F0.5 0.98443  Δ -0.00305
+sibling_addr=True  only_empty=False floor=0.05: added  23,500 (precision 0.394)  F0.5 0.98657  Δ -0.00091
+sibling_addr=True  only_empty=False floor= 0.2: added  17,687 (precision 0.473)  F0.5 0.98693  Δ -0.00054
+sibling_addr=True  only_empty=False floor= 0.5: added   6,569 (precision 0.632)  F0.5 0.98738  Δ -0.00009
