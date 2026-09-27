@@ -9,8 +9,10 @@ from ber.registry import build, register
 
 @register("scorer", "weighted_mean")
 class WeightedMean(Scorer):
-    def __init__(self, members: list[dict], weights: list[float] | None = None):
-        self.members = [build("scorer", m) for m in members]
+    def __init__(self, members: list[dict], weights: list[float] | None = None, **shared):
+        """members: scorer specs {name, params}; shared: default params for every member (e.g. max_iter /
+        learning_rate inherited from a parent config) — a member's own params take precedence."""
+        self.members = [build("scorer", {**m, "params": {**shared, **(m.get("params") or {})}}) for m in members]
         w = np.asarray(weights or [1.0] * len(members), dtype=float)
         self.weights = w / w.sum()
 
