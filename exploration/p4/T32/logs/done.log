@@ -1,0 +1,3 @@
+$ cp /tmp/t32/A/p4_finetune_stats.json /kaggle/working/stats_A.json; cp /tmp/t32/C/p4_finetune_stats.json /kaggle/working/stats_C.json; nvidia-smi -L
+GPU 0: Tesla T4 (UUID: GPU-d674c8e5-82e0-bdae-5b88-8f20226c00a4)
+GPU 1: Tesla T4 (UUID: GPU-a592d4a4-824a-efee-cb3d-3e357bb23ca8)

@@ -1,0 +1,12 @@
+{
+ "sha256_a": "d09284450ccdd97c617fb79e0cbbda4a49c5e83bda13b2e28f5936d0d110a501",
+ "sha256_b": "d09284450ccdd97c617fb79e0cbbda4a49c5e83bda13b2e28f5936d0d110a501",
+ "identical_file": true,
+ "max_abs_weight_diff": 0.0,
+ "max_abs_cos_diff_1000_test_pairs": 0.0,
+ "mean_abs_cos_diff_1000_test_pairs": 0.0,
+ "train_seconds_a": 38.9,
+ "steps_a": 104,
+ "train_seconds_b": 39.0,
+ "steps_b": 104
+}

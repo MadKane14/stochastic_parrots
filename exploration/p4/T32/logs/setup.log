@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+5f05eaf p4 T32: fine-tune reproducibility check (packaged src/e5_finetune.py twice + deterministic-torch fix twice, sha256 / Δweight / Δcos on 1,000 test pairs, peak GPU memory) — Kaggle kernel
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-d674c8e5-82e0-bdae-5b88-8f20226c00a4)
+GPU 1: Tesla T4 (UUID: GPU-a592d4a4-824a-efee-cb3d-3e357bb23ca8)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

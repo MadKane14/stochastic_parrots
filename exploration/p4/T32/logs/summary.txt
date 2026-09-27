@@ -1,0 +1,20 @@
+10:57:07 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+10:57:07 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+11:00:06 rc=0     179s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+11:00:08 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+11:00:31 rc=0      23s  check: python src/run.py check
+11:04:41 rc=0     250s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; [load_part(os.environ['BER_DATA_DIR'], p, cache_dir='/tmp/ber_artifacts/cache') for p in ('train','test')]"
+11:05:25 rc=0      44s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+11:05:28 rc=0       3s  gpu_check: nvidia-smi -L | grep -q P100 && pip install -q --force-reinstall torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126 && pip uninstall -y -q torchvision torchaudio; python -c "import torch; print(torch.__version__, torch.cuda.get_device_name(0), torch.ones(2, device='cuda').sum().item())"
+11:08:17 rc=0     169s  ft_A: python src/e5_finetune.py --split full --n 20000 --seed 0 --out /tmp/t32/A
+peak GPU memory A: 9629 MiB (nvidia-smi, whole device)
+11:11:08 rc=0     170s  ft_B: python src/e5_finetune.py --split full --n 20000 --seed 0 --out /tmp/t32/B
+peak GPU memory B: 9629 MiB (nvidia-smi, whole device)
+11:11:43 rc=0      35s  compare_AB: python exploration/p4/ft_repro.py compare /tmp/t32/A /tmp/t32/B --out /kaggle/working/t32_AB.json
+11:14:37 rc=0     174s  ft_C: python /tmp/repo/exploration/p4/ft_repro.py det -- --split full --n 20000 --seed 0 --out /tmp/t32/C
+peak GPU memory C: 9759 MiB (nvidia-smi, whole device)
+11:17:32 rc=0     175s  ft_D: python /tmp/repo/exploration/p4/ft_repro.py det -- --split full --n 20000 --seed 0 --out /tmp/t32/D
+peak GPU memory D: 9759 MiB (nvidia-smi, whole device)
+11:18:07 rc=0      35s  compare_CD: python exploration/p4/ft_repro.py compare /tmp/t32/C /tmp/t32/D --out /kaggle/working/t32_CD.json
+11:18:42 rc=0      35s  compare_AC: python exploration/p4/ft_repro.py compare /tmp/t32/A /tmp/t32/C --out /kaggle/working/t32_AC.json
+11:18:43 rc=0       0s  done: cp /tmp/t32/A/p4_finetune_stats.json /kaggle/working/stats_A.json; cp /tmp/t32/C/p4_finetune_stats.json /kaggle/working/stats_C.json; nvidia-smi -L

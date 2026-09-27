@@ -1,0 +1,16 @@
+$ python exploration/p4/ft_repro.py compare /tmp/t32/C /tmp/t32/D --out /kaggle/working/t32_CD.json
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] /tmp/t32/C on cuda (torch.float16), params=117,653,760, dim=384
+[p4_e5] /tmp/t32/D on cuda (torch.float16), params=117,653,760, dim=384
+{
+ "sha256_a": "d09284450ccdd97c617fb79e0cbbda4a49c5e83bda13b2e28f5936d0d110a501",
+ "sha256_b": "d09284450ccdd97c617fb79e0cbbda4a49c5e83bda13b2e28f5936d0d110a501",
+ "identical_file": true,
+ "max_abs_weight_diff": 0.0,
+ "max_abs_cos_diff_1000_test_pairs": 0.0,
+ "mean_abs_cos_diff_1000_test_pairs": 0.0,
+ "train_seconds_a": 43.7,
+ "steps_a": 104,
+ "train_seconds_b": 43.8,
+ "steps_b": 104
+}
