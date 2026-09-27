@@ -677,3 +677,38 @@
  }
 }
 ```
+
+## 20260927-130249_densecv_T28_mined_only_ea4e7e (commit 9489112)
+
+```
+{
+ "f05": 0.98732,
+ "by_country": {
+  "India": 0.98603,
+  "US": 0.98818
+ },
+ "by_fold": {
+  "0": 0.98729,
+  "1": 0.98735
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9924,
+ "f05_nonsingleton": 0.98702,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.9982,
+ "pair_recall": 0.96595,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.98732,
+ "threshold_curve": {
+  "0.3": 0.98313,
+  "0.4": 0.98489,
+  "0.5": 0.98614,
+  "0.6": 0.98702,
+  "0.7": 0.98739,
+  "0.8": 0.98732,
+  "0.9": 0.98632
+ }
+}
+```
