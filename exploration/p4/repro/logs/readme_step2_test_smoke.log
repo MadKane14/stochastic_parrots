@@ -1,0 +1,107 @@
+$ python src/run.py test -c configs/best.yaml --smoke --task repro
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] /tmp/ber_artifacts/models/ft_full on cuda (torch.float16), params=117,653,760, dim=384
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+/tmp/repo/code/business_entity_resolution/src/ber/pipeline.py:131: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  pairs[c] = f[c].to_numpy()
+[TEST] 20260927-165401_repro_repro_best_test_47d79c_smoke
+  submission: /tmp/ber_artifacts/submissions/20260927-165401_repro_repro_best_test_47d79c_smoke
+  our validator issues: none
+  official validator: FAIL
+  test stats: {"France": {"n": 2636, "pred_empty_rate": 0.7845, "matches_per_s1": 0.275, "cands_per_s1": 5.18}, "India": {"n": 8090, "pred_empty_rate": 0.9412, "matches_per_s1": 0.062, "cands_per_s1": 1.99}, "US": {"n": 6550, "pred_empty_rate": 0.9466, "matches_per_s1": 0.055, "cands_per_s1": 0.99}}
+  results: /kaggle/working/results/repro/smoke/20260927-165401_repro_repro_best_test_47d79c_smoke.json

@@ -1,0 +1,7 @@
+$ python src/e5_finetune.py --split full --out $BER_ARTIFACTS/models/ft_full --n 20000
+triples: 20,000 (742 same-address hard negatives)
+data ready in 116s; split full train side: 2,206,821 S1
+step 0/104 field name loss 3.7914 lr 7.92e-06 195 pairs/s
+step 100/104 field name loss 0.1222 lr 5.77e-07 501 pairs/s
+step 103/104 field full loss 0.0271 lr 0.00e+00 500 pairs/s
+{"split": "full", "neg": "address", "neg_frac": null, "epochs": 1, "mix": 0.0, "base_model": "intfloat/multilingual-e5-small", "n_triples": 20000, "n_hard_negatives": 742, "steps": 104, "batch": 192, "lr": 2e-05, "tau": 0.05, "max_length": 64, "seed": 0, "train_seconds": 40.4, "pairs_used": 19968, "gpu": "Tesla T4", "torch": "2.8.0+cu128"}

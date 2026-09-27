@@ -1,0 +1,296 @@
+{
+ "run_id": "20260927-165401_repro_repro_best_test_47d79c_smoke",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "repro",
+ "task": "repro",
+ "note": "",
+ "mode": "test",
+ "split": "test",
+ "smoke": true,
+ "sample_frac": 0.01,
+ "created": "2026-09-27T16:54:01",
+ "config_path": "configs/best.yaml",
+ "overrides": [],
+ "config_hash": "47d79cc6d84e",
+ "config": {
+  "paths": {
+   "data_dir": "/kaggle/input/datasets/anishtoshniwal006/ber-data-p4",
+   "artifacts_dir": "/tmp/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p4_tcanon",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": 40,
+   "blockers": [
+    {
+     "name": "p3_compound_rc",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000,
+      "rev_cap": 10
+     }
+    },
+    {
+     "name": "p3_chargram",
+     "params": {
+      "field": "name_norm",
+      "ngrams": [
+       3,
+       4
+      ],
+      "words": true,
+      "right_max_addr_tokens": 0,
+      "k": 2,
+      "k_rev": 5,
+      "max_df": 5000,
+      "rev_cap": 10
+     }
+    },
+    {
+     "name": "p3_nameaddr",
+     "params": {
+      "name_field": "name_core",
+      "addr_field": "addr_norm",
+      "name_cap": 4,
+      "addr_cap": 10,
+      "k": 5,
+      "k_rev": 1,
+      "max_df": 300,
+      "rev_cap": 10
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_e5",
+    "params": {
+     "fields": [
+      "name",
+      "full"
+     ],
+     "model": "/tmp/ber_artifacts/models/ft_full"
+    }
+   },
+   {
+    "name": "p1_noise",
+    "params": {
+     "unsup": true
+    }
+   },
+   {
+    "name": "p1_ambig",
+    "params": {}
+   },
+   {
+    "name": "p1_mnoise",
+    "params": {}
+   }
+  ],
+  "scorer": {
+   "name": "weighted_mean",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000,
+    "combine": "mean",
+    "weights": [
+     0.5,
+     0.5
+    ],
+    "members": [
+     {
+      "name": "p1_lgbm",
+      "params": {
+       "max_iter": 3000,
+       "learning_rate": 0.05,
+       "max_rows": 15000000,
+       "drop_features": [
+        "^f_p1m_"
+       ]
+      }
+     },
+     {
+      "name": "p1_lgbm",
+      "params": {
+       "max_iter": 3000,
+       "learning_rate": 0.05,
+       "max_rows": 15000000,
+       "drop_features": [
+        "^f_p1_core_n_",
+        "^f_p1n_(n|a)_",
+        "^f_p1n_total_unexpl",
+        "^f_p1n_rec_"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.8,
+    "exclusive_right": true
+   }
+  },
+  "prune": {
+   "scorer": {
+    "name": "p1_lgbm",
+    "params": {
+     "max_rows": 15000000,
+     "max_iter": 60,
+     "learning_rate": 0.2,
+     "num_leaves": 31,
+     "early_stopping": 10
+    }
+   },
+   "features": [
+    "blk_0_score",
+    "blk_0_rank",
+    "blk_1_score",
+    "blk_1_rank",
+    "blk_2_score",
+    "blk_2_rank",
+    "f_p1_name_tset",
+    "f_p1_addr_tset",
+    "f_p1_idf_n_jacc",
+    "f_p1_idf_w_jacc",
+    "f_p1_num_shared",
+    "f_p1_num_first_eq",
+    "f_p1_grp_s1_key_rank",
+    "f_p1_grp_rec_key_rank",
+    "f_p1_grp_s1_key_margin",
+    "f_p1_grp_rec_key_margin"
+   ],
+   "min_score": 0.005,
+   "max_per_s1": 10
+  }
+ },
+ "git": {
+  "commit": "9db9ed490710",
+  "branch": "mainsnap",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true
+ },
+ "machine": {
+  "host": "f018d95f046a",
+  "python": "3.12.13",
+  "platform": "Linux-6.12.90+-x86_64-with-glibc2.35",
+  "gpu": "Tesla T4; Tesla T4"
+ },
+ "sizes": {
+  "train_s1": 2206821,
+  "train_right": 10320219,
+  "target_s1": 1732544,
+  "target_right": 9969589
+ },
+ "train_pairs": {
+  "n_pairs": 779855,
+  "pos_rate": 0.09695905007982253,
+  "n_features": 128
+ },
+ "transductive_components": [
+  "p4_tcanon",
+  "p3_compound_rc",
+  "p3_chargram",
+  "p3_nameaddr",
+  "p1_match",
+  "p1_extra",
+  "p1_noise",
+  "p1_ambig",
+  "p1_mnoise"
+ ],
+ "timings_s": {
+  "normalize": 13.91,
+  "block": 60.68,
+  "features:p1_match": 18.9,
+  "features:p1_extra": 19.61,
+  "features:p1_e5": 104.56,
+  "features:p1_noise": 5.06,
+  "features:p1_ambig": 0.97,
+  "features:p1_mnoise": 5.12,
+  "prune_fit": 3.54,
+  "scorer_fit": 63.79,
+  "prune": 1.02,
+  "score": 0.92
+ },
+ "artifacts_dir": "/tmp/ber_artifacts/runs/20260927-165401_repro_repro_best_test_47d79c_smoke",
+ "submission": {
+  "dir": "/tmp/ber_artifacts/submissions/20260927-165401_repro_repro_best_test_47d79c_smoke",
+  "our_validator_issues": [],
+  "official_validator": "FAIL\nML Challenge 2026 \u2014 submission validator\n  test dir: /kaggle/input/datasets/anishtoshniwal006/ber-data-p4/test\n  required S1 entities: 1732544\n  matching_results.tsv: 17276 rows (15882 empty, 1394 non-empty).\n  candidate_pairs.tsv: 17276 rows (4686 empty, 12590 non-empty).\n\nWARNING: ID-existence check is OFF (the default) \u2014 not checking that matched/candidate IDs exist in the test set. Every other rule is still checked. Re-run with --check-ids to enable it (needs test_source2/3.tsv; uses more memory). A nonexistent ID only lowers your score, never rejects your submission.\nFAIL \u2014 2 issue(s) to fix before submitting:\n  1. matching_results.tsv: required S1 entity(ies) missing: 1715268 total, e.g. S1-100000556, S1-100001013, S1-100001295, S1-100001834, S1-100003037, .... Every entity in test_source1.tsv needs a row (empty = no match).\n  2. candidate_pairs.tsv: required S1 entity(ies) missing: 1715268 total, e.g. S1-100000556, S1-100001013, S1-100001295, S1-100001834, S1-100003037, .... Every entity in test_source1.tsv needs a row (empty = no match).\n"
+ },
+ "test_stats": {
+  "n_s1": 17276,
+  "by_country": {
+   "France": {
+    "n": 2636,
+    "pred_empty_rate": 0.7845,
+    "matches_per_s1": 0.275,
+    "cands_per_s1": 5.18
+   },
+   "India": {
+    "n": 8090,
+    "pred_empty_rate": 0.9412,
+    "matches_per_s1": 0.062,
+    "cands_per_s1": 1.99
+   },
+   "US": {
+    "n": 6550,
+    "pred_empty_rate": 0.9466,
+    "matches_per_s1": 0.055,
+    "cands_per_s1": 0.99
+   }
+  }
+ },
+ "runtime_s": 500.0
+}

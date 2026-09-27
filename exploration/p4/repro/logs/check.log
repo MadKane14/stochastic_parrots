@@ -1,0 +1,23 @@
+$ python src/run.py check
+python 3.12.13  (/usr/bin/python3)
+  OK  numpy 2.2.6 (pinned 2.2.6)
+  OK  pandas 2.3.3 (pinned 2.3.3)
+  OK  scipy 1.15.2 (pinned 1.15.2)
+  OK  scikit-learn 1.7.2 (pinned 1.7.2)
+  OK  rapidfuzz 3.14.1 (pinned 3.14.1)
+  OK  lightgbm 4.6.0 (pinned 4.6.0)
+  OK  pyarrow 21.0.0 (pinned 21.0.0)
+  OK  PyYAML 6.0.3 (pinned 6.0.3)
+  MISMATCH torch 2.8.0+cu128 (pinned 2.8.0)
+  OK  transformers 4.57.1 (pinned 4.57.1)
+  OK  tokenizers 0.22.2 (pinned 0.22.2)
+  OK  safetensors 0.8.0 (pinned 0.8.0)
+  OK  huggingface-hub 0.36.0 (pinned 0.36.0)
+BER_MEMBER = repro
+BER_DATA_DIR = /kaggle/input/datasets/anishtoshniwal006/ber-data-p4
+BER_ARTIFACTS = /tmp/ber_artifacts
+data/train: ['train_ground_truth.tsv', 'train_source1.tsv', 'train_source2.tsv', 'train_source3.tsv']
+data/test: ['test_source1.tsv', 'test_source2.tsv', 'test_source3.tsv']
+components: {"normalizer": ["basic", "p2_translit", "p4_tcanon"], "blocker": ["p1_compound", "p1_idf_overlap", "p3_chargram", "p3_compound_rc", "p3_nameaddr", "tfidf_knn"], "features": ["p1_ambig", "p1_e5", "p1_extra", "p1_match", "p1_mnoise", "p1_noise", "p4_e5", "p4_e5cf", "string_sims"], "scorer": ["hgb", "lgbm", "p1_lgbm", "p1_selftrain", "weighted_mean"], "decider": ["p1_assign", "threshold"]}
+eval hash 57af2f140244d7b2  lock: 57af2f140244d7b2
+machine: {'host': 'f018d95f046a', 'python': '3.12.13', 'platform': 'Linux-6.12.90+-x86_64-with-glibc2.35', 'gpu': 'Tesla T4; Tesla T4'}

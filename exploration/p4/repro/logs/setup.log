@@ -1,0 +1,11 @@
+$ git clone -b mainsnap /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+9db9ed4 STATE D22: #10 0.983186 (tie with #9); best.yaml = T29 ensemble; provisional zip
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-2668ca6e-0220-d001-5a2b-7b54d0199183)
+GPU 1: Tesla T4 (UUID: GPU-e82c2215-9180-fec4-88fc-be18ac40203c)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

@@ -1,0 +1,15 @@
+$ ls -la /tmp/ber_artifacts/submissions/*/ 2>&1 | head -20; head -3 /tmp/ber_artifacts/submissions/*/*.tsv; cp -r /kaggle/working/results /kaggle/working/results_copy 2>/dev/null; git -C /tmp/repo status --short | head
+total 944
+drwxr-xr-x 2 root root   4096 Sep 27 17:02 .
+drwxr-xr-x 3 root root   4096 Sep 27 17:02 ..
+-rw-r--r-- 1 root root 693843 Sep 27 17:02 candidate_pairs.tsv
+-rw-r--r-- 1 root root 258996 Sep 27 17:02 matching_results.tsv
+==> /tmp/ber_artifacts/submissions/20260927-165401_repro_repro_best_test_47d79c_smoke/candidate_pairs.tsv <==
+source1_entity_id	candidate_entity_ids
+S1-742053041	
+S1-684318101	S2-905535325
+
+==> /tmp/ber_artifacts/submissions/20260927-165401_repro_repro_best_test_47d79c_smoke/matching_results.tsv <==
+source1_entity_id	matched_entity_ids
+S1-742053041	
+S1-684318101	

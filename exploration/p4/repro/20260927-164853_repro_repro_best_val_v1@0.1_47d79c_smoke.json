@@ -1,0 +1,324 @@
+{
+ "run_id": "20260927-164853_repro_repro_best_val_v1@0.1_47d79c_smoke",
+ "harness_version": "2",
+ "status": "ok",
+ "member": "repro",
+ "task": "repro",
+ "note": "",
+ "mode": "val",
+ "split": "val_v1@0.1",
+ "smoke": true,
+ "sample_frac": 0.01,
+ "created": "2026-09-27T16:48:53",
+ "config_path": "configs/best.yaml",
+ "overrides": [],
+ "config_hash": "47d79cc6d84e",
+ "config": {
+  "paths": {
+   "data_dir": "/kaggle/input/datasets/anishtoshniwal006/ber-data-p4",
+   "artifacts_dir": "/tmp/ber_artifacts"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p4_tcanon",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": 40,
+   "blockers": [
+    {
+     "name": "p3_compound_rc",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000,
+      "rev_cap": 10
+     }
+    },
+    {
+     "name": "p3_chargram",
+     "params": {
+      "field": "name_norm",
+      "ngrams": [
+       3,
+       4
+      ],
+      "words": true,
+      "right_max_addr_tokens": 0,
+      "k": 2,
+      "k_rev": 5,
+      "max_df": 5000,
+      "rev_cap": 10
+     }
+    },
+    {
+     "name": "p3_nameaddr",
+     "params": {
+      "name_field": "name_core",
+      "addr_field": "addr_norm",
+      "name_cap": 4,
+      "addr_cap": 10,
+      "k": 5,
+      "k_rev": 1,
+      "max_df": 300,
+      "rev_cap": 10
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_e5",
+    "params": {
+     "fields": [
+      "name",
+      "full"
+     ],
+     "model": "/tmp/ber_artifacts/models/ft_full"
+    }
+   },
+   {
+    "name": "p1_noise",
+    "params": {
+     "unsup": true
+    }
+   },
+   {
+    "name": "p1_ambig",
+    "params": {}
+   },
+   {
+    "name": "p1_mnoise",
+    "params": {}
+   }
+  ],
+  "scorer": {
+   "name": "weighted_mean",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000,
+    "combine": "mean",
+    "weights": [
+     0.5,
+     0.5
+    ],
+    "members": [
+     {
+      "name": "p1_lgbm",
+      "params": {
+       "max_iter": 3000,
+       "learning_rate": 0.05,
+       "max_rows": 15000000,
+       "drop_features": [
+        "^f_p1m_"
+       ]
+      }
+     },
+     {
+      "name": "p1_lgbm",
+      "params": {
+       "max_iter": 3000,
+       "learning_rate": 0.05,
+       "max_rows": 15000000,
+       "drop_features": [
+        "^f_p1_core_n_",
+        "^f_p1n_(n|a)_",
+        "^f_p1n_total_unexpl",
+        "^f_p1n_rec_"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.8,
+    "exclusive_right": true
+   }
+  },
+  "prune": {
+   "scorer": {
+    "name": "p1_lgbm",
+    "params": {
+     "max_rows": 15000000,
+     "max_iter": 60,
+     "learning_rate": 0.2,
+     "num_leaves": 31,
+     "early_stopping": 10
+    }
+   },
+   "features": [
+    "blk_0_score",
+    "blk_0_rank",
+    "blk_1_score",
+    "blk_1_rank",
+    "blk_2_score",
+    "blk_2_rank",
+    "f_p1_name_tset",
+    "f_p1_addr_tset",
+    "f_p1_idf_n_jacc",
+    "f_p1_idf_w_jacc",
+    "f_p1_num_shared",
+    "f_p1_num_first_eq",
+    "f_p1_grp_s1_key_rank",
+    "f_p1_grp_rec_key_rank",
+    "f_p1_grp_s1_key_margin",
+    "f_p1_grp_rec_key_margin"
+   ],
+   "min_score": 0.005,
+   "max_per_s1": 10
+  }
+ },
+ "git": {
+  "commit": "9db9ed490710",
+  "branch": "mainsnap",
+  "dirty": false,
+  "dirty_files": [],
+  "diff_sha": null
+ },
+ "eval": {
+  "eval_code_sha256": "57af2f140244d7b2",
+  "locked_sha256": "57af2f140244d7b2",
+  "eval_hash_ok": true,
+  "split_fingerprint": "7c6fdaad258dd038",
+  "split_fingerprint_ok": false
+ },
+ "machine": {
+  "host": "f018d95f046a",
+  "python": "3.12.13",
+  "platform": "Linux-6.12.90+-x86_64-with-glibc2.35",
+  "gpu": "Tesla T4; Tesla T4"
+ },
+ "sizes": {
+  "train_s1": 1765457,
+  "train_right": 8255710,
+  "target_s1": 441364,
+  "target_right": 2064509
+ },
+ "train_pairs": {
+  "n_pairs": 623362,
+  "pos_rate": 0.09725809401278872,
+  "n_features": 128
+ },
+ "transductive_components": [
+  "p4_tcanon",
+  "p3_compound_rc",
+  "p3_chargram",
+  "p3_nameaddr",
+  "p1_match",
+  "p1_extra",
+  "p1_noise",
+  "p1_ambig",
+  "p1_mnoise"
+ ],
+ "timings_s": {
+  "normalize": 7.03,
+  "block": 29.56,
+  "features:p1_match": 9.49,
+  "features:p1_extra": 10.04,
+  "features:p1_e5": 53.56,
+  "features:p1_noise": 2.64,
+  "features:p1_ambig": 0.54,
+  "features:p1_mnoise": 2.68,
+  "prune_fit": 3.2,
+  "scorer_fit": 50.24,
+  "prune": 0.23,
+  "score": 0.23
+ },
+ "artifacts_dir": "/tmp/ber_artifacts/runs/20260927-164853_repro_repro_best_val_v1@0.1_47d79c_smoke",
+ "metrics": {
+  "f05": 0.99822,
+  "f05_ci95": [
+   0.99751,
+   0.99875
+  ],
+  "n_s1": 4332,
+  "singleton_rate": 0.0542,
+  "singleton_acc": 1.0,
+  "f05_nonsingleton": 0.99812,
+  "pred_empty_rate": 0.0545,
+  "pair_precision": 0.99933,
+  "pair_recall": 0.99567,
+  "n_pred_pairs": 14941,
+  "by_country": {
+   "India": {
+    "n": 1766,
+    "f05": 0.99816
+   },
+   "US": {
+    "n": 2566,
+    "f05": 0.99826
+   }
+  },
+  "blocking": {
+   "pair_recall": 0.99893,
+   "pair_recall_by_source": {
+    "S2": 0.99917,
+    "S3": 0.99871
+   },
+   "entity_full_recall": 0.99609,
+   "oracle_f05": 0.99973,
+   "cands_per_s1_mean": 3.59,
+   "cands_per_s1_median": 4.0,
+   "cands_per_s1_p95": 6.0,
+   "cands_per_s1_max": 10,
+   "n_pairs": 15563,
+   "reduction_ratio": 0.999824,
+   "s1_without_candidates": 200
+  },
+  "scorer": {
+   "roc_auc": 0.99906,
+   "avg_precision": 0.99996
+  },
+  "diag_plain_threshold_curve": {
+   "0.3": 0.99811,
+   "0.4": 0.99805,
+   "0.5": 0.99797,
+   "0.6": 0.99798,
+   "0.7": 0.998,
+   "0.8": 0.99822,
+   "0.9": 0.99752
+  }
+ },
+ "runtime_s": 301.0
+}

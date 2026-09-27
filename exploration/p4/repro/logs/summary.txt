@@ -1,0 +1,12 @@
+16:40:30 rc=0       0s  setup: git clone -b mainsnap /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+16:40:30 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+16:43:03 rc=0     153s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements.txt
+16:43:05 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+16:43:22 rc=0      17s  check: python src/run.py check
+16:45:17 rc=0     115s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+16:45:56 rc=0      39s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+16:45:59 rc=0       3s  gpu_check: nvidia-smi -L | grep -q P100 && pip install -q --force-reinstall torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126 && pip uninstall -y -q torchvision torchaudio; python -c "import torch; print(torch.__version__, torch.cuda.get_device_name(0), torch.ones(2, device='cuda').sum().item())"
+16:48:52 rc=0     173s  readme_step1: python src/e5_finetune.py --split full --out $BER_ARTIFACTS/models/ft_full --n 20000
+16:54:01 rc=0     309s  readme_step2_run_smoke: python src/run.py run -c configs/best.yaml --smoke --task repro
+17:02:30 rc=0     509s  readme_step2_test_smoke: python src/run.py test -c configs/best.yaml --smoke --task repro
+17:02:30 rc=0       0s  collect: ls -la /tmp/ber_artifacts/submissions/*/ 2>&1 | head -20; head -3 /tmp/ber_artifacts/submissions/*/*.tsv; cp -r /kaggle/working/results /kaggle/working/results_copy 2>/dev/null; git -C /tmp/repo status --short | head
