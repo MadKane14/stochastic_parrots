@@ -642,3 +642,38 @@
  }
 }
 ```
+
+## 20260927-121253_densecv_T27_mnoise_nocore_ec007c (commit b4788a4)
+
+```
+{
+ "f05": 0.98739,
+ "by_country": {
+  "India": 0.98613,
+  "US": 0.98823
+ },
+ "by_fold": {
+  "0": 0.98724,
+  "1": 0.98755
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9923,
+ "f05_nonsingleton": 0.9871,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.9982,
+ "pair_recall": 0.96617,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.98739,
+ "threshold_curve": {
+  "0.3": 0.98324,
+  "0.4": 0.98495,
+  "0.5": 0.98621,
+  "0.6": 0.98707,
+  "0.7": 0.98745,
+  "0.8": 0.98739,
+  "0.9": 0.98644
+ }
+}
+```
