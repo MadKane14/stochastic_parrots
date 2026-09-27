@@ -43,7 +43,8 @@ _Last updated: Sun 27 Sep 05:30 IST (round 5 — T17 dense CV 0.98722; submissio
 | T09_tr (T08_sub + p2_translit D; blocking recall 0.970 → 0.979) | 0.98279 | 0.9826 / 0.9829 | — | `…143459_densecv_T09_tr_490034.json` |
 | T10_e5 (T09_tr + pretrained E5 `p1_e5` name/full) | 0.98313 | 0.9829 / 0.9833 | — | `…161049_densecv_T10_e5_08f49f.json` |
 | T12_noise2 (T10_e5 + p1_noise, unsup noise-ness) = LB #4 0.978 | 0.98405 | 0.9844 / 0.9838 | — | `…201525_densecv_T12_noise2_c3f279.json` |
-| **T17** (p3 T15 blocking 0.979→0.989 recall + noise + pruning + E5 fine-tuned + p1_ambig) | **0.98722** | 0.9861 / 0.9880 | pending | `…013724_densecv_T17_530df3.json` |
+| T17 (p3 T15 blocking 0.979→0.989 recall + noise + pruning + E5 fine-tuned + p1_ambig) | 0.98722 | 0.9861 / 0.9880 | 0.93443 | `…013724_densecv_T17_530df3.json`, `…060231_…_loco.json` |
+| **T18** (T17 + normalizer p4_tcanon) = **FINAL** (`configs/best.yaml`, thr 0.8) | **0.98752** (thr 0.8: 0.98746) | 0.9862 / 0.9884 | **0.93538** (thr 0.8: 0.93813) | `…074356_densecv_T18_2dd8b3.json`, `…081325_…_loco.json` (LOCO run flagged dirty: best.yaml edit in the tree, T18.yaml unchanged) |
 
 Full-density blocking (best.yaml blocker): pair recall 0.970, oracle F0.5 0.989 — blocking misses are the largest
 remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_analysis.md`).
@@ -59,6 +60,7 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 6 | Sat | ~23:50 | blend_sub4_sub5 (exploration/p1/blend_runs.py) | mean of #4 and #5 probabilities | – | **0.979** | same candidates; corr 0.998; PASS |
 | 7 | Sun | _to upload_ | 20260927-033731_p1_T16_T17_test_530df3 | T17 / cb81d3a | 0.98722 | _pending_ | p3 blocking (recall 0.979→0.989) + noise + pruning + ft E5 + p1_ambig; PASS (--check-ids); expected-F 0.9876 |
 | 7b | Sun | _to upload_ | T17_thr080 (blend_runs.py, same scores, threshold 0.8) | T17 / cb81d3a | 0.98717 (LOCO 0.937 vs 0.934) | _pending_ | recommended over #7 (D14); PASS |
+| 8 | Sun | _running (08:16, ETA ~10:15)_ | FINAL test run, log `logs/final_best_test.log` | best.yaml (T18 + thr 0.8) / af1a1be | 0.98752 | _pending_ | final candidate; choose final upload by dense CV + LOCO |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
@@ -85,5 +87,7 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
   (0.98722 vs 0.98717) while the clean unseen-country fold (India-trained model → US) rises 0.926 → 0.931 (0.9: 0.939);
   the model is overconfident on an unseen country (France). `exploration/p1/dense_decide_out.md` (T17 runs).
   T17 re-decided at 0.8 from saved scores: `submissions/T17_thr080` (validator PASS).
+- D15 (Sun 08:15): FINAL = T18 at threshold 0.8 = `configs/best.yaml` (dense CV 0.98752 > T17 0.98722, LOCO 0.93538 >
+  T17 0.93443; both folds up). Feature freeze: no further stack changes; Round-2 best frozen as `best_r2.yaml`.
 - Open organizer questions: see QUESTIONS.md.
 - video-slides.pdf in the claude.ai project is image-only; the planner could not read it.

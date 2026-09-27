@@ -4,7 +4,7 @@
 **Team Members:** [fill: 4 members]
 **Submission Date:** 27 September 2026
 
-> DRAFT (Sat 26 Sep, lead). Numbers marked [final] are filled from the final run's results JSON on Sunday.
+> Sun 27 Sep (lead). Final configuration: `configs/best.yaml`. Only the final leaderboard score is still marked [final].
 
 ---
 
@@ -48,7 +48,9 @@ romanization from Unicode character names, unsupervised "noise-ness" of words (S
 ## 3. Candidate Generation (Blocking)
 - **Normalization:** lowercase, Latin accent stripping, punctuation → space; learned native-script → Latin token map
   (competitive linking on train true pairs), web-name splitting, joined initials; digits split from letters and
-  leading zeros stripped.
+  leading zeros stripped; address abbreviations and junk tokens (`r`→`rue`, `st`→`saint`, `N°`) canonicalized from
+  label-free statistics mined on each country-string group's own records, so the unseen country's forms are learned from
+  its data rather than from train (train says `st`→`street`).
 - **Blocking keys:** within each group of equal `country` string, IDF-weighted cosine over single tokens **and token
   pairs**: name-word pairs, adjacent address bigrams, house-number × address-word, house-number × name-word. Pairs are
   rare even when each word is common, and survive word reordering. Features with in-group document frequency > 1000
@@ -77,9 +79,12 @@ romanization from Unicode character names, unsupervised "noise-ness" of words (S
 - Address: token-set / partial / ratio, IDF-weighted word overlap, house numbers (shared count, Jaccard, first-number
   equality, dropped-digit match, digit edit distance, log numeric difference, conflict / missing flags).
 - Embeddings: cosine of multilingual-e5-small (MIT, 118M params) embeddings of name and name+address [final: pretrained
-  or contrastively fine-tuned on train pairs only].
+  contrastively fine-tuned on train true pairs only (in-batch negatives, `src/e5_finetune.py`).
 - Noise words: learned from train true pairs, how often each word is an added / dropped noise word; unexplained added /
   dropped words; unsupervised noise-ness (word frequency in S2/S3 vs S1 names within the country group).
+- Name ambiguity: number of S1 entities in the same country group sharing the record's core / full name, the S1's own
+  name uniqueness and supply of same-named records, address token counts (for name-only records the name is the only
+  evidence; when several S1 share it, F0.5 prefers leaving the record unassigned).
 - Context: rank / gap / margin of key signals within the S1 entity's candidates and within the S2/S3 record's
   competing S1 entities.
 
@@ -93,7 +98,8 @@ never saw) → **0.8**, chosen on validation data only.
 
 ## 5. Results & Error Analysis
 - **F_0.5 Score (macro):** test-density out-of-fold CV over the full training set (2.2M S1): 0.9696 → 0.9789 →
-  0.9828 → 0.9841 → **0.9872** (final additions [final]); leave-one-country-out 0.905 → 0.923 → 0.934.
+  0.9828 → 0.9841 → 0.9872 → **0.9875** (final); leave-one-country-out 0.905 → 0.923 → 0.934 → **0.935** (0.938 at
+  the final threshold 0.8).
   Public leaderboard: 0.949 → 0.969 → 0.978 → 0.979 → [final]. A 20% random hold-out reported 0.992 for the first
   model — it hides siblings/distractors, so we stopped using it for decisions.
 - **Common false positives (wrong merges):** unmatched near-copies with a shifted house number; siblings at the same
@@ -115,9 +121,20 @@ feature country- and script-agnostic so it transfers to the unseen country.
 
 ### A. Code Artefacts
 `code/business_entity_resolution/`: `src/run.py` (CLI), `src/ber/pipeline.py` (stages incl. pruning),
-`src/ber/normalize/` (basic, p2_translit), `src/ber/blocking/` (p1_compound), `src/ber/features/` (p1_match, p1_extra,
-p1_romanize, p1_e5, p1_noise), `src/ber/scorers/p1_lgbm.py`, `src/ber/deciders/p1_assign.py`, `src/ber/eval/` (metric,
+`src/ber/normalize/` (basic, p2_translit, p4_tcanon), `src/ber/blocking/` (p1_compound, p3_compound_rc, p3_chargram, p3_nameaddr), `src/ber/features/` (p1_match, p1_extra,
+p1_romanize, p1_e5, p1_noise, p1_ambig), `src/ber/scorers/p1_lgbm.py`, `src/ber/deciders/p1_assign.py`, `src/ber/eval/` (metric,
 splits). Reproduce: `python src/run.py test -c configs/best.yaml` (see README.md) → both TSVs.
 
 ### B. Additional Results
-[final: table of test-density CV / leave-one-country-out / leaderboard per iteration]
+| iteration | main change | dense CV | LOCO | public LB |
+|---|---|---|---|---|
+| 1 | IDF blocking + HGB matcher | 0.9696 | 0.905 | 0.949 |
+| 2 | compound-key blocking, LightGBM, group features | 0.9789 | 0.923¹ | 0.969 |
+| 3 | + transliteration map, pretrained E5 cosines | 0.9831 | — | not submitted |
+| 4 | + noise-word features, learned pruning (~6.5 candidates/S1) | 0.9841 | — | 0.978 |
+| 4b | + E5 fine-tuned on train pairs (mean with 4) | — | — | 0.979 |
+| 5 | + 3-channel blocking (recall 98.9%), name-ambiguity features | 0.9872 | 0.934 | [final] |
+| final | + target canonicalization (`p4_tcanon`), threshold 0.8 | 0.9875 | 0.935 | [final] |
+
+Dense CV = 2-fold out-of-fold macro F0.5 over all 2.2M train S1 at test density; LOCO = train on one country, score the
+other (unseen-country proxy). ¹ measured on the same features without the final threshold/uncapped model (T08_g).
