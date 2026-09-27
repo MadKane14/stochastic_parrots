@@ -1,5 +1,30 @@
 # TASKS — workers: do only the tasks with your handle in the CURRENT round
 
+## Round 6 — Sun 08:30 → 17:00, FREEZE (lead p1). No new features or model changes.
+**FINAL = `configs/best.yaml`** = T18 (T17 + p4_tcanon) at threshold 0.8 (D15): dense CV **0.98752**, LOCO **0.93538**
+(T17: 0.98722 / 0.93443). Its test run (#8) is on phoenix now; a clean-checkout reproduction (`exploration/p1/repro_final.sh`)
+follows. Your jobs are review only. Fetch main (≥ 88c85e6). Report as `reports/<you>/T2x.md` by **Sun 14:00**; push to your branch.
+
+### T21 — p2: package review (read-only)
+Read `code/business_entity_resolution/` as an organizer would: README steps vs code (`src/run.py test`, `src/e5_finetune.py`),
+`requirements.txt` vs every import, docstrings on public functions, no dead paths in the final config's components, no
+country-specific branches (grep `India|US|France|country ==`) and no GPL imports. List exact file:line issues with a suggested
+patch; do not edit core/src files yourself.
+
+### T22 — p3: methodology fact check
+Check every number and claim in `Documentation_template.md` against the committed JSONs / reports (`exploration/p1/dense_cv/`,
+`exploration/*/blk_eval_out.md`, planning/STATE.md). Report each mismatch with the correct value and its source.
+Blocking section: confirm the three channels' parameters match `configs/best.yaml`.
+
+### T23 — p4: compliance record
+One table for the methodology appendix: every model / library in the final pipeline with licence, parameter count, training
+data (provided train only), offline status; and the transductive components (p4_tcanon, blockers' IDF, p1_match/p1_extra IDF,
+p1_noise unsup, p1_ambig) with what statistic each takes from the test records. Point out anything that could be read as a
+rule violation (§2 of CLAUDE.md).
+
+---
+## Archive
+
 ## Round 5 — Sat 22:30 → Sun 08:00 (lead p1). LB #4 = **0.978** (dense CV 0.98405). Top-10 ≈ 0.99.
 Tonight: #5 (= #4 + fine-tuned E5 `ft_full`) and #6 (probability average of #4 and #5) are uploaded by the lead.
 Phoenix overnight runs the FULL dense CV of the final stack. Your Kaggle machines validate the two big levers on the
@@ -21,9 +46,6 @@ dataset / re-train with `exploration/p4/e5_finetune.py --split full`), vs pretra
 these pairs (p4 T16 found naive ≈ cross-fitted).
 
 Everyone: no new features after these; Sun 09:30 sync decides the final stack; Sun 12:00 feature freeze.
-
----
-## Archive
 
 ## Round 4 — Sat 17:30, FINAL NIGHT (lead p1). Push results + a short report by **21:00**; last sync Sun 09:30.
 Sun 12:00 feature freeze · 18:00 code freeze · 21:00 zip + methodology. Top-100 LB ≥ 0.984; we are at 0.969 (#2).
