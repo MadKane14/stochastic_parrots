@@ -102,6 +102,21 @@ never saw) → **0.8**, chosen on validation data only.
   the final threshold 0.8).
   Public leaderboard: 0.949 → 0.969 → 0.978 → 0.979 → [final]. A 20% random hold-out reported 0.992 for the first
   model — it hides siblings/distractors, so we stopped using it for decisions.
+- **Unseen country (France) — what validation could not show, and what we measured without labels.** Our test-density
+  CV contains only US and India. On the test set, label-free statistics of our US/India predictions reproduce the CV
+  exactly (share of predicted pairs with conflicting house numbers 6.18% vs 6.07% US, 2.16% vs 2.15% India; share of
+  empty-address records assigned 54–60% in both), so the leaderboard gap is France (15% of test entities). France behaves
+  differently in two measurable ways: (1) its business names come from a small vocabulary — 56 words (club, amicale,
+  école, maison, centre, comité …) occur in more than 1% of France names, so 78% of France names keep at most one
+  "rare" word (US 8%) and any frequency-based notion of the distinctive part of a name degenerates; (2) it has 5–8×
+  more same-address candidates with a different name per entity (co-located businesses and "siblings" that differ by
+  one word). A word-level noise model learned from US/India labels cannot tell a sibling ("DD Musique" at the address
+  of "DD Comite") from a noisy copy ("DD Comite SARL"). We therefore learn noise-word statistics **without labels inside
+  each country group** from likely copies mined among its own candidates (same house numbers, similar street and name):
+  on France test data the mined rates put "holding" (0.89) and "participations" (0.97) as frequently added noise and
+  "club" (0.02), "comité" (0.01), "musique" (0.01) as stable words whose disagreement signals a different business.
+  We also tried self-training (pseudo-labels from the model's own confident scores): on the leave-one-country-out proxy
+  it raised recall but reinforced confident false merges (0.938 → 0.933), so it is not used.
 - **Common false positives (wrong merges):** unmatched near-copies with a shifted house number; siblings at the same
   address whose name differs by one word; non-Latin names of a different company at the same address.
 - **Common false negatives (missed matches):** S2/S3 records with an empty address and a common name (ambiguous between
