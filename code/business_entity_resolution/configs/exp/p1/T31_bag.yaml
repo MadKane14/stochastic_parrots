@@ -1,0 +1,17 @@
+# T31_bag (p1, Sun 27 Sep 18:30): the final ensemble (best.yaml = T29) + a second member A trained with seed 1 on a different
+# 15M-pair S1-group sample (bagging over training data; members otherwise all see the same 19% of train pairs).
+# Weights A 0.25, B 0.5, A(seed 1) 0.25 keep the label-learned / label-free balance of the final at 50/50.
+# Evidence: dense CV of T31_a1 blended offline with the T18 (A) and T28 (B) OOF scores (exploration/p1/oof_bag.py).
+# model: LightGBM x3 (MIT); encoder multilingual-e5-small (MIT, 117,653,760 params). Transductive: as best.yaml.
+inherit: ../../best.yaml
+scorer:
+  params:
+    weights: [0.25, 0.5, 0.25]
+    members:
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, drop_features: ["^f_p1m_"]}
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000,
+               drop_features: ["^f_p1_core_n_", "^f_p1n_(n|a)_", "^f_p1n_total_unexpl", "^f_p1n_rec_"]}
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, seed: 1, drop_features: ["^f_p1m_"]}

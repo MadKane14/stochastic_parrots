@@ -1,0 +1,9 @@
+# T31_a1 (p1, Sun 27 Sep 18:30): member A of the final ensemble (T18 features, no p1_mnoise columns) with seed 1 — for dense CV.
+# Hypothesis: every member trains on max_rows = 15M of 77M train pairs (19% of S1 groups, memory cap) and A/B share seed 0, i.e.
+# the same sample; a second A trained on a different S1-group sample adds data the ensemble never saw (bagging over data).
+# Judged offline: OOF 0.25 A + 0.5 B + 0.25 A1 vs the final (0.5 A + 0.5 B = 0.98748 @0.8), gate +0.0002 and both folds up.
+# model: LightGBM (MIT); encoder as in best.yaml (multilingual-e5-small, MIT, 117,653,760 params).
+inherit: T26_mnoise.yaml
+scorer:
+  name: p1_lgbm
+  params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, seed: 1, drop_features: ["^f_p1m_"]}
