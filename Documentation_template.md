@@ -56,16 +56,16 @@ romanization from Unicode character names, unsupervised "noise-ness" of words (S
   rare even when each word is common, and survive word reordering. Features with in-group document frequency > 1000
   are not indexed (they still count in the norms).
 - **Two directions:** top-30 S2/S3 per S1, plus top-3 S1 per S2/S3 record (every record has at most one owner, so its own
-  best S1 is a strong candidate). Sparse matrix products in chunks; ~12 min per full dataset on 4 processes.
-- **Learned pruning:** a 60-tree LightGBM on 12 cheap features keeps, per S1, candidates with score ≥ 0.005 (≤ 10);
+  best S1 is a strong candidate). Sparse matrix products in chunks; all three channels take ~18 min per full dataset on 4 processes.
+- **Learned pruning:** a LightGBM of at most 60 trees on 16 cheap features (incl. each channel's score and rank) keeps, per S1, candidates with score ≥ 0.005 (≤ 10);
   the final model and `candidate_pairs.tsv` see only survivors.
 - **Channels:** (1) compound-key IDF cosine (forward top-30, reverse top-3 with a per-entity cap); (2) a name channel
-  for S2/S3 records without an address (their dominant failure mode); (3) a core-name × street-word channel for
+  for S2/S3 records without an address (their dominant failure mode); (3) a core-name × address-word channel for
   records whose house number is perturbed. Per-entity cap of 40 before pruning.
 - **Candidate pairs generated:** ≈ 35 per S1 before pruning (77.4M on the full training set), **≈ 6.9 per S1 after
   pruning** on test (France 7.2, India 6.9, US 6.5) — `candidate_pairs.tsv` is the pruned set.
 - **How we ensured true matches were not lost:** recall measured at test density on the full training set (not on a
-  sparse hold-out): **98.9% of true pairs retrieved** (was 97.0% with the compound channel alone); the pruning stage
+  sparse hold-out): **98.9% of true pairs retrieved** (97.9% with the compound channel alone; 97.0% before the learned transliteration map); the pruning stage
   keeps 99.9% of them.
 
 ---
@@ -78,8 +78,8 @@ romanization from Unicode character names, unsupervised "noise-ness" of words (S
   "रेड कंसल्टेंट्स" and "red consultants" → "rd knsltnts").
 - Address: token-set / partial / ratio, IDF-weighted word overlap, house numbers (shared count, Jaccard, first-number
   equality, dropped-digit match, digit edit distance, log numeric difference, conflict / missing flags).
-- Embeddings: cosine of multilingual-e5-small (MIT, 118M params) embeddings of name and name+address [final: pretrained
-  contrastively fine-tuned on train true pairs only (in-batch negatives, `src/e5_finetune.py`).
+- Embeddings: cosine of multilingual-e5-small (MIT, 118M params) embeddings of name and name+address,
+  contrastively fine-tuned on the train true pairs only (in-batch negatives, `src/e5_finetune.py`).
 - Noise words: learned from train true pairs, how often each word is an added / dropped noise word; unexplained added /
   dropped words; unsupervised noise-ness (word frequency in S2/S3 vs S1 names within the country group).
 - Name ambiguity: number of S1 entities in the same country group sharing the record's core / full name, the S1's own
@@ -143,8 +143,8 @@ splits). Reproduce: `python src/run.py test -c configs/best.yaml` (see README.md
 ### B. Additional Results
 | iteration | main change | dense CV | LOCO | public LB |
 |---|---|---|---|---|
-| 1 | IDF blocking + HGB matcher | 0.9696 | 0.905 | 0.949 |
-| 2 | compound-key blocking, LightGBM, group features | 0.9789 | 0.923¹ | 0.969 |
+| 1 | compound-key blocking + LightGBM (300-round cap) + one-owner rule | 0.9696 | 0.905 | 0.949 |
+| 2 | + IDF within country groups, core tokens, romanized skeletons, number edit distance, uncapped LightGBM | 0.9789 | 0.923¹ | 0.969 |
 | 3 | + transliteration map, pretrained E5 cosines | 0.9831 | — | not submitted |
 | 4 | + noise-word features, learned pruning (~6.5 candidates/S1) | 0.9841 | — | 0.978 |
 | 4b | + E5 fine-tuned on train pairs (mean with 4) | — | — | 0.979 |
