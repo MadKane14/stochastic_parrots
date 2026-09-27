@@ -50,3 +50,9 @@ Superseded insights are struck through with a pointer, never deleted.
 - I-28 [high] France has 5–8× more same-address, differently named candidates per S1 after pruning (0.60/S1 vs 0.07 US, 0.13
   India; partial-name 0.38 vs 0.24/0.28), i.e. co-located businesses / siblings; we assign 66% of France partial-name and 23%
   of renamed ones (≈ 12% of France predictions) — the likely France precision loss. — `exploration/p1/sibling_probe.py` (R7)
+- I-29 [high] With both label-learned (p1_noise) and label-free mined (p1_mnoise) noise-word features, LightGBM uses the
+  label-learned ones (8.7% vs 1.4% of gain): redundancy hides the country-agnostic signal from the model. Dropping the
+  label-learned per-word rates costs nothing measurable in-country (slice logloss 0.00724 vs 0.00728; dense CV 0.98732 vs
+  0.98739) and forces the model onto statistics that exist for an unseen country. General lesson: when a feature has a
+  label-learned and a label-free version, keep only the label-free one if the target domain is unseen. —
+  `exploration/p1/{feat_importance,slice_ablation}.py`, dense CV T27/T28 (R7)
