@@ -1,0 +1,150 @@
+{
+ "run": "20260927-124428_densecv_India_T14_full_2383c4",
+ "config_path": "code/business_entity_resolution/configs/exp/p2/T14_full.yaml",
+ "config": {
+  "paths": {
+   "data_dir": "/tmp/data/dataset",
+   "artifacts_dir": "/tmp/art"
+  },
+  "eval": {
+   "split": "val_v1@0.1"
+  },
+  "cache": true,
+  "normalize": {
+   "name": "p2_translit",
+   "params": {
+    "legal_tokens": [
+     "inc",
+     "llc",
+     "ltd",
+     "pvt",
+     "private",
+     "limited",
+     "corp",
+     "corporation",
+     "co",
+     "company",
+     "plc",
+     "llp"
+    ],
+    "mode": "replace",
+    "min_support": 3,
+    "min_precision": 0.5,
+    "fold_scripts": false,
+    "map_address": true,
+    "web_names": true,
+    "join_initials": true
+   }
+  },
+  "blocking": {
+   "max_candidates": null,
+   "blockers": [
+    {
+     "name": "p1_compound",
+     "params": {
+      "k": 30,
+      "k_rev": 3,
+      "max_df": 1000
+     }
+    },
+    {
+     "name": "p3_chargram",
+     "params": {
+      "field": "name_norm",
+      "ngrams": [
+       3,
+       4
+      ],
+      "words": true,
+      "right_max_addr_tokens": 0,
+      "k": 2,
+      "k_rev": 5,
+      "max_df": 5000
+     }
+    }
+   ]
+  },
+  "features": [
+   {
+    "name": "p1_match",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p1_extra",
+    "params": {
+     "idf_group": "country"
+    }
+   },
+   {
+    "name": "p4_e5",
+    "params": {
+     "model": "intfloat/multilingual-e5-small",
+     "fields": [
+      "name",
+      "full"
+     ],
+     "max_length": 64,
+     "batch_size": 512,
+     "group_feats": true,
+     "group_sides": [
+      "s1",
+      "rec"
+     ]
+    }
+   }
+  ],
+  "scorer": {
+   "name": "p1_lgbm",
+   "params": {
+    "max_iter": 3000,
+    "learning_rate": 0.05,
+    "max_rows": 15000000
+   }
+  },
+  "decider": {
+   "name": "p1_assign",
+   "params": {
+    "threshold": 0.7,
+    "exclusive_right": true
+   }
+  }
+ },
+ "git": {
+  "commit": "91fe89b",
+  "dirty": false
+ },
+ "fold_seed": 777,
+ "feature_cache": "base_e48c40cf32015e26+feat_p1_match_a543a7429e9cb016+feat_p1_extra_0cc96c1954e9901f+feat_p4_e5_f3429a3c1deabd5f",
+ "metrics": {
+  "group": "India",
+  "f05": 0.98415,
+  "by_fold": {
+   "0": 0.98417,
+   "1": 0.98414
+  },
+  "singleton_acc": 0.9902,
+  "f05_nonsingleton": 0.9838,
+  "n_s1": 883188,
+  "n_pairs": 30459509,
+  "cands_per_s1": {
+   "mean": 34.49,
+   "p95": 45.0,
+   "max": 312
+  },
+  "pair_precision": 0.99738,
+  "pair_recall": 0.96032,
+  "blocking_pair_recall": 0.98066,
+  "oracle_f05": 0.99285,
+  "f05_frozen_metric": 0.98415,
+  "threshold_curve": {
+   "0.5": 0.98306,
+   "0.6": 0.98387,
+   "0.7": 0.98415,
+   "0.8": 0.98398
+  }
+ },
+ "runtime_s": 12775,
+ "peak_rss_gb": 29.8
+}

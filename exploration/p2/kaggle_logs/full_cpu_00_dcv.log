@@ -1,0 +1,67 @@
+emb cache: /kaggle/input/notebooks/hetselarka/ber-p2-full-run/emb
+/kaggle/input/notebooks/hetselarka/ber-p2-full-run/emb/intfloat__multilingual-e5-small/full_ml64:
+total 3778568
+drwxr-xr-x 2 nobody nogroup          0 Sep 27 09:09 .
+drwxr-xr-x 4 nobody nogroup          0 Sep 27 09:09 ..
+-rw-r--r-- 1 nobody nogroup 3869249894 Sep 27 09:10 shard_00000.npz
+
+/kaggle/input/notebooks/hetselarka/ber-p2-full-run/emb/intfloat__multilingual-e5-small/name_ml64:
+total 2787924
+drwxr-xr-x 2 nobody nogroup          0 Sep 27 09:09 .
+drwxr-xr-x 4 nobody nogroup          0 Sep 27 09:09 ..
+-rw-r--r-- 1 nobody nogroup 2854833982 Sep 27 09:10 shard_00000.npz
+2026-09-27 09:19:48,728 dense_cv_group normalize 221s (rss 7.6 GB)
+2026-09-27 09:20:21,672 ber.blocking.p1_compound tokenize 24s
+2026-09-27 09:21:30,267 ber.blocking.p1_compound group 0: 883188 S1 x 4133346 right, 15100321 features (57.9/record), built in 68s
+2026-09-27 09:29:57,878 ber.blocking.p1_compound group 0 forward top-30: 508s
+2026-09-27 09:37:45,137 ber.blocking.p1_compound group 0 reverse top-3: 467s
+2026-09-27 09:40:28,653 ber.blocking.p3_chargram group 0: 883188 S1 x 122794 right, 17.2 indexed features/S1, built in 22s
+2026-09-27 09:40:28,933 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-27 09:43:44,461 ber.blocking.p3_chargram group 0 forward top-2: 1766376 pairs, 196s
+2026-09-27 09:43:44,926 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-27 09:47:01,259 ber.blocking.p3_chargram group 0 reverse top-5: 613965 pairs, 197s
+2026-09-27 09:50:03,034 dense_cv_group block 1814s: 30459509 pairs (rss 9.7 GB)
+2026-09-27 10:03:57,911 dense_cv_group features p1_match 793s (peak 22.7 GB, rss 10.3 GB)
+2026-09-27 10:15:01,055 dense_cv_group features p1_extra 659s (peak 22.7 GB, rss 10.2 GB)
+[p4_e5] name: all 3,678,909 texts from cache
+[p4_e5] full: all 4,986,146 texts from cache
+2026-09-27 10:26:43,532 dense_cv_group features p4_e5 701s (peak 26.4 GB, rss 10.2 GB)
+2026-09-27 10:26:54,107 dense_cv_group released per-record structures (rss 4.4 GB)
+2026-09-27 10:26:58,926 dense_cv_group loaded base_e48c40cf32015e26.parquet (rss 6.9 GB)
+2026-09-27 10:27:43,427 dense_cv_group loaded feat_p1_match_a543a7429e9cb016.parquet (rss 13.8 GB)
+2026-09-27 10:27:56,375 dense_cv_group loaded feat_p1_extra_0cc96c1954e9901f.parquet (rss 15.0 GB)
+2026-09-27 10:27:59,231 dense_cv_group loaded feat_p4_e5_f3429a3c1deabd5f.parquet (rss 16.4 GB)
+2026-09-27 10:28:07,898 dense_cv_group feature frame 30459509 x 87 (rss 17.6 GB)
+2026-09-27 11:31:58,400 ber.scorers.p1_lgbm p1_lgbm: 14244585 train rows (98% of pairs), 757454 valid rows, best_iteration=1837
+2026-09-27 11:51:59,191 dense_cv fold 0: fit+score 5028s (best_iteration 1837, peak 29.3 GB)
+2026-09-27 12:30:08,554 ber.scorers.p1_lgbm p1_lgbm: 14247970 train rows (98% of pairs), 751185 valid rows, best_iteration=955
+2026-09-27 12:41:27,385 dense_cv fold 1: fit+score 2968s (best_iteration 955, peak 29.8 GB)
+{
+ "group": "India",
+ "f05": 0.98415,
+ "by_fold": {
+  "0": 0.98417,
+  "1": 0.98414
+ },
+ "singleton_acc": 0.9902,
+ "f05_nonsingleton": 0.9838,
+ "n_s1": 883188,
+ "n_pairs": 30459509,
+ "cands_per_s1": {
+  "mean": 34.49,
+  "p95": 45.0,
+  "max": 312
+ },
+ "pair_precision": 0.99738,
+ "pair_recall": 0.96032,
+ "blocking_pair_recall": 0.98066,
+ "oracle_f05": 0.99285,
+ "f05_frozen_metric": 0.98415,
+ "threshold_curve": {
+  "0.5": 0.98306,
+  "0.6": 0.98387,
+  "0.7": 0.98415,
+  "0.8": 0.98398
+ }
+}
+2026-09-27 12:44:28,647 dense_cv_group done in 12775s, peak 29.8 GB

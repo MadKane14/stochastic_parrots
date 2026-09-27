@@ -131,3 +131,35 @@
  }
 }
 ```
+## 20260927-124428_densecv_India_T14_full_2383c4 (commit 91fe89b)
+
+```
+{
+ "group": "India",
+ "f05": 0.98415,
+ "by_fold": {
+  "0": 0.98417,
+  "1": 0.98414
+ },
+ "singleton_acc": 0.9902,
+ "f05_nonsingleton": 0.9838,
+ "n_s1": 883188,
+ "n_pairs": 30459509,
+ "cands_per_s1": {
+  "mean": 34.49,
+  "p95": 45.0,
+  "max": 312
+ },
+ "pair_precision": 0.99738,
+ "pair_recall": 0.96032,
+ "blocking_pair_recall": 0.98066,
+ "oracle_f05": 0.99285,
+ "f05_frozen_metric": 0.98415,
+ "threshold_curve": {
+  "0.5": 0.98306,
+  "0.6": 0.98387,
+  "0.7": 0.98415,
+  "0.8": 0.98398
+ }
+}
+```
