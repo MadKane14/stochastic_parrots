@@ -45,6 +45,33 @@ the full training set) and leave-one-country-out at density as the unseen-countr
 agnostic features that transfer to an unseen country: IDF within each country-string group, script-agnostic
 romanization from Unicode character names, unsupervised "noise-ness" of words (S1 is clean, S2/S3 are noisy).
 
+### 2.3 Validation design
+**Why ordinary hold-outs fail here.** A random hold-out of S1 entities keeps only its own share of the S2/S3 records,
+so each held-out S1 competes with 5–50× fewer siblings and distractors than in test. The same blocker retrieves 99.45%
+of true pairs on such a split but 96.3% at test density, and our first submission scored 0.992 on the hold-out but
+0.949 on the leaderboard.
+
+**Test-density cross-validation (decision metric).** Every candidate-generation, feature and threshold decision was
+taken on 2-fold out-of-fold predictions over the *full* training set (2.2M S1 with all 10.3M S2/S3 records, folds by
+S1 hash), i.e. at the density of the test set. It predicted the leaderboard ordering of the first submissions (0.9696
+dense CV for the 0.949 submission) and, for US and India, it matches the test predictions on every statistic we can
+measure without labels (predicted pairs with conflicting house numbers 6.18% vs 6.07% US, 2.16% vs 2.15% India).
+Blocking was judged the same way: recall at test density with all S1 present (a reverse "top-k S1 per record" search is
+otherwise optimistic).
+
+**Unseen-country proxy.** Leave-one-country-out at the same density (train on India, score US and vice versa). It is
+the only labelled signal for an unseen country, but its dominant error (near-copies with a shifted house number) is
+rare in France predictions (0.9% conflicts), so we used it only as a guard (no change may lower it) and not to tune.
+
+**How the leaderboard was used.** France is 15% of test and appears in no training data, so the public leaderboard is
+the only France signal. We used it for at most three discrete, pre-registered choices between variants that were
+already equivalent in test-density CV; the selection rule (highest public score; ties within 0.0003 go to the higher
+CV) was written down before the scores were known.
+
+**Where the remaining error is.** On the final out-of-fold predictions (loss 0.0125 from a perfect 1.0), S1 entities
+with an empty-address true record are 14% of entities but 55% of the loss; blocking misses 19%, missed pairs inside
+the candidates 16%, false merges 7%, singletons 3%. Perfect blocking would add 0.0038 and zero false merges 0.0015.
+
 ---
 
 ## 3. Candidate Generation (Blocking)
@@ -58,7 +85,7 @@ romanization from Unicode character names, unsupervised "noise-ness" of words (S
   rare even when each word is common, and survive word reordering. Features with in-group document frequency > 1000
   are not indexed (they still count in the norms).
 - **Two directions:** top-30 S2/S3 per S1, plus top-3 S1 per S2/S3 record (every record has at most one owner, so its own
-  best S1 is a strong candidate). Sparse matrix products in chunks; all three channels take ~18 min per full dataset on 4 processes.
+  best S1 is a strong candidate). Sparse matrix products in chunks; all three channels take ≈ 32 min for train + test together (4 worker processes).
 - **Learned pruning:** a LightGBM of at most 60 trees on 16 cheap features (incl. each channel's score and rank) keeps, per S1, candidates with score ≥ 0.005 (≤ 10);
   the final model and `candidate_pairs.tsv` see only survivors.
 - **Channels:** (1) compound-key IDF cosine (forward top-30, reverse top-3 with a per-entity cap); (2) a name channel
@@ -102,13 +129,33 @@ country-out. After the one-owner assignment (each S2/S3 record goes only to its 
 is flat between 0.7 and 0.8 while the unseen-country curve keeps rising (the model is overconfident on a country it
 never saw) → **0.8**, chosen on validation data only.
 
+#### 4.1 Why two members: label-learned vs label-free noise statistics
+Both members are LightGBM classifiers trained on the same candidates. They differ only in how they know which words are
+"noise" (added or dropped between copies of one business) and which words distinguish two businesses:
+- **Member A (label-learned):** per-word added/dropped rates learned from the train true pairs, plus core-name features.
+  For a country that never appears in train, every word falls back to the US/India prior.
+- **Member B (label-free):** the same rates mined without labels inside each country group, from likely copies among
+  that group's own candidates (same house numbers, similar street and name); no core-name features, which degenerate
+  for France's small name vocabulary (78% of France names keep at most one rare word vs 8% US).
+  When both versions of a feature are available, LightGBM uses the label-learned one (8.7% vs 1.4% of total gain), so
+  the label-free signal only reaches the model if the label-learned version is removed.
+
+In-country (US/India, test-density CV at threshold 0.8) the members are equivalent — A 0.98746, B 0.98732, mean
+0.98748 (precision 0.99823 / 0.99820 / 0.99833) — so validation cannot choose between them; the difference is on the
+unseen country. Used alone, B adds France pairs whose house numbers conflict (39% of its additions, vs 0.9% of kept
+pairs): mined rates make French sibling suffixes ("participations", "holding") look like noise. The probability mean
+keeps B's removals of same-address siblings and rejects most of those additions (4.5% conflicts among the pairs the
+mean adds). Public leaderboard: 0.981 (A) → 0.983 (mean). Requiring both members to pass the threshold ("min") removes
+another 1.3% of France pairs (0.2% US/India) at 0.98721 in-country and scored the same (0.9832), so the final uses the
+mean.
+
 ---
 
 ## 5. Results & Error Analysis
 - **F_0.5 Score (macro):** test-density out-of-fold CV over the full training set (2.2M S1): 0.9696 → 0.9789 →
   0.9828 → 0.9841 → 0.9872 → 0.9875 → **0.9875** (final ensemble, 0.98748 at threshold 0.8; member A alone 0.98746,
-  member B alone 0.98732); leave-one-country-out 0.905 → 0.923 → 0.934 → **0.935** (member A; 0.938 at the final
-  threshold 0.8).
+  member B alone 0.98732); leave-one-country-out 0.905 → 0.923 → 0.937 → **0.938** (threshold 0.8; member A — the
+  ensemble's LOCO was not run).
   Public leaderboard: 0.949 → 0.969 → 0.978 → 0.979 → 0.981 → **0.983** (final). A 20% random hold-out reported 0.992 for the first
   model — it hides siblings/distractors, so we stopped using it for decisions.
 - **Unseen country (France) — what validation could not show, and what we measured without labels.** Our test-density
@@ -122,14 +169,8 @@ never saw) → **0.8**, chosen on validation data only.
   one word). A word-level noise model learned from US/India labels cannot tell a sibling ("DD Musique" at the address
   of "DD Comite") from a noisy copy ("DD Comite SARL"). We therefore learn noise-word statistics **without labels inside
   each country group** from likely copies mined among its own candidates (same house numbers, similar street and name):
-  on France test data the mined rates put "holding" (0.89) and "participations" (0.97) as frequently added noise and
-  "club" (0.02), "comité" (0.01), "musique" (0.01) as stable words whose disagreement signals a different business.
-  Used alone, the label-free member also adds France pairs whose house numbers conflict (39% of its additions vs 0.9% of
-  kept pairs: French sibling suffixes such as "participations" look like noise). Averaging it with the label-learned
-  member keeps its removals of same-address siblings and rejects most of those additions (4.5% conflicts): in-country
-  CV is unchanged (0.98746 → 0.98748) and the public leaderboard rose 0.981 → 0.983 — the gain is France-only by
-  construction. Requiring both members to agree instead of averaging removes 1.3% more France pairs (0.2% US/India)
-  and brought no further gain (public leaderboard 0.9832).
+  on France test data the mined rates put "holding" (0.89) and "participations" (0.97) among frequently added words.
+  The two-member ensemble (§4.1) turns this into a leaderboard gain (0.981 → 0.983) with in-country CV unchanged.
   We also tried self-training (pseudo-labels from the model's own confident scores): on the leave-one-country-out proxy
   it raised recall but reinforced confident false merges (0.938 → 0.933), so it is not used.
 - **Common false positives (wrong merges):** unmatched near-copies with a shifted house number; siblings at the same
@@ -163,9 +204,22 @@ splits). Reproduce: `python src/run.py test -c configs/best.yaml` (see README.md
 | 3 | + transliteration map, pretrained E5 cosines | 0.9831 | — | not submitted |
 | 4 | + noise-word features, learned pruning (~6.5 candidates/S1) | 0.9841 | — | 0.978 |
 | 4b | + E5 fine-tuned on train pairs (mean with 4) | — | — | 0.979 |
-| 5 | + 3-channel blocking (recall 98.9%), name-ambiguity features, threshold 0.8 | 0.9872 | 0.934 | 0.979 |
-| 6 | + target canonicalization (`p4_tcanon`) | 0.9875 | 0.935 | 0.981 |
+| 5 | + 3-channel blocking (recall 98.9%), name-ambiguity features, threshold 0.8 | 0.9872 | 0.937 | 0.979 |
+| 6 | + target canonicalization (`p4_tcanon`) | 0.9875 | 0.938 | 0.981 |
 | final | + second LightGBM member with label-free mined noise-word rates, probability mean | 0.9875 | — | 0.983 |
 
 Dense CV = 2-fold out-of-fold macro F0.5 over all 2.2M train S1 at test density; LOCO = train on one country, score the
 other (unseen-country proxy). ¹ measured on the same features without the final threshold/uncapped model (T08_g).
+
+### C. Leaderboard history (public, F0.5)
+| # | submission | test-density CV | public LB |
+|---|---|---|---|
+| 1 | compound-key blocking + LightGBM | 0.9696 | 0.9487 |
+| 2 | + group IDF, romanized skeletons, number features, threshold 0.7 | 0.9789 | 0.969 |
+| 4 | + transliteration map, E5 cosines, noise-word features, learned pruning (6.4 cands/S1) | 0.9841 | 0.978 |
+| 6 | mean of #4 and #4 with fine-tuned E5 | — | 0.979 |
+| 7b | + 3-channel blocking (recall 98.9%), name ambiguity, fine-tuned E5, threshold 0.8 | 0.9872 | 0.979 |
+| 8 | + target canonicalization (`p4_tcanon`) | 0.9875 | 0.981 |
+| **9** | **ensemble: mean of label-learned and label-free members (final)** | **0.9875** | **0.983** |
+| 10 | ensemble, both members must agree (min) | 0.9872 | 0.9832 |
+Submissions #3 and #5 were built but not uploaded. The test-density CV of #6 was not run.
