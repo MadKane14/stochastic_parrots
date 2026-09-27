@@ -453,3 +453,38 @@
  }
 }
 ```
+
+## 20260927-060231_densecv_T17_530df3_loco (commit bf29794)
+
+```
+{
+ "f05": 0.93443,
+ "by_country": {
+  "India": 0.94686,
+  "US": 0.92614
+ },
+ "by_fold": {
+  "0": 0.92614,
+  "1": 0.94686
+ },
+ "folds": "leave-one-country-out",
+ "singleton_acc": 0.7567,
+ "f05_nonsingleton": 0.94494,
+ "n_s1": 2206821,
+ "n_pairs": 77410443,
+ "pair_precision": 0.95047,
+ "pair_recall": 0.94076,
+ "blocking_pair_recall": 0.9889,
+ "oracle_f05": 0.99627,
+ "f05_frozen_metric": 0.93443,
+ "threshold_curve": {
+  "0.3": 0.92475,
+  "0.4": 0.92754,
+  "0.5": 0.92981,
+  "0.6": 0.93202,
+  "0.7": 0.93443,
+  "0.8": 0.93731,
+  "0.9": 0.94131
+ }
+}
+```
