@@ -3,7 +3,7 @@
 # member 2 = T28 (mined noise rates instead of label-learned ones, no core-name features). Decision threshold 0.8.
 # Evidence: OOF mean of the T18 and T28 dense-CV runs 0.98748 @0.8 (T18 0.98746, T28 0.98732; precision 0.99833);
 # label-free France checks in STATE D19. Reproduces blend_runs.py(T18 run, T28 run) = submissions/sub9_blend.
-# Transductive: p1_mnoise + those of best.yaml. model: LightGBM x2 (MIT); encoder multilingual-e5-small (MIT, 117,653,760).
+# Transductive: p1_mnoise + those of best.yaml. model: LightGBM x2 (MIT); encoder multilingual-e5-small (MIT, 117,653,760) fine-tuned on the provided train pairs (ft_full).
 inherit: T26_mnoise.yaml
 scorer:
   name: weighted_mean
