@@ -1,0 +1,56 @@
+$ python exploration/p4/dense_cv_group_q.py -c code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml --group India --qfrac 0.5 --tag t20pre
+[dense_cv_group_q] India qfrac 0.5: 441,310 of 883,188 S1 kept, 4,133,346 S2/S3 records (all)
+2026-09-26 22:07:01,427 dense_cv normalize 166s
+2026-09-26 22:07:27,224 ber.blocking.p1_compound tokenize 19s
+2026-09-26 22:08:24,589 ber.blocking.p1_compound group 0: 441310 S1 x 4133346 right, 14966180 features (57.9/record), built in 57s
+2026-09-26 22:12:24,406 ber.blocking.p1_compound group 0 forward top-30: 240s
+2026-09-26 22:16:16,748 ber.blocking.p1_compound group 0 reverse top-3: 232s
+2026-09-26 22:17:48,503 dense_cv block 647s: 18736320 pairs
+2026-09-26 22:24:42,157 dense_cv features p1_match 398s (peak 22.8 GB)
+2026-09-26 22:31:01,209 dense_cv features p1_extra 379s (peak 22.8 GB)
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+2026-09-26 22:33:15,596 ber.features.p1_e5 p1_e5 name: 1000000/3488866 unique texts embedded (10118/s)
+2026-09-26 22:35:03,987 ber.features.p1_e5 p1_e5 name: 2000000/3488866 unique texts embedded (9651/s)
+2026-09-26 22:36:51,025 ber.features.p1_e5 p1_e5 name: 3000000/3488866 unique texts embedded (9546/s)
+2026-09-26 22:37:43,197 ber.features.p1_e5 p1_e5 name: 3488866/3488866 unique texts embedded (9521/s)
+2026-09-26 22:44:31,622 ber.features.p1_e5 p1_e5 full: 1000000/4545746 unique texts embedded (3967/s)
+2026-09-26 22:48:44,739 ber.features.p1_e5 p1_e5 full: 2000000/4545746 unique texts embedded (3959/s)
+2026-09-26 22:52:43,875 ber.features.p1_e5 p1_e5 full: 3000000/4545746 unique texts embedded (4030/s)
+2026-09-26 22:56:29,302 ber.features.p1_e5 p1_e5 full: 4000000/4545746 unique texts embedded (4125/s)
+2026-09-26 22:58:33,653 ber.features.p1_e5 p1_e5 full: 4545746/4545746 unique texts embedded (4155/s)
+2026-09-26 23:00:56,551 dense_cv features p1_e5 1795s (peak 27.6 GB)
+2026-09-26 23:03:06,630 dense_cv features p1_noise 130s (peak 27.6 GB)
+2026-09-26 23:18:41,249 ber.scorers.p1_lgbm p1_lgbm: 8905713 train rows (100% of pairs), 476898 valid rows, best_iteration=526
+2026-09-26 23:23:07,779 dense_cv fold 0: fit+score 1143s (best_iteration 526, peak 27.6 GB)
+2026-09-26 23:44:12,991 ber.scorers.p1_lgbm p1_lgbm: 8879579 train rows (100% of pairs), 474130 valid rows, best_iteration=821
+2026-09-26 23:53:55,533 dense_cv fold 1: fit+score 1848s (best_iteration 821, peak 28.5 GB)
+{
+ "group": "India",
+ "f05": 0.98285,
+ "by_fold": {
+  "0": 0.9829,
+  "1": 0.9828
+ },
+ "singleton_acc": 0.9807,
+ "f05_nonsingleton": 0.98298,
+ "n_s1": 441310,
+ "n_pairs": 18736320,
+ "cands_per_s1": {
+  "mean": 42.46,
+  "p95": 72.0,
+  "max": 508
+ },
+ "pair_precision": 0.99509,
+ "pair_recall": 0.96131,
+ "blocking_pair_recall": 0.9792,
+ "oracle_f05": 0.99262,
+ "f05_frozen_metric": 0.98285,
+ "threshold_curve": {
+  "0.5": 0.98147,
+  "0.6": 0.98237,
+  "0.7": 0.98285,
+  "0.8": 0.98289
+ }
+}
+2026-09-26 23:54:48,395 dense_cv_group done in 6764s, peak 28.5 GB

@@ -1,0 +1,23 @@
+$ python exploration/p2/dense_cv_group.py -c code/business_entity_resolution/configs/exp/p1/T12_noise2.yaml --group India --tag t19base
+2026-09-26 17:11:31,850 dense_cv normalize 193s
+2026-09-26 17:12:02,527 ber.blocking.p1_compound tokenize 22s
+2026-09-26 17:13:11,460 ber.blocking.p1_compound group 0: 883188 S1 x 4133346 right, 15100321 features (57.9/record), built in 69s
+2026-09-26 17:21:39,063 ber.blocking.p1_compound group 0 forward top-30: 508s
+2026-09-26 17:28:55,069 ber.blocking.p1_compound group 0 reverse top-3: 436s
+2026-09-26 17:31:26,941 dense_cv block 1195s: 29440337 pairs
+2026-09-26 17:43:20,147 dense_cv features p1_match 685s (peak 23.4 GB)
+2026-09-26 17:52:18,266 dense_cv features p1_extra 538s (peak 23.4 GB)
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+2026-09-26 17:54:47,683 ber.features.p1_e5 p1_e5 name: 1000000/3679921 unique texts embedded (10259/s)
+2026-09-26 17:56:44,084 ber.features.p1_e5 p1_e5 name: 2000000/3679921 unique texts embedded (9351/s)
+2026-09-26 17:58:37,556 ber.features.p1_e5 p1_e5 name: 3000000/3679921 unique texts embedded (9165/s)
+2026-09-26 17:59:56,646 ber.features.p1_e5 p1_e5 name: 3679921/3679921 unique texts embedded (9054/s)
+2026-09-26 18:08:06,874 ber.features.p1_e5 p1_e5 full: 1000000/4987605 unique texts embedded (3829/s)
+2026-09-26 18:12:39,652 ber.features.p1_e5 p1_e5 full: 2000000/4987605 unique texts embedded (3746/s)
+2026-09-26 18:17:10,651 ber.features.p1_e5 p1_e5 full: 3000000/4987605 unique texts embedded (3727/s)
+2026-09-26 18:21:12,106 ber.features.p1_e5 p1_e5 full: 4000000/4987605 unique texts embedded (3823/s)
+2026-09-26 18:25:10,438 ber.features.p1_e5 p1_e5 full: 4987605/4987605 unique texts embedded (3882/s)
+2026-09-26 18:28:58,287 dense_cv features p1_e5 2200s (peak 28.1 GB)
+2026-09-26 18:32:23,450 dense_cv features p1_noise 205s (peak 28.1 GB)
+Killed

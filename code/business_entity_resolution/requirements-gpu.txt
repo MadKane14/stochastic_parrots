@@ -1,11 +1,6 @@
-# Neural extras (bi-/cross-encoders, local LLMs). Installs on top of requirements.txt.
-# torch wheels from PyPI bundle CUDA 12.x (needs NVIDIA driver >= 525). If your lab machine
-# needs another CUDA build, install torch==2.8.0 from https://download.pytorch.org/whl/<cuXXX> first.
-# Before merging a neural component into the final pipeline, fold the packages it needs
-# into requirements.txt (the final package must have ONE pinned requirements file).
+# Superseded: torch / transformers are now pinned in requirements.txt (the final package has ONE requirements file).
+# Kept for older worker instructions; extras below are optional research tools, not used by the final pipeline.
 -r requirements.txt
-torch==2.8.0
-transformers==4.57.1
 sentence-transformers==5.1.2
 accelerate==1.10.1
 faiss-cpu==1.12.0

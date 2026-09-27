@@ -1,0 +1,10 @@
+# T30 (p1, Sun 27 Sep): submission #10 as ONE pipeline — T29 (T18 + T28 members on the same candidates / features) with
+# combine: min, i.e. a pair is matched only when BOTH members score >= 0.8. Hypothesis: #9's LB gain (+0.002 over #8) came
+# from removing France pairs where the label-learned (T18) and label-free (T28) members disagree; min concentrates that move
+# on France (-1.34% of France pairs vs -0.18/-0.19% US/India, exploration/p1/test_variant_churn_out.txt) at an in-country cost
+# of -0.00027 (OOF min 0.98721 vs mean 0.98748 @0.8, exploration/p1/oof_variants_out.txt). Reproduces submissions/sub10_min.
+# Transductive: as T29. model: LightGBM x2 (MIT); encoder multilingual-e5-small (MIT, 117,653,760 params).
+inherit: T29_blend.yaml
+scorer:
+  params:
+    combine: min

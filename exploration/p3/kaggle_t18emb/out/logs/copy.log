@@ -1,0 +1,6 @@
+$ mkdir -p /kaggle/working/emb_mm && cp -r /tmp/ber_artifacts/emb_mm/intfloat__multilingual-e5-small_ml64 /kaggle/working/emb_mm/ && rm -f /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64/*.tmp.npy /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64/*.rows.npy; ls -la /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64
+total 7524824
+drwxr-xr-x 2 root root       4096 Sep 26 19:57 .
+drwxr-xr-x 3 root root       4096 Sep 26 19:57 ..
+-rw-r--r-- 1 root root 3852698240 Sep 26 19:57 5fa17c64c01ae2bf_full.npy
+-rw-r--r-- 1 root root 3852698240 Sep 26 19:57 5fa17c64c01ae2bf_name.npy

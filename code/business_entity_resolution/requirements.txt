@@ -2,11 +2,13 @@
 # Every pin below is available both on conda-forge and as a cp311 wheel on PyPI (same versions either way).
 #   conda create -n ber python=3.11 -y && conda activate ber
 #   Option A (preferred on shared servers): conda install -c conda-forge numpy=2.2.6 pandas=2.3.3 scipy=1.15.2 \
-#       scikit-learn=1.7.2 rapidfuzz=3.14.1 "lightgbm=4.6.0=cpu*" pyarrow=21.0.0 pyyaml=6.0.3
+#       scikit-learn=1.7.2 rapidfuzz=3.14.1 "lightgbm=4.6.0=cpu*" pyarrow=21.0.0 pyyaml=6.0.3 \
+#       pytorch=2.8.0 transformers=4.57.1          (verified on phoenix: CUDA 12.9 build, driver 550, RTX A4000)
 #   Option B: pip install -r requirements.txt
 # Run pip only with the env's own Python 3.11 active (check `which pip`): a newer base Python (e.g. 3.14)
 # has no wheels for these pins, so pip there fails to resolve or tries to compile scipy from source.
-# Neural work (GPU machines) additionally: pip install -r requirements-gpu.txt
+# The final pipeline uses a multilingual E5 encoder (intfloat/multilingual-e5-small, MIT, 117.7M params) fine-tuned on
+# the train pairs (src/e5_finetune.py): torch + transformers below. A GPU is strongly recommended for embedding.
 # Adding a package: ask the lead; it is added here on main so every machine stays identical.
 numpy==2.2.6
 pandas==2.3.3
@@ -16,3 +18,8 @@ rapidfuzz==3.14.1
 lightgbm==4.6.0
 pyarrow==21.0.0
 PyYAML==6.0.3
+torch==2.8.0
+transformers==4.57.1
+tokenizers==0.22.2
+safetensors==0.8.0
+huggingface-hub==0.36.0

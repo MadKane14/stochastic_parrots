@@ -1,0 +1,10 @@
+$ mkdir -p /kaggle/working/p4_out && cp -r exploration/p2/dense_cv /kaggle/working/p4_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p4_out/; free -g
+cp: cannot stat 'exploration/p2/dense_cv': No such file or directory
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          30           0           0          30
+Swap:              0           0           0
+$ mkdir -p /kaggle/working/p4_out && cp -r exploration/p2/dense_cv /kaggle/working/p4_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p4_out/; free -g
+cp: cannot stat 'exploration/p2/dense_cv': No such file or directory
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          30           0           0          30
+Swap:              0           0           0

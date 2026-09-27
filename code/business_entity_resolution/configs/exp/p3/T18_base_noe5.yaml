@@ -1,0 +1,11 @@
+# T18 (p3) — fallback baseline when no Kaggle GPU is available for p1_e5 embeddings: submission #4 stack (T13_sub4)
+# WITHOUT the p1_e5 feature set (everything else identical: p2_translit, p1_compound, p1_match/p1_extra/p1_noise,
+# p1_lgbm, p1_assign 0.7, learned pruning). Paired with T18_p3_noe5 to isolate the blocking lever.
+inherit: ../p1/T13_sub4.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p1_noise
+    params: {unsup: true}

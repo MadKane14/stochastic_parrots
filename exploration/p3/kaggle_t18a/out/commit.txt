@@ -1,0 +1,1 @@
+6f84029 p3 T18: t18d OOM-killed after features (30.9M pairs, 25.9 GB before concat); runner retries once with warm caches; GPU embedding job logs

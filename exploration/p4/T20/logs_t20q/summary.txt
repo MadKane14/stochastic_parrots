@@ -1,0 +1,14 @@
+21:57:41 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+21:57:42 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+21:59:49 rc=0     128s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+21:59:51 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+22:00:03 rc=0      12s  check: python src/run.py check
+22:01:22 rc=0      79s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+22:01:57 rc=0      35s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+22:02:00 rc=0       3s  gpu_check: nvidia-smi -L | grep -q P100 && pip install -q --force-reinstall torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126 && pip uninstall -y -q torchvision torchaudio; python -c "import torch; print(torch.__version__, torch.cuda.get_device_name(0), torch.ones(2, device='cuda').sum().item())"
+22:02:03 rc=0       3s  ft_full: mkdir -p /tmp/ber_artifacts/models && cp -r /kaggle/input/notebooks/anishtoshniwal006/ber-p4-t20/models/ft_full /tmp/ber_artifacts/models/ft_full && ls -la /tmp/ber_artifacts/models/ft_full
+23:54:55 rc=0    6772s  dcv_pre_q0.5: python exploration/p4/dense_cv_group_q.py -c code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml --group India --qfrac 0.5 --tag t20pre
+23:54:55 rc=0       0s  collect: mkdir -p /kaggle/working/p4_out && cp -r exploration/p2/dense_cv /kaggle/working/p4_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p4_out/; free -g
+01:19:42 rc=0    5087s  dcv_ft_q0.5: python exploration/p4/dense_cv_group_q.py -c code/business_entity_resolution/configs/exp/p4/T20_ft.yaml --group India --qfrac 0.5 --tag t20ft
+01:19:43 rc=0       0s  collect: mkdir -p /kaggle/working/p4_out && cp -r exploration/p2/dense_cv /kaggle/working/p4_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p4_out/; free -g
+01:19:43 rc=0       1s  save_model: mkdir -p /kaggle/working/models && cp -r /tmp/ber_artifacts/models/ft_full /kaggle/working/models/ft_full

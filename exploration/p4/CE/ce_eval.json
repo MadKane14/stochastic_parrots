@@ -1,0 +1,210 @@
+[
+ {
+  "variant": "stack",
+  "threshold": 0.5,
+  "f05": 0.99618,
+  "ci95": [
+   0.99585,
+   0.99651
+  ],
+  "pairP": 0.99834,
+  "pairR": 0.99203,
+  "singleton_acc": 0.9962,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99591
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99635
+   }
+  },
+  "scorer_auc_ap": {
+   "roc_auc": 0.99963,
+   "avg_precision": 0.99995
+  }
+ },
+ {
+  "variant": "stack",
+  "threshold": 0.7,
+  "f05": 0.99607,
+  "ci95": [
+   0.99572,
+   0.99642
+  ],
+  "pairP": 0.99908,
+  "pairR": 0.98999,
+  "singleton_acc": 0.997,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99586
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99621
+   }
+  },
+  "scorer_auc_ap": {
+   "roc_auc": 0.99963,
+   "avg_precision": 0.99995
+  }
+ },
+ {
+  "variant": "mean(stack,CE) [PRIMARY]",
+  "threshold": 0.5,
+  "f05": 0.99615,
+  "ci95": [
+   0.99584,
+   0.99648
+  ],
+  "pairP": 0.99818,
+  "pairR": 0.99244,
+  "singleton_acc": 0.9958,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99602
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99625
+   }
+  },
+  "scorer_auc_ap": {
+   "roc_auc": 0.99959,
+   "avg_precision": 0.99995
+  }
+ },
+ {
+  "variant": "mean(stack,CE) [PRIMARY]",
+  "threshold": 0.7,
+  "f05": 0.99513,
+  "ci95": [
+   0.99475,
+   0.99551
+  ],
+  "pairP": 0.9993,
+  "pairR": 0.98644,
+  "singleton_acc": 0.9979,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99551
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99488
+   }
+  },
+  "scorer_auc_ap": {
+   "roc_auc": 0.99959,
+   "avg_precision": 0.99995
+  }
+ },
+ {
+  "variant": "CE alone",
+  "threshold": 0.5,
+  "f05": 0.99426,
+  "ci95": [
+   0.99383,
+   0.99466
+  ],
+  "pairP": 0.99761,
+  "pairR": 0.988,
+  "singleton_acc": 0.9907,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99452
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99408
+   }
+  },
+  "scorer_auc_ap": {
+   "roc_auc": 0.99823,
+   "avg_precision": 0.99967
+  }
+ },
+ {
+  "variant": "CE alone",
+  "threshold": 0.7,
+  "f05": 0.99359,
+  "ci95": [
+   0.99314,
+   0.994
+  ],
+  "pairP": 0.99828,
+  "pairR": 0.98418,
+  "singleton_acc": 0.9911,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.9942
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99318
+   }
+  },
+  "scorer_auc_ap": {
+   "roc_auc": 0.99823,
+   "avg_precision": 0.99967
+  }
+ },
+ {
+  "variant": "0.7*stack+0.3*CE",
+  "threshold": 0.5,
+  "f05": 0.99616,
+  "ci95": [
+   0.9958,
+   0.99649
+  ],
+  "pairP": 0.99819,
+  "pairR": 0.99249,
+  "singleton_acc": 0.9958,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99583
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99639
+   }
+  },
+  "scorer_auc_ap": {
+   "roc_auc": 0.99967,
+   "avg_precision": 0.99996
+  }
+ },
+ {
+  "variant": "0.7*stack+0.3*CE",
+  "threshold": 0.7,
+  "f05": 0.99621,
+  "ci95": [
+   0.99589,
+   0.99655
+  ],
+  "pairP": 0.99939,
+  "pairR": 0.98947,
+  "singleton_acc": 0.9979,
+  "by_country": {
+   "India": {
+    "n": 17619,
+    "f05": 0.99614
+   },
+   "US": {
+    "n": 26329,
+    "f05": 0.99626
+   }
+  },
+  "scorer_auc_ap": {
+   "roc_auc": 0.99967,
+   "avg_precision": 0.99996
+  }
+ }
+]

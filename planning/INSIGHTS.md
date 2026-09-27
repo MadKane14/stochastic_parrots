@@ -29,3 +29,30 @@ Superseded insights are struck through with a pointer, never deleted.
 - I-19 [high] **Unseen-country penalty at density is large:** leave-one-country-out dense CV (train on one country, predict the other) 0.905 vs 0.970 in-country. More boosting rounds do not change it (0.9049); dropping absolute IDF masses (0.900), raw string sims (0.893) or group sizes (0.904) does not help. — `exploration/p1/dense_cv/*loco*.json` (R3)
 - I-20 [high] **IDF within equal-country-string groups + boilerplate-free "core" tokens + script-agnostic romanized skeletons (`p1_romanize`, unicodedata only) + house-number edit distance** raise dense CV 0.9696 → 0.9768 (India 0.957 → 0.972) and LOCO 0.905 → 0.923. — `…T08_g_fafd84.json`, `…T08_g_fafd84_loco.json` (R3)
 - I-21 [medium] At density the best threshold is ~0.65–0.7 (+0.001 over 0.5); expected-F0.5 set selection ≈ same; stage-2 stacking on OOF-probability context adds +0.0001 → not worth it. The 300-round cap (base.yaml's HGB `max_iter` leaking into LightGBM) cost 0.002. — `exploration/p1/dense_decide_out.md`, `dense_stack_out.md`, `…T07_lgb_e2e7f4.json` (R3)
+
+## Round 5 — Sun 27 Sep (p1 overnight)
+- I-22 [high] No data leakage: entity ids are random and file row order is shuffled (corr of S1 vs match row position / id = 0.000, train GT) → top teams do real ER; public ≈ private (LB standard error ~0.0002). — read-only check (R5)
+- I-23 [high] Remaining loss is concentrated: entities with an empty-address true record = 14% of S1 but 46% of dense-CV loss (mean F 0.948); entities with a blocking-missed true record = 6% of S1, 49% of loss; all other entities F 0.995. 24% of empty-address true records share their exact core name with ≥ 1 other S1 of the country (1.06% of true pairs, irreducible). — T12_noise2 OOF analysis (R5)
+- I-24 [high] p3's T15 blocking (3 channels + reverse caps) raises dense-CV blocking recall 0.979 → 0.989 (oracle 0.9928 → 0.9963); with noise + pruning + fine-tuned E5 + p1_ambig: dense CV 0.98722 (T17) vs 0.98405. — `exploration/p1/dense_cv/20260927-013724_densecv_T17_530df3.json` (R5)
+
+## Round 7 — Sun 27 Sep (p1, test-vs-train diagnostics, all label-free on test)
+- I-25 [high] Test has 5.5–5.8 S2/S3 records per S1 vs 4.68 in train (≈ 2.3 vs 1.2 unmatched distractors per S1), but the
+  extra distractors are easy: US/India test predictions reproduce dense-CV statistics (house-number conflicts among predicted
+  pairs 6.18% vs 6.07% US, 2.16% vs 2.15% India; empty-address records assigned ≈ 54–60% both; same-address class counts
+  match). → US/India LB ≈ dense CV. — `exploration/p1/{orphan_probe,num_conflict,empty_oof,empty_addr_rates}.py` (R7)
+- I-26 [high] The LB stall is France (15% of test S1): #4→#7b changes France 3–5× more than US/India (fine-tuned E5 6.8% vs
+  1.4% of S1; threshold 0.8 3.8% vs 1.1%); LB then implies France ≈ 0.94 → 0.93. LOCO's failure (shifted-number near-copies,
+  321k FP) is absent in France predictions (0.9% number conflicts) → LOCO is a poor France proxy for thresholds. —
+  `exploration/p1/{diff_subs,loco_fp}.py` (R7)
+- I-27 [high] France names come from a small vocabulary: 56 words exceed 1% S1 document frequency (club 8.7%, amicale 5.5%,
+  ecole, maison, centre, comite …) → 77.8% of France S1 names keep ≤ 1 "core" word (US 8.4%, India 44%) → core-name features
+  are degenerate for France (siblings "DD Comite"/"DD Musique" share the core). — `exploration/p1/name_vocab.py` (R7)
+- I-28 [high] France has 5–8× more same-address, differently named candidates per S1 after pruning (0.60/S1 vs 0.07 US, 0.13
+  India; partial-name 0.38 vs 0.24/0.28), i.e. co-located businesses / siblings; we assign 66% of France partial-name and 23%
+  of renamed ones (≈ 12% of France predictions) — the likely France precision loss. — `exploration/p1/sibling_probe.py` (R7)
+- I-29 [high] With both label-learned (p1_noise) and label-free mined (p1_mnoise) noise-word features, LightGBM uses the
+  label-learned ones (8.7% vs 1.4% of gain): redundancy hides the country-agnostic signal from the model. Dropping the
+  label-learned per-word rates costs nothing measurable in-country (slice logloss 0.00724 vs 0.00728; dense CV 0.98732 vs
+  0.98739) and forces the model onto statistics that exist for an unseen country. General lesson: when a feature has a
+  label-learned and a label-free version, keep only the label-free one if the target domain is unseen. —
+  `exploration/p1/{feat_importance,slice_ablation}.py`, dense CV T27/T28 (R7)

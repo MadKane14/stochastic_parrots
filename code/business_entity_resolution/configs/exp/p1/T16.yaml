@@ -1,0 +1,14 @@
+# T16 (p1) — final-stack candidate: p3's T15_sub5 (T13_sub4 = T10_e5 + p1_noise(unsup) + learned pruning, with p3's
+# T15_final blocking: p3_compound_rc + empty-address p3_chargram + p3_nameaddr, reverse caps, max 40 cands/S1 before
+# pruning; true-density blocking recall 0.9793 -> 0.9891, reports/p3/T15.md) + E5 fine-tuned on all train pairs
+# (p4 v1 recipe; model intfloat/multilingual-e5-small, MIT, 117,653,760 params; train data only).
+inherit: ../p3/T15_sub5.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p1_e5
+    params: {fields: [name, full], model: /scratch2/madhur.kankane/ber_artifacts/models/ft_full}
+  - name: p1_noise
+    params: {unsup: true}

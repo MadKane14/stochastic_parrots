@@ -1,0 +1,22 @@
+# T15 (p3) — submission #5 candidate: p1's submission #4 stack (T13_sub4 = T12_noise2 [T10_e5 + p1_noise] + learned
+# pruning) with p3's final blocking (T15_final): p3_compound_rc (rev_cap 10) + empty-address name channel +
+# name x address channel, per-S1 cap 40. True-density blocking recall 0.9793 -> 0.9891, oracle F0.5 0.9929 -> 0.9964,
+# 35.06 cands/S1 before pruning (max 40; ~77.4M full-train pairs) — exploration/p3/kaggle_t15f/out/blk_dense_out.md.
+# The prune stage also sees the channels' own columns (blk_1_*, blk_2_*): channel-only pairs have blk_0_* = NaN.
+# Decision: dense CV vs T12_noise2 (0.98405): exploration/p1/dense_cv.py -c <this file> (dense CV ignores prune).
+inherit: ../p1/T13_sub4.yaml
+blocking:
+  max_candidates: 40
+  blockers:
+    - name: p3_compound_rc       # = p1_compound (imported, unchanged) + reverse-flood cap; transductive
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: 10}
+    - name: p3_chargram          # empty-address name channel; transductive
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 5000, rev_cap: 10}
+    - name: p3_nameaddr          # name token x address word channel; transductive
+      params: {name_field: name_core, addr_field: addr_norm, name_cap: 4, addr_cap: 10, k: 5, k_rev: 1, max_df: 300,
+               rev_cap: 10}
+prune:
+  features: [blk_0_score, blk_0_rank, blk_1_score, blk_1_rank, blk_2_score, blk_2_rank, f_p1_name_tset,
+             f_p1_addr_tset, f_p1_idf_n_jacc, f_p1_idf_w_jacc, f_p1_num_shared, f_p1_num_first_eq,
+             f_p1_grp_s1_key_rank, f_p1_grp_rec_key_rank, f_p1_grp_s1_key_margin, f_p1_grp_rec_key_margin]

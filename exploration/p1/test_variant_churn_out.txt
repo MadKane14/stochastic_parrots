@@ -1,0 +1,5 @@
+#9 pairs per country: {'India': 2701628, 'US': 2239658, 'France': 860164} conflict 0.0354
+mean@0.85  France: -7830 (0.91%, conf 0.067) +0 | India: -6155 (0.23%, conf 0.139) +0 | US: -5794 (0.26%, conf 0.420) +0
+mean@0.9   France: -17493 (2.03%, conf 0.065) +0 | India: -15110 (0.56%, conf 0.136) +0 | US: -14212 (0.63%, conf 0.413) +0
+min@0.8    France: -11537 (1.34%, conf 0.036) +9 | India: -4968 (0.18%, conf 0.143) +8 | US: -4182 (0.19%, conf 0.429) +3
+min@0.7    France: -3679 (0.43%, conf 0.011) +2276 | India: -445 (0.02%, conf 0.151) +4553 | US: -405 (0.02%, conf 0.472) +4593

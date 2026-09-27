@@ -1,0 +1,16 @@
+# FROZEN copy of the Round-2 best.yaml (p1_compound blocker + base pipeline). Experiment configs of rounds 1-4 inherit
+# this file so their meaning does not change when configs/best.yaml becomes the final configuration.
+# CURRENT TEAM BEST PIPELINE — owned by the lead, updated only on main after a planning round.
+# Worker experiment configs should `inherit: ../../best.yaml` and override only what they test.
+# Evidence (run_ids) for this config lives in planning/STATE.md.
+#
+# Round 2 (Fri 25 Sep, p1 T02): scalable compound-key blocker replaces the brute-force tfidf_knn baseline.
+#   val_v1@0.1: 20260925-205725_p1_T02_T02_cmp_val_v1@0.1_35fb75 (F0.5 0.9843)
+#   full-density blocking (exploration/p1/blk_eval_out.md): pair recall 0.970, oracle F0.5 0.989, 33 cands/S1
+inherit: base.yaml
+
+blocking:
+  max_candidates: null
+  blockers:
+    - name: p1_compound          # transductive: IDF/df caps computed on the records being blocked
+      params: {k: 30, k_rev: 3, max_df: 1000}

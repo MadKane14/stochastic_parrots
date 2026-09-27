@@ -1,0 +1,12 @@
+23:44:09 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+23:44:09 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+23:46:20 rc=0     131s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+23:46:22 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+23:46:35 rc=0      14s  check: python src/run.py check
+23:48:03 rc=0      87s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+23:48:39 rc=0      36s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+23:48:42 rc=0       3s  gpu_check: nvidia-smi -L | grep -q P100 && pip install -q --force-reinstall torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126 && pip uninstall -y -q torchvision torchaudio; python -c "import torch; print(torch.__version__, torch.cuda.get_device_name(0), torch.ones(2, device='cuda').sum().item())"
+00:14:06 rc=0    1525s  stack: python src/run.py run -c configs/exp/p1/T13_sub4.yaml --task T22 --split val_v1@0.1 --note 'CE proxy baseline'
+00:39:18 rc=0    1512s  ce_train: python exploration/p4/ce_train.py --split val_v1@0.1 --config code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml --out /kaggle/working/models/ce_val
+00:43:06 rc=0     228s  ce_eval: python exploration/p4/ce_eval.py --pairs /tmp/ber_artifacts/runs/20260926-234842_p4_T22_T13_sub4_val_v1@0.1_fcfd00/scored_pairs.parquet --split val_v1@0.1 --model /kaggle/working/models/ce_val --out /kaggle/working/ce_eval_out.md --json /kaggle/working/ce_eval.json
+00:43:06 rc=0       0s  done: free -g; du -sh /kaggle/working/models/* 2>/dev/null

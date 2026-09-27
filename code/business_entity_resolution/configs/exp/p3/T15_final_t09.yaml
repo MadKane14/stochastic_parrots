@@ -1,0 +1,13 @@
+# T15 (p3) — T15_final's blocking on T09_tr (no E5): blocker-only attribution vs T09_tr's dense CV (0.98279).
+inherit: ../p1/T09_tr.yaml
+blocking:
+  max_candidates: 40
+  blockers:
+    - name: p3_compound_rc       # transductive (as p1_compound)
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: 10}
+    - name: p3_chargram          # transductive
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 5000, rev_cap: 10}
+    - name: p3_nameaddr          # transductive
+      params: {name_field: name_core, addr_field: addr_norm, name_cap: 4, addr_cap: 10, k: 5, k_rev: 1, max_df: 300,
+               rev_cap: 10}

@@ -1,0 +1,8 @@
+$ python src/run.py run -c configs/exp/p1/T13_sub4.yaml --task T22 --split val_v1@0.1 --note 'CE proxy baseline'
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+[val_v1@0.1] 20260926-234842_p4_T22_T13_sub4_val_v1@0.1_fcfd00
+  F0.5=0.9961 CI95=[0.99572, 0.99642]  singleton_acc=0.997  pairP=0.99908 pairR=0.98999
+  blocking: oracle_F0.5=0.9994 pair_recall=0.99777 cands/s1=3.91  scorer={'roc_auc': 0.99963, 'avg_precision': 0.99995}
+  by_country={"India": {"n": 17619, "f05": 0.99586}, "US": {"n": 26329, "f05": 0.99621}}  runtime=1515.6s 
+  results: /kaggle/working/results/p4/20260926-234842_p4_T22_T13_sub4_val_v1@0.1_fcfd00.json

@@ -1,0 +1,13 @@
+# T28 (p1, Sun 27 Sep): T27 without p1_noise's LABEL-LEARNED per-word rate features (f_p1n_{n,a}_*, total_unexpl, rec_*);
+# p1_noise's unsupervised S2S3-vs-S1 statistic (f_p1n_unsup_*) is kept.
+# Hypothesis: in T27 the matcher keeps splitting on the label-learned rates (8.7% of gain vs 1.4% for p1_mnoise,
+# exploration/p1/feat_importance.py), which give every word of an unseen country (France) the prior; without them the
+# noise-word signal must come from p1_mnoise's per-country mined rates, which exist for France. Quick slice check
+# (exploration/p1/slice_ablation.py, pair level): logloss 0.00724 / AP 0.99896 vs T27 0.00728 / 0.99851.
+# Gate: in-country dense CV within fold noise of T18 (0.98746 @0.8).
+# Transductive: p1_mnoise, p1_noise unsup (+ best.yaml's). model: LightGBM (MIT); encoder multilingual-e5-small (MIT).
+inherit: T26_mnoise.yaml
+scorer:
+  name: p1_lgbm
+  params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000,
+           drop_features: ["^f_p1_core_n_", "^f_p1n_(n|a)_", "^f_p1n_total_unexpl", "^f_p1n_rec_"]}

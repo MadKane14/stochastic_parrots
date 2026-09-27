@@ -1,5 +1,109 @@
 # TASKS — workers: do only the tasks with your handle in the CURRENT round
 
+## Round 8 — Sun 16:30 → 20:00, FINAL (lead p1). LB #8 = 0.981, #9 = **0.983** (mean of T18 + label-free T28 member).
+**Where the points are (STATE D20):** US/India on test already match dense CV (≈ 0.987); France ≈ 0.96 and it is the only part
+that still moves (+0.002 LB per step, both steps from label-free changes). Even a perfect France caps the LB near 0.989, so the
+lead spends the last two submissions on France on phoenix (all test scores and caches are there): #10 = min-blend (both
+members must agree), #11 only if #10 wins. **No new features or model changes from workers.** Your job now is to make sure the
+package we hand in reproduces the final file and reads well: a broken package costs more than any 0.001.
+Everyone: fetch main (≥ this commit). Report as `reports/<you>/T3x.md`, push to your branch by **20:00** (partial is fine).
+
+### T30 — p2: clean-room reproduction
+Fresh `git clone` of main into a new directory, new conda env built only from `code/business_entity_resolution/requirements.txt`
+(follow the README literally, no extra installs). Run `python src/run.py check`, then `--smoke` runs of `configs/best.yaml` and
+`configs/exp/p1/T29_blend.yaml`. Report every step that fails or needs a step the README does not state, with the exact patch
+(README text / requirements line / code diff). Do not edit core files; the lead applies patches.
+
+### T31 — p3: methodology final text
+Turn your T22 follow-up (3 candidate-count corrections) into exact replacement text for `Documentation_template.md`, and draft
+the missing sections: (a) ensemble of a label-learned (T18) and a label-free (T28, mined noise rates, no core-name features)
+LightGBM member, why it helps an unseen country (STATE D17b/D19/D20); (b) validation design: dense CV + dense LOCO, why val
+splits were too optimistic (I-08), how the LB was used (≤ 3 discrete choices, D16/D18); (c) LB history table from STATE.
+Every number must cite its source (results JSON / committed output). Deliver as `reports/p3/T31.md`.
+
+### T32 — p4: fine-tuning reproducibility
+On your GPU, run the packaged `src/e5_finetune.py` twice with the same seed on a small sample (`--n 20000`, split full, output
+under your scratch). Report: identical weights or not (sha256 of model.safetensors), max |Δ| cosine on 1,000 test pairs if not,
+runtime, peak GPU memory, and the extrapolated runtime of the real `--n 400000` run. If it is not deterministic, propose the
+smallest fix (seeds / `torch.use_deterministic_algorithms`) as a diff. Also re-check the model/licence/params header lines of
+`configs/best.yaml` and `configs/exp/p1/T29_blend.yaml` against your T23 compliance record.
+
+## Round 7 — Sun 09:45 → 14:00 (lead p1) — superseded 16:30. LB #7b = 0.979 (dense CV 0.98717). Target 0.988 (top 50).
+**Diagnosis (label-free, scripts in exploration/p1/, commit d7795bc):** US/India test predictions reproduce dense CV on every
+statistic we can measure without labels (house-number conflicts 6.18% vs 6.07% US, 2.16% vs 2.15% India; empty-address
+assignment rates; matches/S1). The LB stall is **France** (15% of test S1, never in validation): #4→#7b moved France 3-5x more
+than US/India (fine-tuned E5: 6.8% of France S1 changed vs 1.4%; threshold 0.8: 3.8% vs 1.1%). Implied France F ≈ 0.93-0.95.
+LOCO (our France proxy) fails differently (shifted-house-number near-copies; France predictions have 0.9% conflicts).
+Lead (phoenix): #8 = best.yaml (T18 + tcanon) finishing now; **T24 self-training scorer** (`p1_selftrain`, adapts to the
+scored data with its own confident pseudo-labels) validated by dense LOCO; if it helps, its test run is submission #9.
+Everyone: fetch main (≥ d7795bc). Reports as `reports/<you>/T2x.md`, push to your branch by **14:00**. No new features.
+
+### T21 — p2: package review (read-only) — unchanged
+Read `code/business_entity_resolution/` as an organizer would (docs/organizers_README.md "Final Submission Package"): README
+steps vs code (`src/run.py test`, `src/e5_finetune.py`), `requirements.txt` vs every import, docstrings on public functions,
+no country-value branches (grep `India|US|France|country ==`), no GPL imports. List file:line issues + suggested patch.
+
+### T22 — p3: methodology fact check + unseen-country section
+Check every number/claim in `Documentation_template.md` against committed JSONs/reports. Then draft (in your report, as
+markdown ready to paste) a short section "Unseen country (France)" from the lead's diagnosis above: what we measured without
+labels, why validation could not see it, what we did (target canonicalization p4_tcanon, self-training if adopted).
+
+### T23 — p4: compliance record + France audit (label-free)
+(a) Table for the methodology appendix: every model/library in the final pipeline with licence, params, training data,
+offline status; every transductive component (p4_tcanon, blockers' IDF, p1_match/p1_extra IDF, p1_noise unsup, p1_ambig,
+p1_selftrain) with the statistic it takes from the records it processes. Flag anything that could read as a rule violation.
+(b) Using only test records (no labels), list France address/name forms that T18's normalization still leaves different
+between likely copies (e.g. department vs region names "Nord"/"Hauts-de-France", "Pas-de-Calais", "(28)", "5 - Rue",
+"6 bis"/"6B", legal forms SARL/EURL/SAS/SASU/SCI/SNC/EI, "(France)", web names, acronym copies "EC"/"BF"). For each: how
+often it occurs (count), and whether a GENERIC label-free rule (no country branch, no hand dictionary) could handle it.
+
+## Round 6 (superseded 09:45) — Sun 08:30 → 17:00, FREEZE (lead p1). No new features or model changes.
+**FINAL = `configs/best.yaml`** = T18 (T17 + p4_tcanon) at threshold 0.8 (D15): dense CV **0.98752**, LOCO **0.93538**
+(T17: 0.98722 / 0.93443). Its test run (#8) is on phoenix now; a clean-checkout reproduction (`exploration/p1/repro_final.sh`)
+follows. Your jobs are review only. Fetch main (≥ 88c85e6). Report as `reports/<you>/T2x.md` by **Sun 14:00**; push to your branch.
+
+### T21 — p2: package review (read-only)
+Read `code/business_entity_resolution/` as an organizer would: README steps vs code (`src/run.py test`, `src/e5_finetune.py`),
+`requirements.txt` vs every import, docstrings on public functions, no dead paths in the final config's components, no
+country-specific branches (grep `India|US|France|country ==`) and no GPL imports. List exact file:line issues with a suggested
+patch; do not edit core/src files yourself.
+
+### T22 — p3: methodology fact check
+Check every number and claim in `Documentation_template.md` against the committed JSONs / reports (`exploration/p1/dense_cv/`,
+`exploration/*/blk_eval_out.md`, planning/STATE.md). Report each mismatch with the correct value and its source.
+Blocking section: confirm the three channels' parameters match `configs/best.yaml`.
+
+### T23 — p4: compliance record
+One table for the methodology appendix: every model / library in the final pipeline with licence, parameter count, training
+data (provided train only), offline status; and the transductive components (p4_tcanon, blockers' IDF, p1_match/p1_extra IDF,
+p1_noise unsup, p1_ambig) with what statistic each takes from the test records. Point out anything that could be read as a
+rule violation (§2 of CLAUDE.md).
+
+---
+## Archive
+
+## Round 5 — Sat 22:30 → Sun 08:00 (lead p1). LB #4 = **0.978** (dense CV 0.98405). Top-10 ≈ 0.99.
+Tonight: #5 (= #4 + fine-tuned E5 `ft_full`) and #6 (probability average of #4 and #5) are uploaded by the lead.
+Phoenix overnight runs the FULL dense CV of the final stack. Your Kaggle machines validate the two big levers on the
+**India group** in parallel with p2's `exploration/p2/dense_cv_group.py` (≈ 21 GB, exact for the India group).
+**Deliver by Sun 08:00**: a short report + the dense_cv_group JSONs (both folds, cands/S1, peak GB). Fetch main first.
+
+### T18 — p3: does T15_final blocking lift the matcher? (India group)
+`dense_cv_group.py` on `configs/exp/p3/T15_sub5.yaml` (T13_sub4 + T15_final blocking, prune sees blk_1/blk_2) vs
+`configs/exp/p1/T13_sub4.yaml`, same machine, same commit. Report F0.5, blocking recall, oracle, cands/S1 after
+pruning, total pairs, peak RAM. If memory is tight, report it rather than shrinking the blocker.
+
+### T19 — p4: does label-free target canonicalization (p4_tcanon) help? (India group)
+`dense_cv_group.py` on `configs/exp/p4/T14b_tcanon.yaml` vs its exact baseline (same stack without tcanon), same machine.
+It is transductive — note it in the config and report. Also say how many France S2/S3 addresses it changes (audit).
+
+### T20 — p2: fine-tuned vs pretrained E5 on the full stack (India group)
+`dense_cv_group.py` on `configs/exp/p1/T13_sub4.yaml` with `p1_e5` `model:` = the v1 `ft_full` checkpoint (from p4's Kaggle
+dataset / re-train with `exploration/p4/e5_finetune.py --split full`), vs pretrained. Caveat in the report: ft_full saw
+these pairs (p4 T16 found naive ≈ cross-fitted).
+
+Everyone: no new features after these; Sun 09:30 sync decides the final stack; Sun 12:00 feature freeze.
+
 ## Round 4 — Sat 17:30, FINAL NIGHT (lead p1). Push results + a short report by **21:00**; last sync Sun 09:30.
 Sun 12:00 feature freeze · 18:00 code freeze · 21:00 zip + methodology. Top-100 LB ≥ 0.984; we are at 0.969 (#2).
 
@@ -48,8 +152,6 @@ b) Stretch: cross-fitted embeddings (2 models on S1 halves `int(unit_hash(str(ro
 - Learned pruning stage (pending lead approval) → small `candidate_pairs.tsv`; cluster-consistency features;
   merge p2/p3 winners → submission #4 ~22:00; overnight: final config (ft_full embeddings), #5 Sun morning.
 
----
-## Archive
 
 ## Round 3 — Sat 26 Sep 09:30 (lead p1). First finish + push your Round 2 report (T04/T05/T06), then start here.
 Checkpoint Sat 18:30; overnight launch 23:30. Feature freeze Sun 12:00.

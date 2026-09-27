@@ -1,0 +1,6 @@
+$ mkdir -p /kaggle/working/p2_out && cp -r exploration/p2/dense_cv /kaggle/working/p2_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p2_out/ ; git -C /tmp/repo log -1 --oneline; free -g
+cp: cannot stat 'exploration/p2/dense_cv': No such file or directory
+a12b762 p2 T14: full team stack config (p2 translit D + p1_compound + p3 empty-address channel + p1 features + p4_e5 + p1_lgbm/assign)
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          30           0           0          30
+Swap:              0           0           0

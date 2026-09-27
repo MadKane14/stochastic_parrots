@@ -1,0 +1,16 @@
+{
+  "id": "grootji/ber-p3-t18emb",
+  "title": "ber-p3-t18emb",
+  "code_file": "ber_p3_t18.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "machine_shape": "",
+  "dataset_sources": ["grootji/ber-student-resource", "grootji/ber-p3-code"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

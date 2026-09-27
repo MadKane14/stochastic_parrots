@@ -1,0 +1,1 @@
+$ python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"

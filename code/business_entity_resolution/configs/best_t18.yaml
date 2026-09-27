@@ -1,0 +1,68 @@
+# FROZEN (Sun 27 Sep 17:00): the T18 final (= submission #8, LB 0.981) — flattened from configs/exp/p1/T18.yaml (+ threshold
+# 0.8, D14). Kept so configs inheriting it (T24-T26) resolve unchanged; the final is now configs/best.yaml.
+# Evidence (planning/STATE.md, exploration/p1/dense_cv/): test-density CV 0.98752 (T18) / 0.98746 at threshold 0.8;
+# threshold 0.8 chosen on validation (flat in-country, better on an unseen country).
+# Models: intfloat/multilingual-e5-small, licence MIT, params 117,653,760, contrastively fine-tuned on the provided
+#   train pairs only (src/e5_finetune.py --split full --out ${BER_ARTIFACTS}/models/ft_full); LightGBM (MIT).
+# Transductive components (unsupervised statistics on the records being processed, no labels): normalizer p4_tcanon
+#   (address abbreviations / junk tokens mined per country-string group), blockers (IDF / df caps), features
+#   p1_match / p1_extra (IDF per country group), p1_noise (S2S3-vs-S1 token frequencies), p1_ambig (name counts).
+# No country value is special-cased anywhere; groups are formed by equal country strings.
+inherit: base.yaml
+cache: true
+normalize:
+  name: p4_tcanon
+  params:
+    legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp]
+    mode: replace
+    min_support: 3
+    min_precision: 0.5
+    fold_scripts: false
+    map_address: true
+    web_names: true
+    join_initials: true
+blocking:
+  max_candidates: 40
+  blockers:
+  - name: p3_compound_rc
+    params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: 10}
+  - name: p3_chargram
+    params:
+      field: name_norm
+      ngrams: [3, 4]
+      words: true
+      right_max_addr_tokens: 0
+      k: 2
+      k_rev: 5
+      max_df: 5000
+      rev_cap: 10
+  - name: p3_nameaddr
+    params: {name_field: name_core, addr_field: addr_norm, name_cap: 4, addr_cap: 10, k: 5, k_rev: 1, max_df: 300, rev_cap: 10}
+features:
+- name: p1_match
+  params: {idf_group: country}
+- name: p1_extra
+  params: {idf_group: country}
+- name: p1_e5
+  params:
+    fields: [name, full]
+    model: ${BER_ARTIFACTS}/models/ft_full
+- name: p1_noise
+  params: {unsup: true}
+- name: p1_ambig
+  params: {}
+scorer:
+  name: p1_lgbm
+  params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000}
+decider:
+  name: p1_assign
+  params: {threshold: 0.8, exclusive_right: true}
+prune:
+  scorer:
+    name: p1_lgbm
+    params: {max_rows: 15000000, max_iter: 60, learning_rate: 0.2, num_leaves: 31, early_stopping: 10}
+  features: [blk_0_score, blk_0_rank, blk_1_score, blk_1_rank, blk_2_score, blk_2_rank, f_p1_name_tset, f_p1_addr_tset, f_p1_idf_n_jacc,
+    f_p1_idf_w_jacc, f_p1_num_shared, f_p1_num_first_eq, f_p1_grp_s1_key_rank, f_p1_grp_rec_key_rank, f_p1_grp_s1_key_margin,
+    f_p1_grp_rec_key_margin]
+  min_score: 0.005
+  max_per_s1: 10

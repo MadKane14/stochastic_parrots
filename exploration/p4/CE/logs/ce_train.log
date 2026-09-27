@@ -1,0 +1,22 @@
+$ python exploration/p4/ce_train.py --split val_v1@0.1 --config code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml --out /kaggle/working/models/ce_val
+candidates 5,945,026 (pos 607,904); training pairs 500,000 (pos 200,000, hard 200,000, random 100,000); data 323s
+Some weights of BertForSequenceClassification were not initialized from the model checkpoint at intfloat/multilingual-e5-small and are newly initialized: ['classifier.bias', 'classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+step 0/7812 loss 0.6858 66 pairs/s
+step 500/7812 loss 0.0376 432 pairs/s
+step 1000/7812 loss 0.1198 430 pairs/s
+step 1500/7812 loss 0.0854 428 pairs/s
+step 2000/7812 loss 0.0597 428 pairs/s
+step 2500/7812 loss 0.0309 428 pairs/s
+step 3000/7812 loss 0.0415 427 pairs/s
+step 3500/7812 loss 0.0030 427 pairs/s
+step 4000/7812 loss 0.0315 427 pairs/s
+step 4500/7812 loss 0.0094 427 pairs/s
+step 5000/7812 loss 0.0492 427 pairs/s
+step 5500/7812 loss 0.0047 427 pairs/s
+step 6000/7812 loss 0.0278 427 pairs/s
+step 6500/7812 loss 0.0095 427 pairs/s
+step 7000/7812 loss 0.0055 427 pairs/s
+step 7500/7812 loss 0.0243 427 pairs/s
+step 7811/7812 loss 0.0202 427 pairs/s
+{"split": "val_v1@0.1", "config": "code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml", "base_model": "intfloat/multilingual-e5-small", "n_train_pairs": 500000, "n_pos": 200000, "steps": 7812, "batch": 64, "lr": 3e-05, "max_length": 128, "epochs": 1, "train_seconds": 1172.5, "gpu": "Tesla T4", "torch": "2.8.0+cu128"}

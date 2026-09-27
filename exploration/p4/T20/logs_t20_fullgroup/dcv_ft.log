@@ -1,0 +1,19 @@
+$ python exploration/p2/dense_cv_group.py -c code/business_entity_resolution/configs/exp/p4/T20_ft.yaml --group India --tag t20ft
+2026-09-26 21:18:23,064 dense_cv normalize 23s
+2026-09-26 21:20:34,194 dense_cv block 131s: 29440337 pairs
+2026-09-26 21:21:02,675 dense_cv cached features feat_p1_match_22b9332787d4be8b.parquet
+2026-09-26 21:21:02,676 dense_cv cached features feat_p1_extra_cee5a3d697f9f10a.parquet
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] /tmp/ber_artifacts/models/ft_full on cuda (torch.float16), params=117,653,760, dim=384
+2026-09-26 21:23:35,591 ber.features.p1_e5 p1_e5 name: 1000000/3679921 unique texts embedded (10875/s)
+2026-09-26 21:25:22,390 ber.features.p1_e5 p1_e5 name: 2000000/3679921 unique texts embedded (10063/s)
+2026-09-26 21:27:07,481 ber.features.p1_e5 p1_e5 name: 3000000/3679921 unique texts embedded (9874/s)
+2026-09-26 21:28:17,960 ber.features.p1_e5 p1_e5 name: 3679921/3679921 unique texts embedded (9831/s)
+2026-09-26 21:35:38,304 ber.features.p1_e5 p1_e5 full: 1000000/4987605 unique texts embedded (4221/s)
+2026-09-26 21:39:41,645 ber.features.p1_e5 p1_e5 full: 2000000/4987605 unique texts embedded (4164/s)
+2026-09-26 21:43:43,771 ber.features.p1_e5 p1_e5 full: 3000000/4987605 unique texts embedded (4153/s)
+2026-09-26 21:47:23,478 ber.features.p1_e5 p1_e5 full: 4000000/4987605 unique texts embedded (4246/s)
+2026-09-26 21:50:57,678 ber.features.p1_e5 p1_e5 full: 4987605/4987605 unique texts embedded (4313/s)
+2026-09-26 21:54:32,858 dense_cv features p1_e5 2010s (peak 29.9 GB)
+2026-09-26 21:54:32,877 dense_cv cached features feat_p1_noise_e592661e50bbdbcb.parquet
+Killed

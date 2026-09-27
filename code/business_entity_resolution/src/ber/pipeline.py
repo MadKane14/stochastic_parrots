@@ -101,7 +101,8 @@ class Pipeline:
             c = self._cached("cands", key, lambda b=b: b.candidates(ds))
             schema.check_candidates(c, s1_ids, right_ids, f"block:{b.registry_name}")
             c = c[["s1_id", "cand_id", "score"]].copy()
-            c[f"blk_{i}_rank"] = c.groupby("s1_id")["score"].rank(ascending=False, method="first")
+            c[f"blk_{i}_rank"] = c.groupby("s1_id")["score"].rank(ascending=False, method="first").astype(np.float32)
+            c["score"] = c["score"].astype(np.float32)          # float32 halves the blocker columns' memory
             c = c.rename(columns={"score": f"blk_{i}_score"})
             merged = c if merged is None else merged.merge(c, on=["s1_id", "cand_id"], how="outer")
         if merged is None:
@@ -123,7 +124,13 @@ class Pipeline:
             schema.check_features(f, pairs, f"features:{fs.registry_name}")
             frames.append(f)
             self._tick(f"features:{fs.registry_name}", t0)
-        return pd.concat([pairs, *frames], axis=1) if frames else pairs
+        # attach column by column, releasing each feature set's frame as we go: never a second full copy in memory
+        while frames:
+            f = frames.pop(0)
+            for c in f.columns:
+                pairs[c] = f[c].to_numpy()
+            del f
+        return pairs
 
     def _prune_view(self, pairs: pd.DataFrame) -> pd.DataFrame:
         cols = ["s1_id", "cand_id"] + [c for c in ("label",) if c in pairs.columns] + list(self.prune_cfg["features"])

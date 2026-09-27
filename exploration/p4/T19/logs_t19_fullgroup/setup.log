@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+bf41212 p4 T19: Kaggle kernel — India-group dense CV of T14b_tcanon (p4_tcanon, transductive) vs T12_noise2
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-6225ef42-f364-53a6-fa71-39c393539c30)
+GPU 1: Tesla T4 (UUID: GPU-46de0cf7-b0fa-40d9-e355-b28cf6d82a14)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

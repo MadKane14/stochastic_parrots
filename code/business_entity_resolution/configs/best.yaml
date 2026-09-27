@@ -1,14 +1,84 @@
-# CURRENT TEAM BEST PIPELINE — owned by the lead, updated only on main after a planning round.
-# Worker experiment configs should `inherit: ../../best.yaml` and override only what they test.
-# Evidence (run_ids) for this config lives in planning/STATE.md.
-#
-# Round 2 (Fri 25 Sep, p1 T02): scalable compound-key blocker replaces the brute-force tfidf_knn baseline.
-#   val_v1@0.1: 20260925-205725_p1_T02_T02_cmp_val_v1@0.1_35fb75 (F0.5 0.9843)
-#   full-density blocking (exploration/p1/blk_eval_out.md): pair recall 0.970, oracle F0.5 0.989, 33 cands/S1
+# FINAL CONFIGURATION (team stochastic_parrots) — flattened from configs/exp/p1/T29_blend.yaml (= submission #9, public
+# LB 0.983): T18 (best_t18.yaml) + feature set p1_mnoise + a two-member LightGBM ensemble, threshold 0.8.
+#   member A = every feature; member B = label-free mined noise-word rates instead of the label-learned ones, no core-name
+#   features. Score = mean of the two probabilities (scorer.params.combine: mean).
+# Evidence (planning/STATE.md D17b/D19/D20, exploration/p1/): test-density CV 0.98748 at threshold 0.8 (A 0.98746, B 0.98732);
+# public LB #8 (A alone) 0.981 -> #9 (this) 0.983; threshold 0.8 chosen on validation (flat in-country, better unseen-country).
+# Models: intfloat/multilingual-e5-small, licence MIT, params 117,653,760, contrastively fine-tuned on the provided
+#   train pairs only (src/e5_finetune.py --split full --out ${BER_ARTIFACTS}/models/ft_full); LightGBM x2 (MIT).
+# Transductive components (unsupervised statistics on the records being processed, no labels): normalizer p4_tcanon
+#   (address abbreviations / junk tokens mined per country-string group), blockers (IDF / df caps), features
+#   p1_match / p1_extra (IDF per country group), p1_noise (S2S3-vs-S1 token frequencies), p1_ambig (name counts),
+#   p1_mnoise (noise-word rates mined from likely copies among each country group's own candidates).
+# No country value is special-cased anywhere; groups are formed by equal country strings.
 inherit: base.yaml
-
+cache: true
+normalize:
+  name: p4_tcanon
+  params:
+    legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp]
+    mode: replace
+    min_support: 3
+    min_precision: 0.5
+    fold_scripts: false
+    map_address: true
+    web_names: true
+    join_initials: true
 blocking:
-  max_candidates: null
+  max_candidates: 40
   blockers:
-    - name: p1_compound          # transductive: IDF/df caps computed on the records being blocked
-      params: {k: 30, k_rev: 3, max_df: 1000}
+  - name: p3_compound_rc
+    params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: 10}
+  - name: p3_chargram
+    params:
+      field: name_norm
+      ngrams: [3, 4]
+      words: true
+      right_max_addr_tokens: 0
+      k: 2
+      k_rev: 5
+      max_df: 5000
+      rev_cap: 10
+  - name: p3_nameaddr
+    params: {name_field: name_core, addr_field: addr_norm, name_cap: 4, addr_cap: 10, k: 5, k_rev: 1, max_df: 300, rev_cap: 10}
+features:
+- name: p1_match
+  params: {idf_group: country}
+- name: p1_extra
+  params: {idf_group: country}
+- name: p1_e5
+  params:
+    fields: [name, full]
+    model: ${BER_ARTIFACTS}/models/ft_full
+- name: p1_noise
+  params: {unsup: true}
+- name: p1_ambig
+  params: {}
+- name: p1_mnoise
+  params: {}
+scorer:
+  name: weighted_mean
+  params:
+    max_iter: 3000
+    learning_rate: 0.05
+    max_rows: 15000000
+    combine: mean
+    weights: [0.5, 0.5]
+    members:
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000, drop_features: ["^f_p1m_"]}
+    - name: p1_lgbm
+      params: {max_iter: 3000, learning_rate: 0.05, max_rows: 15000000,
+               drop_features: ["^f_p1_core_n_", "^f_p1n_(n|a)_", "^f_p1n_total_unexpl", "^f_p1n_rec_"]}
+decider:
+  name: p1_assign
+  params: {threshold: 0.8, exclusive_right: true}
+prune:
+  scorer:
+    name: p1_lgbm
+    params: {max_rows: 15000000, max_iter: 60, learning_rate: 0.2, num_leaves: 31, early_stopping: 10}
+  features: [blk_0_score, blk_0_rank, blk_1_score, blk_1_rank, blk_2_score, blk_2_rank, f_p1_name_tset, f_p1_addr_tset, f_p1_idf_n_jacc,
+    f_p1_idf_w_jacc, f_p1_num_shared, f_p1_num_first_eq, f_p1_grp_s1_key_rank, f_p1_grp_rec_key_rank, f_p1_grp_s1_key_margin,
+    f_p1_grp_rec_key_margin]
+  min_score: 0.005
+  max_per_s1: 10

@@ -1,0 +1,45 @@
+$ python exploration/p4/dense_cv_group_q.py -c code/business_entity_resolution/configs/exp/p4/T14b_tcanon.yaml --group India --qfrac 0.5 --tag t19tcanon
+[dense_cv_group_q] India qfrac 0.5: 441,310 of 883,188 S1 kept, 4,133,346 S2/S3 records (all)
+2026-09-26 22:20:02,762 dense_cv normalize 285s
+2026-09-26 22:20:27,912 ber.blocking.p1_compound tokenize 18s
+2026-09-26 22:21:13,817 ber.blocking.p1_compound group 0: 441310 S1 x 4133346 right, 14858403 features (57.9/record), built in 46s
+2026-09-26 22:25:15,755 ber.blocking.p1_compound group 0 forward top-30: 242s
+2026-09-26 22:28:55,465 ber.blocking.p1_compound group 0 reverse top-3: 220s
+2026-09-26 22:30:33,169 dense_cv block 630s: 18708911 pairs
+2026-09-26 22:37:34,563 dense_cv features p1_match 405s (peak 22.4 GB)
+2026-09-26 22:44:02,384 dense_cv features p1_extra 388s (peak 22.4 GB)
+2026-09-26 22:48:09,872 dense_cv features p1_e5 247s (peak 26.5 GB)
+2026-09-26 22:50:23,910 dense_cv features p1_noise 134s (peak 26.5 GB)
+2026-09-26 23:11:02,584 ber.scorers.p1_lgbm p1_lgbm: 8892161 train rows (100% of pairs), 476093 valid rows, best_iteration=792
+2026-09-26 23:16:11,657 dense_cv fold 0: fit+score 1507s (best_iteration 792, peak 26.5 GB)
+2026-09-26 23:35:37,741 ber.scorers.p1_lgbm p1_lgbm: 8867130 train rows (100% of pairs), 473527 valid rows, best_iteration=741
+2026-09-26 23:40:29,517 dense_cv fold 1: fit+score 1458s (best_iteration 741, peak 27.1 GB)
+{
+ "group": "India",
+ "f05": 0.98301,
+ "by_fold": {
+  "0": 0.98317,
+  "1": 0.98285
+ },
+ "singleton_acc": 0.9814,
+ "f05_nonsingleton": 0.9831,
+ "n_s1": 441310,
+ "n_pairs": 18708911,
+ "cands_per_s1": {
+  "mean": 42.39,
+  "p95": 72.0,
+  "max": 503
+ },
+ "pair_precision": 0.99511,
+ "pair_recall": 0.96158,
+ "blocking_pair_recall": 0.9791,
+ "oracle_f05": 0.99258,
+ "f05_frozen_metric": 0.98301,
+ "threshold_curve": {
+  "0.5": 0.9817,
+  "0.6": 0.9825,
+  "0.7": 0.98301,
+  "0.8": 0.98304
+ }
+}
+2026-09-26 23:41:46,253 dense_cv_group done in 5326s, peak 27.1 GB

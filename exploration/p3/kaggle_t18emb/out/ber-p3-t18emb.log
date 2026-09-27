@@ -1,0 +1,16 @@
+[{"stream_name":"stderr","time":1.04005647,"data":"Cloning into '/tmp/repo'...\n"}
+,{"stream_name":"stdout","time":1.542275075,"data":"19:29:29 rc=0       0s  setup: nproc; free -g; nvidia-smi -L 2\u003e/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline\n"}
+,{"stream_name":"stdout","time":152.282222995,"data":"19:32:00 rc=0     151s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt\n"}
+,{"stream_name":"stdout","time":154.098894981,"data":"19:32:01 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio\n"}
+,{"stream_name":"stdout","time":250.827676067,"data":"19:33:38 rc=0      97s  rawcache: python -c \"import sys; sys.path.insert(0, 'code/business_entity_resolution/src'); import os; from ber.data import load_part; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir=os.environ['BER_ARTIFACTS'] + '/cache')\"\n"}
+,{"stream_name":"stdout","time":302.431724925,"data":"19:34:30 rc=0      52s  hf: python -c \"from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)\"\n"}
+,{"stream_name":"stdout","time":853.443753548,"data":"19:43:41 rc=0     551s  embed_name (GPU, parallel)\n"}
+,{"stream_name":"stdout","time":1670.936098805,"data":"19:57:18 rc=0    1369s  embed_full (GPU, parallel)\n"}
+,{"stream_name":"stdout","time":1680.423255025,"data":"19:57:28 rc=0       9s  copy: mkdir -p /kaggle/working/emb_mm \u0026\u0026 cp -r /tmp/ber_artifacts/emb_mm/intfloat__multilingual-e5-small_ml64 /kaggle/working/emb_mm/ \u0026\u0026 rm -f /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64/*.tmp.npy /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64/*.rows.npy; ls -la /kaggle/working/emb_mm/intfloat__multilingual-e5-small_ml64\n"}
+,{"stream_name":"stderr","time":1683.524612962,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1683.524645393,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1684.601136607,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1684.601170023,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1704.281480786,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1705.119883786,"data":"[NbConvertApp] Writing 277771 bytes to __results__.html\n"}
+]

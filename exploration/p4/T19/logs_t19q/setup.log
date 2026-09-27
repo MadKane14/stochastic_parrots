@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+cf57a91 p4: India full stack OOMs Kaggle (28-29 GB before feature concat) -> dense_cv_group_q.py (50% S1 hash sample, all S2/S3 kept) + T19q/T20q kernels
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-c1b89294-3d29-5c0e-827f-4b46523bbf1d)
+GPU 1: Tesla T4 (UUID: GPU-d53f0028-c656-7587-cb54-2686d4d0fb8f)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

@@ -1,0 +1,52 @@
+$ python exploration/p4/dense_cv_group_q.py -c code/business_entity_resolution/configs/exp/p4/T20_ft.yaml --group India --qfrac 0.5 --tag t20ft
+[dense_cv_group_q] India qfrac 0.5: 441,310 of 883,188 S1 kept, 4,133,346 S2/S3 records (all)
+2026-09-26 23:57:33,975 dense_cv normalize 20s
+2026-09-26 23:59:00,651 dense_cv block 87s: 18736320 pairs
+2026-09-26 23:59:17,395 dense_cv cached features feat_p1_match_0128fb0d632b9d62.parquet
+2026-09-26 23:59:17,395 dense_cv cached features feat_p1_extra_e82eac243f83dbbc.parquet
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] /tmp/ber_artifacts/models/ft_full on cuda (torch.float16), params=117,653,760, dim=384
+2026-09-27 00:01:45,505 ber.features.p1_e5 p1_e5 name: 1000000/3488866 unique texts embedded (9845/s)
+2026-09-27 00:03:34,127 ber.features.p1_e5 p1_e5 name: 2000000/3488866 unique texts embedded (9515/s)
+2026-09-27 00:05:20,526 ber.features.p1_e5 p1_e5 name: 3000000/3488866 unique texts embedded (9476/s)
+2026-09-27 00:06:13,395 ber.features.p1_e5 p1_e5 name: 3488866/3488866 unique texts embedded (9443/s)
+2026-09-27 00:12:50,056 ber.features.p1_e5 p1_e5 full: 1000000/4545746 unique texts embedded (3968/s)
+2026-09-27 00:17:03,755 ber.features.p1_e5 p1_e5 full: 2000000/4545746 unique texts embedded (3955/s)
+2026-09-27 00:21:02,336 ber.features.p1_e5 p1_e5 full: 3000000/4545746 unique texts embedded (4031/s)
+2026-09-27 00:24:48,739 ber.features.p1_e5 p1_e5 full: 4000000/4545746 unique texts embedded (4121/s)
+2026-09-27 00:26:53,239 ber.features.p1_e5 p1_e5 full: 4545746/4545746 unique texts embedded (4151/s)
+2026-09-27 00:29:14,611 dense_cv features p1_e5 1797s (peak 26.5 GB)
+2026-09-27 00:29:14,635 dense_cv cached features feat_p1_noise_c7cc2448ea59b70d.parquet
+2026-09-27 00:44:29,924 ber.scorers.p1_lgbm p1_lgbm: 8905713 train rows (100% of pairs), 476898 valid rows, best_iteration=522
+2026-09-27 00:48:25,334 dense_cv fold 0: fit+score 1090s (best_iteration 522, peak 26.5 GB)
+2026-09-27 01:09:26,188 ber.scorers.p1_lgbm p1_lgbm: 8879579 train rows (100% of pairs), 474130 valid rows, best_iteration=857
+2026-09-27 01:18:43,734 dense_cv fold 1: fit+score 1818s (best_iteration 857, peak 26.5 GB)
+{
+ "group": "India",
+ "f05": 0.98328,
+ "by_fold": {
+  "0": 0.98336,
+  "1": 0.98319
+ },
+ "singleton_acc": 0.9812,
+ "f05_nonsingleton": 0.9834,
+ "n_s1": 441310,
+ "n_pairs": 18736320,
+ "cands_per_s1": {
+  "mean": 42.46,
+  "p95": 72.0,
+  "max": 508
+ },
+ "pair_precision": 0.9952,
+ "pair_recall": 0.96233,
+ "blocking_pair_recall": 0.9792,
+ "oracle_f05": 0.99262,
+ "f05_frozen_metric": 0.98328,
+ "threshold_curve": {
+  "0.5": 0.98185,
+  "0.6": 0.9828,
+  "0.7": 0.98328,
+  "0.8": 0.98332
+ }
+}
+2026-09-27 01:19:35,132 dense_cv_group done in 5078s, peak 26.5 GB

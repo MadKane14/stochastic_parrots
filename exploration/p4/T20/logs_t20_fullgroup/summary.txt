@@ -1,0 +1,14 @@
+19:34:33 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+19:34:33 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+19:36:44 rc=0     130s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+19:36:45 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+19:36:53 rc=0       8s  check: python src/run.py check
+19:38:17 rc=0      84s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+19:38:59 rc=0      42s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+19:39:01 rc=0       3s  gpu_check: nvidia-smi -L | grep -q P100 && pip install -q --force-reinstall torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126 && pip uninstall -y -q torchvision torchaudio; python -c "import torch; print(torch.__version__, torch.cuda.get_device_name(0), torch.ones(2, device='cuda').sum().item())"
+19:54:59 rc=0     957s  ft_full: python exploration/p4/e5_finetune.py --split full --out /tmp/ber_artifacts/models/ft_full --n 400000
+21:15:03 rc=137    4804s  dcv_pre: python exploration/p2/dense_cv_group.py -c code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml --group India --tag t20pre
+21:15:03 rc=0       0s  collect: mkdir -p /kaggle/working/p4_out && cp -r exploration/p2/dense_cv /kaggle/working/p4_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p4_out/; free -g
+21:56:22 rc=137    2479s  dcv_ft: python exploration/p2/dense_cv_group.py -c code/business_entity_resolution/configs/exp/p4/T20_ft.yaml --group India --tag t20ft
+21:56:22 rc=0       0s  collect: mkdir -p /kaggle/working/p4_out && cp -r exploration/p2/dense_cv /kaggle/working/p4_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p4_out/; free -g
+21:56:23 rc=0       1s  save_model: mkdir -p /kaggle/working/models && cp -r /tmp/ber_artifacts/models/ft_full /kaggle/working/models/ft_full

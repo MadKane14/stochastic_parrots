@@ -1,0 +1,13 @@
+OOF mean(A,B) F0.5 @0.8: 0.98748  loss 0.01252  S1 2,206,821
+true pairs 7,638,365; not in candidates 81,620 (0.0107); FN inside candidates 177,628; FP 12,350
+ceiling gain if: blocking perfect 0.00379 | no false positives 0.00147 | every in-candidate true pair found 0.00746
+                               share_S1  mean_F  loss_contrib  share_of_loss
+cat                                                                         
+has empty-address true record    0.1417  0.9516        0.0069         0.5477
+blocking miss                    0.0164  0.8588        0.0023         0.1854
+FN in candidates                 0.0187  0.8921        0.0020         0.1610
+false positive                   0.0043  0.7829        0.0009         0.0746
+singleton                        0.0558  0.9930        0.0004         0.0312
+perfect                          0.7631  1.0000        0.0000         0.0000
+empty-address S1: 0.1417 of S1, loss share 0.548; their true pairs missed by blocking 0.0272, FN in candidates 0.0993
+by country: {'India': 0.9862, 'US': 0.98833}

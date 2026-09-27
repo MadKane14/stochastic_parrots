@@ -1,5 +1,5 @@
 # T04 (p2) variant B — as A but mode=append (native tokens kept, Latin forms appended). T04 asks to test both.
-inherit: ../../best.yaml
+inherit: ../../best_r2.yaml
 normalize:
   name: p2_translit
   params: {legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp], mode: append, min_support: 3, min_precision: 0.5, fold_scripts: true,

@@ -418,3 +418,297 @@
  }
 }
 ```
+
+## 20260927-013724_densecv_T17_530df3 (commit 05c820a)
+
+```
+{
+ "f05": 0.98722,
+ "by_country": {
+  "India": 0.98609,
+  "US": 0.98796
+ },
+ "by_fold": {
+  "0": 0.98716,
+  "1": 0.98727
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9886,
+ "f05_nonsingleton": 0.98713,
+ "n_s1": 2206821,
+ "n_pairs": 77410443,
+ "pair_precision": 0.99729,
+ "pair_recall": 0.96793,
+ "blocking_pair_recall": 0.9889,
+ "oracle_f05": 0.99627,
+ "f05_frozen_metric": 0.98722,
+ "threshold_curve": {
+  "0.3": 0.98296,
+  "0.4": 0.98467,
+  "0.5": 0.98594,
+  "0.6": 0.98681,
+  "0.7": 0.98722,
+  "0.8": 0.98717,
+  "0.9": 0.98622
+ }
+}
+```
+
+## 20260927-060231_densecv_T17_530df3_loco (commit bf29794)
+
+```
+{
+ "f05": 0.93443,
+ "by_country": {
+  "India": 0.94686,
+  "US": 0.92614
+ },
+ "by_fold": {
+  "0": 0.92614,
+  "1": 0.94686
+ },
+ "folds": "leave-one-country-out",
+ "singleton_acc": 0.7567,
+ "f05_nonsingleton": 0.94494,
+ "n_s1": 2206821,
+ "n_pairs": 77410443,
+ "pair_precision": 0.95047,
+ "pair_recall": 0.94076,
+ "blocking_pair_recall": 0.9889,
+ "oracle_f05": 0.99627,
+ "f05_frozen_metric": 0.93443,
+ "threshold_curve": {
+  "0.3": 0.92475,
+  "0.4": 0.92754,
+  "0.5": 0.92981,
+  "0.6": 0.93202,
+  "0.7": 0.93443,
+  "0.8": 0.93731,
+  "0.9": 0.94131
+ }
+}
+```
+
+## 20260927-074356_densecv_T18_2dd8b3 (commit a0c55f2)
+
+```
+{
+ "f05": 0.98752,
+ "by_country": {
+  "India": 0.98623,
+  "US": 0.98837
+ },
+ "by_fold": {
+  "0": 0.98742,
+  "1": 0.98761
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9892,
+ "f05_nonsingleton": 0.98742,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.99741,
+ "pair_recall": 0.96854,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.98752,
+ "threshold_curve": {
+  "0.3": 0.98329,
+  "0.4": 0.98502,
+  "0.5": 0.98627,
+  "0.6": 0.98711,
+  "0.7": 0.98752,
+  "0.8": 0.98746,
+  "0.9": 0.98653
+ }
+}
+```
+
+## 20260927-081325_densecv_T18_2dd8b3_loco (commit c1a63c5 DIRTY)
+
+```
+{
+ "f05": 0.93538,
+ "by_country": {
+  "India": 0.94787,
+  "US": 0.92704
+ },
+ "by_fold": {
+  "0": 0.92704,
+  "1": 0.94787
+ },
+ "folds": "leave-one-country-out",
+ "singleton_acc": 0.76,
+ "f05_nonsingleton": 0.94575,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.95143,
+ "pair_recall": 0.94135,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.93538,
+ "threshold_curve": {
+  "0.3": 0.92538,
+  "0.4": 0.9286,
+  "0.5": 0.93101,
+  "0.6": 0.93308,
+  "0.7": 0.93538,
+  "0.8": 0.93813,
+  "0.9": 0.94181
+ }
+}
+```
+
+## 20260927-105752_densecv_T24_self_fb7626_loco (commit c4d593b)
+
+```
+{
+ "f05": 0.93333,
+ "by_country": {
+  "India": 0.95951,
+  "US": 0.91587
+ },
+ "by_fold": {
+  "0": 0.91587,
+  "1": 0.95951
+ },
+ "folds": "leave-one-country-out",
+ "singleton_acc": 0.7035,
+ "f05_nonsingleton": 0.94693,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.94176,
+ "pair_recall": 0.96482,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.93333,
+ "threshold_curve": {
+  "0.3": 0.92425,
+  "0.4": 0.92643,
+  "0.5": 0.92825,
+  "0.6": 0.92995,
+  "0.7": 0.9316,
+  "0.8": 0.93333,
+  "0.9": 0.93532
+ },
+ "base_f05": 0.93813,
+ "base_by_country": {
+  "India": 0.9475,
+  "US": 0.93188
+ },
+ "base_pair_precision": 0.95625,
+ "base_pair_recall": 0.93619,
+ "base_threshold_curve": {
+  "0.5": 0.93101,
+  "0.6": 0.93308,
+  "0.7": 0.93538,
+  "0.8": 0.93813,
+  "0.9": 0.94181
+ }
+}
+```
+
+## 20260927-113510_densecv_T25_nocore_96743a (commit 88e4ef5)
+
+```
+{
+ "f05": 0.98746,
+ "by_country": {
+  "India": 0.98617,
+  "US": 0.98832
+ },
+ "by_fold": {
+  "0": 0.98742,
+  "1": 0.9875
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9924,
+ "f05_nonsingleton": 0.98717,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.9982,
+ "pair_recall": 0.96637,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.98746,
+ "threshold_curve": {
+  "0.3": 0.98333,
+  "0.4": 0.98504,
+  "0.5": 0.98628,
+  "0.6": 0.98712,
+  "0.7": 0.98749,
+  "0.8": 0.98746,
+  "0.9": 0.98654
+ }
+}
+```
+
+## 20260927-121253_densecv_T27_mnoise_nocore_ec007c (commit b4788a4)
+
+```
+{
+ "f05": 0.98739,
+ "by_country": {
+  "India": 0.98613,
+  "US": 0.98823
+ },
+ "by_fold": {
+  "0": 0.98724,
+  "1": 0.98755
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9923,
+ "f05_nonsingleton": 0.9871,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.9982,
+ "pair_recall": 0.96617,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.98739,
+ "threshold_curve": {
+  "0.3": 0.98324,
+  "0.4": 0.98495,
+  "0.5": 0.98621,
+  "0.6": 0.98707,
+  "0.7": 0.98745,
+  "0.8": 0.98739,
+  "0.9": 0.98644
+ }
+}
+```
+
+## 20260927-130249_densecv_T28_mined_only_ea4e7e (commit 9489112)
+
+```
+{
+ "f05": 0.98732,
+ "by_country": {
+  "India": 0.98603,
+  "US": 0.98818
+ },
+ "by_fold": {
+  "0": 0.98729,
+  "1": 0.98735
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9924,
+ "f05_nonsingleton": 0.98702,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.9982,
+ "pair_recall": 0.96595,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.98732,
+ "threshold_curve": {
+  "0.3": 0.98313,
+  "0.4": 0.98489,
+  "0.5": 0.98614,
+  "0.6": 0.98702,
+  "0.7": 0.98739,
+  "0.8": 0.98732,
+  "0.9": 0.98632
+ }
+}
+```

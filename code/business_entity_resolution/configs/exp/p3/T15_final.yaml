@@ -1,0 +1,20 @@
+# T15 (p3) — FINAL blocker hand-off on top of the current best T10_e5: three channels + reverse-flood caps + per-S1 cap.
+#   b0 p3_compound_rc = p1_compound (imported, unchanged) with rev_cap 10 (reverse-only pairs per S1)
+#   b1 p3_chargram    = empty-address name channel (right records without address; S1 normalised over the name)
+#   b2 p3_nameaddr    = (name token x address word) keys: same name + same street words, perturbed house number
+# True density (exploration/p3/blk_dense.py --dense, job t15f, exploration/p3/kaggle_t15f/out/blk_dense_out.md,
+# T15_ena5 rows "rev_cap 10 + cap 40"): recall 0.9891, oracle F0.5 0.9964, 35.06 cands/S1 (p95 40, max 40),
+# ~77.4M pairs on full train (<= 80M budget) vs T09_tr/T10_e5 blocker 0.9793 / 0.9929 / 33.28 (max 274).
+# Blocking time on 4 Kaggle vCPU, full train: 1746-2264 s (b0) + 1255-1629 s (b1) + 315 s (b2).
+inherit: ../p1/T10_e5.yaml
+blocking:
+  max_candidates: 40
+  blockers:
+    - name: p3_compound_rc       # transductive (as p1_compound)
+      params: {k: 30, k_rev: 3, max_df: 1000, rev_cap: 10}
+    - name: p3_chargram          # transductive: IDF/df caps computed on the records being blocked
+      params: {field: name_norm, ngrams: [3, 4], words: true, right_max_addr_tokens: 0, k: 2, k_rev: 5,
+               max_df: 5000, rev_cap: 10}
+    - name: p3_nameaddr          # transductive
+      params: {name_field: name_core, addr_field: addr_norm, name_cap: 4, addr_cap: 10, k: 5, k_rev: 1, max_df: 300,
+               rev_cap: 10}
