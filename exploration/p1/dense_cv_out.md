@@ -523,3 +523,38 @@
  }
 }
 ```
+
+## 20260927-081325_densecv_T18_2dd8b3_loco (commit c1a63c5 DIRTY)
+
+```
+{
+ "f05": 0.93538,
+ "by_country": {
+  "India": 0.94787,
+  "US": 0.92704
+ },
+ "by_fold": {
+  "0": 0.92704,
+  "1": 0.94787
+ },
+ "folds": "leave-one-country-out",
+ "singleton_acc": 0.76,
+ "f05_nonsingleton": 0.94575,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.95143,
+ "pair_recall": 0.94135,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.93538,
+ "threshold_curve": {
+  "0.3": 0.92538,
+  "0.4": 0.9286,
+  "0.5": 0.93101,
+  "0.6": 0.93308,
+  "0.7": 0.93538,
+  "0.8": 0.93813,
+  "0.9": 0.94181
+ }
+}
+```

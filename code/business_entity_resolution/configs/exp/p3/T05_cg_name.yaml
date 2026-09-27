@@ -4,7 +4,7 @@
 # unioned with p1_compound and capped at 50 cands/S1 (best rank first), raises full-density pair recall
 # 0.9699 -> >= 0.98. max_df 3000: at 1000 only ~2.5 grams/S1 are indexed in the 5M-record India group
 # (names come from a small vocabulary, I-07) — see reports/p3/T05.md.
-inherit: ../../best.yaml
+inherit: ../../best_r2.yaml
 blocking:
   max_candidates: 50
   blockers:
