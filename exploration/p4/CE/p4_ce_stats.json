@@ -1,0 +1,85 @@
+{
+ "split": "val_v1@0.1",
+ "config": "code/business_entity_resolution/configs/exp/p1/T13_sub4.yaml",
+ "base_model": "intfloat/multilingual-e5-small",
+ "n_train_pairs": 500000,
+ "n_pos": 200000,
+ "steps": 7812,
+ "batch": 64,
+ "lr": 3e-05,
+ "max_length": 128,
+ "epochs": 1,
+ "train_seconds": 1172.5,
+ "loss_log": [
+  {
+   "step": 0,
+   "loss": 0.6858
+  },
+  {
+   "step": 500,
+   "loss": 0.0376
+  },
+  {
+   "step": 1000,
+   "loss": 0.1198
+  },
+  {
+   "step": 1500,
+   "loss": 0.0854
+  },
+  {
+   "step": 2000,
+   "loss": 0.0597
+  },
+  {
+   "step": 2500,
+   "loss": 0.0309
+  },
+  {
+   "step": 3000,
+   "loss": 0.0415
+  },
+  {
+   "step": 3500,
+   "loss": 0.003
+  },
+  {
+   "step": 4000,
+   "loss": 0.0315
+  },
+  {
+   "step": 4500,
+   "loss": 0.0094
+  },
+  {
+   "step": 5000,
+   "loss": 0.0492
+  },
+  {
+   "step": 5500,
+   "loss": 0.0047
+  },
+  {
+   "step": 6000,
+   "loss": 0.0278
+  },
+  {
+   "step": 6500,
+   "loss": 0.0095
+  },
+  {
+   "step": 7000,
+   "loss": 0.0055
+  },
+  {
+   "step": 7500,
+   "loss": 0.0243
+  },
+  {
+   "step": 7811,
+   "loss": 0.0202
+  }
+ ],
+ "gpu": "Tesla T4",
+ "torch": "2.8.0+cu128"
+}
