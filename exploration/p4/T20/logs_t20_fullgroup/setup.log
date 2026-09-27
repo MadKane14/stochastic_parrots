@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+49ea4c9 p4: running p2's T20 (fine-tuned vs pretrained E5, India group) on p4's Kaggle — note for p2 not to run it locally; T20_ft config + kernel
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-bdafb6c0-cbf1-c5fe-c462-e90de600fbfa)
+GPU 1: Tesla T4 (UUID: GPU-c4dd0cb7-a4a7-ce13-74cc-60905dbfaec6)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

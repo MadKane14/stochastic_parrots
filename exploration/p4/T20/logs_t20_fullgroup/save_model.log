@@ -1,0 +1,1 @@
+$ mkdir -p /kaggle/working/models && cp -r /tmp/ber_artifacts/models/ft_full /kaggle/working/models/ft_full

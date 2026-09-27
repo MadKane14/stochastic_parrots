@@ -1,0 +1,11 @@
+20:07:32 rc=0       0s  setup: git clone -b w/p4 /kaggle/input/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+20:07:32 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+20:09:43 rc=0     131s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+20:09:45 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+20:09:56 rc=0      12s  check: python src/run.py check
+20:11:28 rc=0      92s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+20:12:02 rc=0      34s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+22:12:58 rc=0    7255s  dcv_base: python exploration/p4/dense_cv_group_q.py -c code/business_entity_resolution/configs/exp/p1/T12_noise2.yaml --group India --qfrac 0.5 --tag t19base
+22:12:58 rc=0       0s  collect: mkdir -p /kaggle/working/p4_out && cp -r exploration/p2/dense_cv /kaggle/working/p4_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p4_out/; free -g
+23:41:49 rc=0    5331s  dcv_tcanon: python exploration/p4/dense_cv_group_q.py -c code/business_entity_resolution/configs/exp/p4/T14b_tcanon.yaml --group India --qfrac 0.5 --tag t19tcanon
+23:41:49 rc=0       0s  collect: mkdir -p /kaggle/working/p4_out && cp -r exploration/p2/dense_cv /kaggle/working/p4_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p4_out/; free -g

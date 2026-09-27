@@ -1,0 +1,11 @@
+$ git clone -b p2run /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+a12b762 p2 T14: full team stack config (p2 translit D + p1_compound + p3 empty-address channel + p1 features + p4_e5 + p1_lgbm/assign)
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-760052d4-ec29-e4f2-e850-f880ce3cd8c4)
+GPU 1: Tesla T4 (UUID: GPU-863d5142-f57e-5e56-badd-1d64f31866b7)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

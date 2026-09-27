@@ -1,0 +1,15 @@
+# T20 (p2's task, run by p4 on p4's Kaggle at the account owner's request): T13_sub4 with the E5 encoder fine-tuned on
+# ALL train pairs (v1 recipe: exploration/p4/e5_finetune.py --split full --n 400000 -> $BER_ARTIFACTS/models/ft_full).
+# Compared with T13_sub4 (pretrained) by exploration/p2/dense_cv_group.py --group India, same machine and commit.
+# Caveat: ft_full saw these India pairs (p4 T16: naive fine-tuning ~ cross-fitted on val_v1@0.1).
+# model: intfloat/multilingual-e5-small fine-tuned, licence: MIT, params: 117,653,760
+inherit: ../p1/T13_sub4.yaml
+features:
+  - name: p1_match
+    params: {idf_group: country}
+  - name: p1_extra
+    params: {idf_group: country}
+  - name: p1_e5
+    params: {fields: [name, full], model: "${BER_ARTIFACTS}/models/ft_full"}
+  - name: p1_noise
+    params: {unsup: true}

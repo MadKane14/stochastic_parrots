@@ -1,0 +1,5 @@
+$ free -g; du -sh /kaggle/working/models/* 2>/dev/null
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          17           0          13          30
+Swap:              0           0           0
+246M	/kaggle/working/models/ce_val

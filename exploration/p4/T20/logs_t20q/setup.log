@@ -1,0 +1,11 @@
+$ git clone -b w/p4 /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+Cloning into '/tmp/repo'...
+42045e2 Merge remote-tracking branch 'origin/main' into w/p4
+$ nvidia-smi -L; nproc; free -g; python --version
+GPU 0: Tesla T4 (UUID: GPU-6d495611-9042-e0de-bab4-68c90627dbb7)
+GPU 1: Tesla T4 (UUID: GPU-71327193-513c-e9b6-11be-1fe3db163bc2)
+4
+               total        used        free      shared  buff/cache   available
+Mem:              31           0          26           0           4          30
+Swap:              0           0           0
+Python 3.12.13

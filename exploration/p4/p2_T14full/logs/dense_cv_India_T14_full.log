@@ -1,0 +1,20 @@
+$ python exploration/p2/dense_cv_group.py -c code/business_entity_resolution/configs/exp/p2/T14_full.yaml --group India
+2026-09-26 16:58:33,320 dense_cv normalize 185s
+2026-09-26 16:59:02,200 ber.blocking.p1_compound tokenize 21s
+2026-09-26 17:00:07,771 ber.blocking.p1_compound group 0: 883188 S1 x 4133346 right, 15100321 features (57.9/record), built in 65s
+2026-09-26 17:08:04,074 ber.blocking.p1_compound group 0 forward top-30: 476s
+2026-09-26 17:14:53,218 ber.blocking.p1_compound group 0 reverse top-3: 409s
+2026-09-26 17:16:59,015 ber.blocking.p3_chargram group 0: 883188 S1 x 122794 right, 17.2 indexed features/S1, built in 19s
+2026-09-26 17:16:59,267 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 17:19:49,332 ber.blocking.p3_chargram group 0 forward top-2: 1766376 pairs, 170s
+2026-09-26 17:19:49,742 ber.blocking.p3_chargram   product: 2.45e+09 postings, 245 chunks
+2026-09-26 17:22:31,804 ber.blocking.p3_chargram group 0 reverse top-5: 613965 pairs, 162s
+2026-09-26 17:24:41,423 dense_cv block 1568s: 30459509 pairs
+2026-09-26 17:36:11,726 dense_cv features p1_match 663s (peak 24.6 GB)
+2026-09-26 17:44:52,154 dense_cv features p1_extra 520s (peak 24.6 GB)
+`torch_dtype` is deprecated! Use `dtype` instead!
+[p4_e5] intfloat/multilingual-e5-small on cuda (torch.float16), params=117,653,760, dim=384
+[p4_e5] name: embedded 3,678,909 new texts in 386.2s (9,527/s); 0 from cache
+[p4_e5] full: embedded 4,986,146 new texts in 1138.8s (4,379/s); 0 from cache
+2026-09-26 18:18:17,534 dense_cv features p4_e5 2005s (peak 31.1 GB)
+Killed

@@ -1,0 +1,11 @@
+$ mkdir -p /tmp/ber_artifacts/models && cp -r /kaggle/input/notebooks/anishtoshniwal006/ber-p4-t20/models/ft_full /tmp/ber_artifacts/models/ft_full && ls -la /tmp/ber_artifacts/models/ft_full
+total 251476
+drwxr-xr-x 2 root root      4096 Sep 26 22:02 .
+drwxr-xr-x 3 root root      4096 Sep 26 22:02 ..
+-rw-r--r-- 1 root root       622 Sep 26 22:02 config.json
+-rw-r--r-- 1 root root 235329896 Sep 26 22:02 model.safetensors
+-rw-r--r-- 1 root root      1339 Sep 26 22:02 p4_finetune_stats.json
+-rw-r--r-- 1 root root   5069051 Sep 26 22:02 sentencepiece.bpe.model
+-rw-r--r-- 1 root root       965 Sep 26 22:02 special_tokens_map.json
+-rw-r--r-- 1 root root      1203 Sep 26 22:02 tokenizer_config.json
+-rw-r--r-- 1 root root  17083052 Sep 26 22:02 tokenizer.json

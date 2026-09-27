@@ -1,0 +1,9 @@
+16:47:39 rc=0       0s  setup: git clone -b p2run /kaggle/input/datasets/anishtoshniwal006/ber-p4-code/p4.bundle /tmp/repo && git -C /tmp/repo log -1 --oneline
+16:47:39 rc=0       0s  setup: nvidia-smi -L; nproc; free -g; python --version
+16:50:15 rc=0     157s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements-gpu.txt
+16:50:17 rc=0       2s  pip: pip uninstall -y -q torchvision torchaudio
+16:50:24 rc=0       8s  check: python src/run.py check
+16:51:49 rc=0      85s  rawcache: python -c "import sys; sys.path.insert(0,'src'); from ber.data import load_part; import os; load_part(os.environ['BER_DATA_DIR'], 'train', cache_dir='/tmp/ber_artifacts/cache')"
+16:52:33 rc=0      43s  hf: python -c "from transformers import AutoModel, AutoTokenizer; m='intfloat/multilingual-e5-small'; AutoTokenizer.from_pretrained(m); AutoModel.from_pretrained(m)"
+18:19:48 rc=137    5236s  dense_cv_India_T14_full: python exploration/p2/dense_cv_group.py -c code/business_entity_resolution/configs/exp/p2/T14_full.yaml --group India
+18:19:49 rc=0       0s  collect: mkdir -p /kaggle/working/p2_out && cp -r exploration/p2/dense_cv /kaggle/working/p2_out/ && cp exploration/p2/dense_cv_out.md /kaggle/working/p2_out/ ; git -C /tmp/repo log -1 --oneline; free -g
