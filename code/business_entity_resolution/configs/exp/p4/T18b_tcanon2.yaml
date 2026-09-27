@@ -1,0 +1,8 @@
+# p4 (Sun, lead-approved France follow-up): T18 with normalizer p4_tcanon -> p4_tcanon2 (adds: side-skewed address
+# segments dropped, e.g. department names instead of the region; glued "6B" split). Everything else = T18 (FINAL).
+# Label-free, transductive. Evidence and recommendation: reports/p4/T24_tcanon2.md.
+inherit: ../p1/T18.yaml
+normalize:
+  name: p4_tcanon2
+  params: {legal_tokens: [inc, llc, ltd, pvt, private, limited, corp, corporation, co, company, plc, llp], mode: replace,
+           min_support: 3, min_precision: 0.5, fold_scripts: false, map_address: true, web_names: true, join_initials: true}
