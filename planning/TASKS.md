@@ -1,6 +1,34 @@
 # TASKS — workers: do only the tasks with your handle in the CURRENT round
 
-## Round 8 — Sun 16:30 → 20:00, FINAL (lead p1). LB #8 = 0.981, #9 = **0.983** (mean of T18 + label-free T28 member).
+## Round 9 — Sun 18:40 → 20:30, PACKAGE (lead p1). LB #9 0.983146 (final unless T31 wins), #10 0.983186 (tie → #9).
+**What decides the final ranking (docs/organizers_README.md "Final Submission Package" + organizer update Sat):** the zip —
+`output/matching_results.tsv` (the file we upload last), `output/candidate_pairs.tsv` (smaller sets rank higher), a
+`code/business_entity_resolution/` from which *anyone can regenerate both files using only that folder*, and the filled
+`Documentation_template.md`; top packages are reviewed in detail. Lead (phoenix): T31 bagging member (dense CV now; if the
+gate passes, a test run → last upload), then the zip. Provisional zip = `best.yaml` (T29) output. Fetch main (≥ this commit);
+reports `reports/<you>/T3x.md`, push by **20:30**. No model changes.
+
+### T30 — p2: clean-room reproduction (unchanged, now the top priority)
+From a fresh clone of main, only `code/business_entity_resolution/` + the data: follow README.md literally in a new env
+built from requirements.txt; `run.py check`, `src/e5_finetune.py` (a small `--n` is fine), `--smoke` of `configs/best.yaml`.
+Report every step that fails or needs something the README does not say, with the exact patch. p4's clean-copy GPU smoke
+(`5f05eaf`, 17:21) covered the GPU path — focus on env creation from requirements.txt and CPU-only machines.
+
+### T33 — p3: final document review against the organizers' spec
+Read `Documentation_template.md` (main) as a reviewer: (1) it must cover methodology, candidate generation / blocking,
+model architecture + feature engineering, other relevant information (organizers_README "Submission Requirements" 3) —
+list anything missing; (2) consistency after the §2.3 / §4.1 / App. C merge (duplicate or contradicting sentences,
+numbers that differ between sections); (3) fill **Team Members** (4 names) if you know them; (4) read-only check that
+`scripts/package_submission.py` produces the exact zip layout of the spec. Deliver exact replacement text.
+
+### T34 — p4: compliance appendix + README reproduction details
+Turn your T23 record + T32 results into ready-to-paste markdown for a new Appendix D "Models, licences and rule
+compliance": every model (name, licence, exact params, trained on what), every library in requirements.txt with licence
+(flag anything not MIT/BSD/Apache/ISC), transductive components incl. `p1_mnoise` and p2_translit's segmentation
+vocabulary, "no external data / no API / no country branches". Plus an exact README.md patch stating the fine-tune
+command, seed, expected runtime (~15 min on a 16 GB GPU) and that it is deterministic on one GPU type (your T32).
+
+## Round 8 — Sun 16:30 → 20:00, FINAL (lead p1) — superseded 18:40. LB #8 = 0.981, #9 = **0.983** (mean of T18 + label-free T28 member).
 **Where the points are (STATE D20):** US/India on test already match dense CV (≈ 0.987); France ≈ 0.96 and it is the only part
 that still moves (+0.002 LB per step, both steps from label-free changes). Even a perfect France caps the LB near 0.989, so the
 lead spends the last two submissions on France on phoenix (all test scores and caches are there): #10 = min-blend (both
