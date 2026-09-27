@@ -34,3 +34,19 @@ Superseded insights are struck through with a pointer, never deleted.
 - I-22 [high] No data leakage: entity ids are random and file row order is shuffled (corr of S1 vs match row position / id = 0.000, train GT) → top teams do real ER; public ≈ private (LB standard error ~0.0002). — read-only check (R5)
 - I-23 [high] Remaining loss is concentrated: entities with an empty-address true record = 14% of S1 but 46% of dense-CV loss (mean F 0.948); entities with a blocking-missed true record = 6% of S1, 49% of loss; all other entities F 0.995. 24% of empty-address true records share their exact core name with ≥ 1 other S1 of the country (1.06% of true pairs, irreducible). — T12_noise2 OOF analysis (R5)
 - I-24 [high] p3's T15 blocking (3 channels + reverse caps) raises dense-CV blocking recall 0.979 → 0.989 (oracle 0.9928 → 0.9963); with noise + pruning + fine-tuned E5 + p1_ambig: dense CV 0.98722 (T17) vs 0.98405. — `exploration/p1/dense_cv/20260927-013724_densecv_T17_530df3.json` (R5)
+
+## Round 7 — Sun 27 Sep (p1, test-vs-train diagnostics, all label-free on test)
+- I-25 [high] Test has 5.5–5.8 S2/S3 records per S1 vs 4.68 in train (≈ 2.3 vs 1.2 unmatched distractors per S1), but the
+  extra distractors are easy: US/India test predictions reproduce dense-CV statistics (house-number conflicts among predicted
+  pairs 6.18% vs 6.07% US, 2.16% vs 2.15% India; empty-address records assigned ≈ 54–60% both; same-address class counts
+  match). → US/India LB ≈ dense CV. — `exploration/p1/{orphan_probe,num_conflict,empty_oof,empty_addr_rates}.py` (R7)
+- I-26 [high] The LB stall is France (15% of test S1): #4→#7b changes France 3–5× more than US/India (fine-tuned E5 6.8% vs
+  1.4% of S1; threshold 0.8 3.8% vs 1.1%); LB then implies France ≈ 0.94 → 0.93. LOCO's failure (shifted-number near-copies,
+  321k FP) is absent in France predictions (0.9% number conflicts) → LOCO is a poor France proxy for thresholds. —
+  `exploration/p1/{diff_subs,loco_fp}.py` (R7)
+- I-27 [high] France names come from a small vocabulary: 56 words exceed 1% S1 document frequency (club 8.7%, amicale 5.5%,
+  ecole, maison, centre, comite …) → 77.8% of France S1 names keep ≤ 1 "core" word (US 8.4%, India 44%) → core-name features
+  are degenerate for France (siblings "DD Comite"/"DD Musique" share the core). — `exploration/p1/name_vocab.py` (R7)
+- I-28 [high] France has 5–8× more same-address, differently named candidates per S1 after pruning (0.60/S1 vs 0.07 US, 0.13
+  India; partial-name 0.38 vs 0.24/0.28), i.e. co-located businesses / siblings; we assign 66% of France partial-name and 23%
+  of renamed ones (≈ 12% of France predictions) — the likely France precision loss. — `exploration/p1/sibling_probe.py` (R7)
