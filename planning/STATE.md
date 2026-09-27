@@ -60,7 +60,8 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 6 | Sat | ~23:50 | blend_sub4_sub5 (exploration/p1/blend_runs.py) | mean of #4 and #5 probabilities | – | **0.979** | same candidates; corr 0.998; PASS |
 | 7 | Sun | _to upload_ | 20260927-033731_p1_T16_T17_test_530df3 | T17 / cb81d3a | 0.98722 | _pending_ | p3 blocking (recall 0.979→0.989) + noise + pruning + ft E5 + p1_ambig; PASS (--check-ids); expected-F 0.9876 |
 | 7b | Sun | ~08:30 | T17_thr080 (blend_runs.py, same scores, threshold 0.8) | T17 / cb81d3a | 0.98717 (LOCO 0.937 vs 0.934) | **0.979** | no LB gain over #6 despite +0.003 dense CV → D16 |
-| 8 | Sun | _running (08:16, ETA ~10:15)_ | FINAL test run, log `logs/final_best_test.log` | best.yaml (T18 + thr 0.8) / af1a1be | 0.98752 | _pending_ | final candidate; choose final upload by dense CV + LOCO |
+| 8 | Sun | _to upload_ | 20260927-081609_p1_FINAL_best_test_a7adec (= submissions/sub8_T18) | best.yaml (T18 + thr 0.8) / af1a1be | 0.98746 @0.8 | _pending_ | official validator PASS; vs #7b: France +10.1k/−6.0k pairs, US/India ±5-7k |
+| 9 | Sun | _running (12:14, ETA ~14:00)_ | T27 test run → submissions/sub9_T27 | T27 (T18 + p1_mnoise − core-name feats) / 6929fc9 | 0.98739 @0.8 | _pending_ | France-targeted (I-27, I-28) |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
@@ -97,5 +98,11 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
   near-copies) is absent in France predictions (0.9% conflicts) → LOCO misled D14 for France. Next: T24 self-training
   (`p1_selftrain`), judged by dense LOCO adapted-vs-base on the same folds + in-country not worse; the LB is the only France
   signal, used for ≤ 3 discrete choices (public LB SE ≈ 0.0002 → negligible selection optimism).
+- D17 (Sun 12:15): T24 self-training rejected (LOCO 0.93333 < base 0.93813 on the same folds: recall +, confident false
+  merges reinforced). T25 (drop core-name features) = T18 in-country (0.98746 @0.8). T27 (T25 + p1_mnoise, label-free
+  per-country noise-word rates) 0.98739 @0.8 (fold spread 0.0003) → test run = #9.
+- D18 (written before #8/#9 LB are known): FINAL = highest public LB among #7b / #8 / #9; if the top two are within
+  0.0003, take the one without country-degenerate features (T27 > T18 > T17). best.yaml / README / methodology are then set
+  to that config and the zip is built from its run dir.
 - Open organizer questions: see QUESTIONS.md.
 - video-slides.pdf in the claude.ai project is image-only; the planner could not read it.
