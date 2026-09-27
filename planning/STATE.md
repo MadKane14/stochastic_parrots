@@ -59,7 +59,7 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 5 | – | not uploaded | 20260926-221844_p1_T13_T13_sub5_ft_test_19770e | T13_sub5_ft / 04cf1fc | – | _pending_ | #4 + E5 fine-tuned on all train pairs (p4 v1); PASS |
 | 6 | Sat | ~23:50 | blend_sub4_sub5 (exploration/p1/blend_runs.py) | mean of #4 and #5 probabilities | – | **0.979** | same candidates; corr 0.998; PASS |
 | 7 | Sun | _to upload_ | 20260927-033731_p1_T16_T17_test_530df3 | T17 / cb81d3a | 0.98722 | _pending_ | p3 blocking (recall 0.979→0.989) + noise + pruning + ft E5 + p1_ambig; PASS (--check-ids); expected-F 0.9876 |
-| 7b | Sun | _to upload_ | T17_thr080 (blend_runs.py, same scores, threshold 0.8) | T17 / cb81d3a | 0.98717 (LOCO 0.937 vs 0.934) | _pending_ | recommended over #7 (D14); PASS |
+| 7b | Sun | ~08:30 | T17_thr080 (blend_runs.py, same scores, threshold 0.8) | T17 / cb81d3a | 0.98717 (LOCO 0.937 vs 0.934) | **0.979** | no LB gain over #6 despite +0.003 dense CV → D16 |
 | 8 | Sun | _running (08:16, ETA ~10:15)_ | FINAL test run, log `logs/final_best_test.log` | best.yaml (T18 + thr 0.8) / af1a1be | 0.98752 | _pending_ | final candidate; choose final upload by dense CV + LOCO |
 
 ## Known issues / decisions
@@ -89,5 +89,13 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
   T17 re-decided at 0.8 from saved scores: `submissions/T17_thr080` (validator PASS).
 - D15 (Sun 08:15): FINAL = T18 at threshold 0.8 = `configs/best.yaml` (dense CV 0.98752 > T17 0.98722, LOCO 0.93538 >
   T17 0.93443; both folds up). Feature freeze: no further stack changes; Round-2 best frozen as `best_r2.yaml`.
+- D16 (Sun 09:45): the LB stall is the unseen country, not US/India. Label-free evidence (exploration/p1/, d7795bc): US/India
+  test predictions reproduce dense-CV in-country statistics (house-number conflicts 6.18% vs 6.07% US, 2.16% vs 2.15% India;
+  empty-address assignment ≈ 54-60% both); test has 2x the distractors/S1 of train but they are easy (pruned cands/S1 similar).
+  France (15% of test S1) churns 3-5x more than US/India under train-fitted changes (ft E5 6.8% vs 1.4% of S1; thr 0.8 3.8%
+  vs 1.1%); with US/India at dense CV the LB implies France ≈ 0.94 (#4) → ≈ 0.93 (#7b). LOCO's failure mode (shifted-number
+  near-copies) is absent in France predictions (0.9% conflicts) → LOCO misled D14 for France. Next: T24 self-training
+  (`p1_selftrain`), judged by dense LOCO adapted-vs-base on the same folds + in-country not worse; the LB is the only France
+  signal, used for ≤ 3 discrete choices (public LB SE ≈ 0.0002 → negligible selection optimism).
 - Open organizer questions: see QUESTIONS.md.
 - video-slides.pdf in the claude.ai project is image-only; the planner could not read it.
