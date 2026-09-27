@@ -1,6 +1,34 @@
 # TASKS — workers: do only the tasks with your handle in the CURRENT round
 
-## Round 7 — Sun 09:45 → 14:00 (lead p1). LB #7b = 0.979 (dense CV 0.98717). Target 0.988 (top 50).
+## Round 8 — Sun 16:30 → 20:00, FINAL (lead p1). LB #8 = 0.981, #9 = **0.983** (mean of T18 + label-free T28 member).
+**Where the points are (STATE D20):** US/India on test already match dense CV (≈ 0.987); France ≈ 0.96 and it is the only part
+that still moves (+0.002 LB per step, both steps from label-free changes). Even a perfect France caps the LB near 0.989, so the
+lead spends the last two submissions on France on phoenix (all test scores and caches are there): #10 = min-blend (both
+members must agree), #11 only if #10 wins. **No new features or model changes from workers.** Your job now is to make sure the
+package we hand in reproduces the final file and reads well: a broken package costs more than any 0.001.
+Everyone: fetch main (≥ this commit). Report as `reports/<you>/T3x.md`, push to your branch by **20:00** (partial is fine).
+
+### T30 — p2: clean-room reproduction
+Fresh `git clone` of main into a new directory, new conda env built only from `code/business_entity_resolution/requirements.txt`
+(follow the README literally, no extra installs). Run `python src/run.py check`, then `--smoke` runs of `configs/best.yaml` and
+`configs/exp/p1/T29_blend.yaml`. Report every step that fails or needs a step the README does not state, with the exact patch
+(README text / requirements line / code diff). Do not edit core files; the lead applies patches.
+
+### T31 — p3: methodology final text
+Turn your T22 follow-up (3 candidate-count corrections) into exact replacement text for `Documentation_template.md`, and draft
+the missing sections: (a) ensemble of a label-learned (T18) and a label-free (T28, mined noise rates, no core-name features)
+LightGBM member, why it helps an unseen country (STATE D17b/D19/D20); (b) validation design: dense CV + dense LOCO, why val
+splits were too optimistic (I-08), how the LB was used (≤ 3 discrete choices, D16/D18); (c) LB history table from STATE.
+Every number must cite its source (results JSON / committed output). Deliver as `reports/p3/T31.md`.
+
+### T32 — p4: fine-tuning reproducibility
+On your GPU, run the packaged `src/e5_finetune.py` twice with the same seed on a small sample (`--n 20000`, split full, output
+under your scratch). Report: identical weights or not (sha256 of model.safetensors), max |Δ| cosine on 1,000 test pairs if not,
+runtime, peak GPU memory, and the extrapolated runtime of the real `--n 400000` run. If it is not deterministic, propose the
+smallest fix (seeds / `torch.use_deterministic_algorithms`) as a diff. Also re-check the model/licence/params header lines of
+`configs/best.yaml` and `configs/exp/p1/T29_blend.yaml` against your T23 compliance record.
+
+## Round 7 — Sun 09:45 → 14:00 (lead p1) — superseded 16:30. LB #7b = 0.979 (dense CV 0.98717). Target 0.988 (top 50).
 **Diagnosis (label-free, scripts in exploration/p1/, commit d7795bc):** US/India test predictions reproduce dense CV on every
 statistic we can measure without labels (house-number conflicts 6.18% vs 6.07% US, 2.16% vs 2.15% India; empty-address
 assignment rates; matches/S1). The LB stall is **France** (15% of test S1, never in validation): #4→#7b moved France 3-5x more

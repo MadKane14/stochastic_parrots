@@ -1,6 +1,6 @@
 # STATE — single source of truth for "where are we" (planner drafts, lead commits)
 
-_Last updated: Sun 27 Sep 05:30 IST (round 5 — T17 dense CV 0.98722; submission #7 ready; LB best #6 0.979)_
+_Last updated: Sun 27 Sep 16:30 IST (round 8 — LB #8 0.981, #9 **0.983**; #10 = min-blend ready; T29 reproduces #9)_
 
 ## Team
 | handle | person | machine / GPU | branch | current focus |
@@ -60,9 +60,10 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
 | 6 | Sat | ~23:50 | blend_sub4_sub5 (exploration/p1/blend_runs.py) | mean of #4 and #5 probabilities | – | **0.979** | same candidates; corr 0.998; PASS |
 | 7 | Sun | _to upload_ | 20260927-033731_p1_T16_T17_test_530df3 | T17 / cb81d3a | 0.98722 | _pending_ | p3 blocking (recall 0.979→0.989) + noise + pruning + ft E5 + p1_ambig; PASS (--check-ids); expected-F 0.9876 |
 | 7b | Sun | ~08:30 | T17_thr080 (blend_runs.py, same scores, threshold 0.8) | T17 / cb81d3a | 0.98717 (LOCO 0.937 vs 0.934) | **0.979** | no LB gain over #6 despite +0.003 dense CV → D16 |
-| 8 | Sun | _to upload_ | 20260927-081609_p1_FINAL_best_test_a7adec (= submissions/sub8_T18) | best.yaml (T18 + thr 0.8) / af1a1be | 0.98746 @0.8 | _pending_ | official validator PASS; vs #7b: France +10.1k/−6.0k pairs, US/India ±5-7k |
+| 8 | Sun | ~15:45 | 20260927-081609_p1_FINAL_best_test_a7adec (= submissions/sub8_T18) | best.yaml (T18 + thr 0.8) / af1a1be | 0.98746 @0.8 | **0.981** | official validator PASS; vs #7b: France +10.1k/−6.0k pairs, US/India ±5-7k |
 | – | – | not uploaded | 20260927-130314_p1_T28_T28_mined_only_test_ea4e7e (sub9_T28) | T28 / 9489112 | 0.98732 @0.8 | – | PASS, but its 38k added France pairs have 39% house-number conflicts (kept 0.9%) → suffix-sibling false merges (D19) |
-| 9 | Sun | _to upload_ | blend_T18_T28 (= submissions/sub9_blend; blend_runs.py mean of #8 and T28 scores, thr 0.8) | T18 + T28 | **0.98748 @0.8** (OOF mean) | _pending_ | official validator PASS (--check-ids); vs #8: France −15.5k/+5.7k pairs (added 4.5% conflicts; France partial-name same-address assigned 65.6% → 58.1%), US/India ±2-3k |
+| 9 | Sun | ~15:45 | blend_T18_T28 (= submissions/sub9_blend; blend_runs.py mean of #8 and T28 scores, thr 0.8) | T18 + T28 | **0.98748 @0.8** (OOF mean) | **0.983** | official validator PASS (--check-ids); vs #8: France −15.5k/+5.7k pairs (added 4.5% conflicts; France partial-name same-address assigned 65.6% → 58.1%), US/India ±2-3k |
+| 10 | Sun | _to upload_ | sub10_min (blend_runs.py --combine min of #8 and T28 scores, thr 0.8: both members must pass) | T18 + T28 | 0.98721 @0.8 (OOF min) | _pending_ | official validator PASS; sha256 82cab7bb…; vs #9 removes 1.34% of France pairs vs 0.18-0.19% US/India (`exploration/p1/test_variant_churn_out.txt`) |
 
 ## Known issues / decisions
 - D1: Handles p1–p4; worker branches `w/p1..w/p4`; only the lead pushes to `main`.
@@ -112,6 +113,15 @@ remaining dense-CV loss (0.0129 of 0.030 for T03_sub, `exploration/p1/dense_anal
   "holding" .89) look like noise. The probability mean of T18 and T28 keeps T28's removals of same-address word-swap
   siblings and rejects its number-shifted additions (added France pairs 4.5% conflicts); in-country OOF mean 0.98748 @0.8
   (T18 0.98746, T28 0.98732; precision 0.99833 best). → #9 = blend. `exploration/p1/{diff_numconf,oof_blend}.py`.
+- D20 (Sun 16:30): #8 0.981 / #9 0.983. With US/India at dense CV (0.9872 at test composition; D16), France ≈ 0.946 (#8) → 0.959 (#9),
+  ±0.003 from LB rounding; France perfect would cap the LB at ≈ 0.989, so 0.99 needs US/India > dense CV as well. Both LB steps
+  came from label-free / target-adaptive changes (tcanon, mined noise) and #9's step was mostly France removals where the
+  label-learned (T18) and label-free (T28) members disagree. In-country OOF cannot separate the variants (mean 0.98748, 0.25/0.75
+  0.98743, guard 0.98738, mean3 with T27 0.98748, min 0.98721 @0.8; `exploration/p1/oof_variants_out.txt`). min@0.8 concentrates the
+  same move on France (−1.34% of France pairs vs −0.18/0.19% US/India, removed pairs have 3.6% number conflicts; mean@0.9 would cost
+  in-country −0.001 for −2.0% France) → #10 = min@0.8. #11 only if #10 ≥ #9 + 0.001 (one more step, min@0.85); else final = #9.
+  Decision rule D18 extends to #10/#11 (ties within 0.0003 → higher dense CV). If a min variant wins, `weighted_mean` gets a
+  `combine: min` option after T29 finishes and one test run confirms the packaged config reproduces the file.
 - D18 (written before #8/#9 LB are known): FINAL = highest public LB among #7b / #8 / #9; if the top two are within
   0.0003, take the one with the higher dense CV (blend 0.98748 > T18 0.98746 > T17 0.98717). best.yaml / README / methodology are then set
   to that config and the zip is built from its run dir.

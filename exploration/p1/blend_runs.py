@@ -1,6 +1,6 @@
 """Blend two test-mode runs (p1): average their pair probabilities, apply the same decision rule, write + validate.
 
-    python exploration/p1/blend_runs.py <run_id_a> <run_id_b> [--threshold 0.7] [--out-name blend_<a>_<b>]
+    python exploration/p1/blend_runs.py <run_id_a> <run_id_b> [--threshold 0.7] [--out-name blend_<a>_<b>] [--combine min]
 
 Reads $BER_ARTIFACTS/runs/<run>/scored_pairs.parquet of both runs (s1_id, cand_id, score). Candidate set = union of
 both runs' candidates (identical when both used the same pruner); a pair scored by one run only keeps that score.
@@ -29,6 +29,7 @@ def main():
     ap.add_argument("run_b")
     ap.add_argument("--threshold", type=float, default=0.7)
     ap.add_argument("--out-name", default=None)
+    ap.add_argument("--combine", choices=["mean", "min"], default="mean", help="min = both runs must pass the threshold")
     a = ap.parse_args()
     art = Path(env("BER_ARTIFACTS"))
     cols = ["s1_id", "cand_id", "score"]
@@ -38,7 +39,7 @@ def main():
     both = m["score_a"].notna() & m["score_b"].notna()
     print(f"pairs: a {len(A):,}  b {len(B):,}  union {len(m):,}  both {both.sum():,}  "
           f"corr {m.loc[both, ['score_a', 'score_b']].corr().iloc[0, 1]:.4f}", flush=True)
-    m["score"] = m[["score_a", "score_b"]].mean(axis=1)
+    m["score"] = m[["score_a", "score_b"]].mean(axis=1) if a.combine == "mean" else m[["score_a", "score_b"]].min(axis=1)
     matches = AssignDecider(threshold=a.threshold).decide(None, m[cols])
     for name, s in (("a", "score_a"), ("b", "score_b")):
         mm = AssignDecider(threshold=a.threshold).decide(None, m.dropna(subset=[s])[["s1_id", "cand_id", s]]
