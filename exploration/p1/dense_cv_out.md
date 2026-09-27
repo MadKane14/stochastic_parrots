@@ -558,3 +558,87 @@
  }
 }
 ```
+
+## 20260927-105752_densecv_T24_self_fb7626_loco (commit c4d593b)
+
+```
+{
+ "f05": 0.93333,
+ "by_country": {
+  "India": 0.95951,
+  "US": 0.91587
+ },
+ "by_fold": {
+  "0": 0.91587,
+  "1": 0.95951
+ },
+ "folds": "leave-one-country-out",
+ "singleton_acc": 0.7035,
+ "f05_nonsingleton": 0.94693,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.94176,
+ "pair_recall": 0.96482,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.93333,
+ "threshold_curve": {
+  "0.3": 0.92425,
+  "0.4": 0.92643,
+  "0.5": 0.92825,
+  "0.6": 0.92995,
+  "0.7": 0.9316,
+  "0.8": 0.93333,
+  "0.9": 0.93532
+ },
+ "base_f05": 0.93813,
+ "base_by_country": {
+  "India": 0.9475,
+  "US": 0.93188
+ },
+ "base_pair_precision": 0.95625,
+ "base_pair_recall": 0.93619,
+ "base_threshold_curve": {
+  "0.5": 0.93101,
+  "0.6": 0.93308,
+  "0.7": 0.93538,
+  "0.8": 0.93813,
+  "0.9": 0.94181
+ }
+}
+```
+
+## 20260927-113510_densecv_T25_nocore_96743a (commit 88e4ef5)
+
+```
+{
+ "f05": 0.98746,
+ "by_country": {
+  "India": 0.98617,
+  "US": 0.98832
+ },
+ "by_fold": {
+  "0": 0.98742,
+  "1": 0.9875
+ },
+ "folds": "2 x S1 hash (seed 777)",
+ "singleton_acc": 0.9924,
+ "f05_nonsingleton": 0.98717,
+ "n_s1": 2206821,
+ "n_pairs": 76950514,
+ "pair_precision": 0.9982,
+ "pair_recall": 0.96637,
+ "blocking_pair_recall": 0.98931,
+ "oracle_f05": 0.9964,
+ "f05_frozen_metric": 0.98746,
+ "threshold_curve": {
+  "0.3": 0.98333,
+  "0.4": 0.98504,
+  "0.5": 0.98628,
+  "0.6": 0.98712,
+  "0.7": 0.98749,
+  "0.8": 0.98746,
+  "0.9": 0.98654
+ }
+}
+```
