@@ -1,0 +1,1 @@
+aefbf76 p3 T18: t18d retry also OOM at the feature concat; wrapper frees blocker token caches after blocking + malloc_trim at build_pairs' gc.collect (memory hygiene, results unchanged)

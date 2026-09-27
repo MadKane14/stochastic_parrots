@@ -1,0 +1,6 @@
+22:21:32 rc=0       0s  setup: nproc; free -g; nvidia-smi -L 2>/dev/null; df -h /tmp /kaggle/working; python --version; git log -1 --oneline
+22:22:07 rc=0      35s  pip: pip install -q -r /tmp/repo/code/business_entity_resolution/requirements.txt
+22:24:00 rc=0     114s  link: python -c "import sys, importlib.util, os; sys.path.insert(0, 'code/business_entity_resolution/src'); s = importlib.util.spec_from_file_location('g', 'exploration/p2/dense_cv_group.py'); g = importlib.util.module_from_spec(s); s.loader.exec_module(g); ds = g.group_loader('India')(os.environ['BER_DATA_DIR'], 'train', cache_dir=os.environ['BER_ARTIFACTS'] + '/cache'); fp = ds.fingerprint(); fs = [os.environ['BER_ARTIFACTS'] + '/emb_mm/intfloat__multilingual-e5-small_ml64/' + fp + '_' + f + '.npy' for f in ('name', 'full')]; print(fp, [(f, os.path.exists(f)) for f in fs]); sys.exit(0 if all(map(os.path.exists, fs)) else 3)"
+23:49:24 rc=137    5123s  dense: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T15_sub5.yaml --group India
+00:04:40 rc=137     917s  dense_retry: python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T15_sub5.yaml --group India
+00:04:40 rc=0       0s  done: free -g; du -sh /tmp/ber_artifacts/* 2>/dev/null

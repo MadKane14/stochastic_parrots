@@ -1,0 +1,8 @@
+$ python exploration/p3/dense_cv_group_prune.py -c code/business_entity_resolution/configs/exp/p3/T15_sub5.yaml --group India
+2026-09-26 23:53:42,502 dense_cv normalize 27s
+2026-09-27 00:01:38,138 dense_cv block 476s: 30893033 pairs
+2026-09-27 00:02:18,168 dense_cv cached features feat_p1_match_d641024ec823f9a2.parquet
+2026-09-27 00:02:18,169 dense_cv cached features feat_p1_extra_7a9e1f90f4b5e6d7.parquet
+2026-09-27 00:02:18,170 dense_cv cached features feat_p1_e5_6cdf199a0484efbb.parquet
+2026-09-27 00:02:18,172 dense_cv cached features feat_p1_noise_1ce6c1c4198000dc.parquet
+Killed
